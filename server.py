@@ -36,14 +36,14 @@ def backward_day(date_string):
 def index():
     """Defaults user view to today's log entries"""
 
-    day_forward = forward_day(current_date)
-    day_backward = backward_day(current_date)
+    next_day = forward_day(current_date)
+    day_before = backward_day(current_date)
 
     return render_template(
                         'daily_view.html', 
                         selected_date=current_date,
-                        day_forward=day_forward,
-                        day_backward=day_backward,
+                        day_forward=next_day,
+                        day_backward=day_before,
                         current_date=current_date,
                         )
 
@@ -52,14 +52,14 @@ def index():
 def daily_view(selected_date=current_date):
     """Daily view of foods eaten"""
 
-    day_forward = forward_day(selected_date)
-    day_backward = backward_day(selected_date)
+    next_day = forward_day(selected_date)
+    day_before = backward_day(selected_date)
 
     return render_template(
                         'daily_view.html', 
                         selected_date=selected_date,
-                        day_forward=day_forward,
-                        day_backward=day_backward,
+                        day_forward=next_day,
+                        day_backward=day_before,
                         current_date=current_date,
                         )
 
