@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Daily View{% endblock %}
+
+{% block content %}
+    <h1> {% if selected_date == current_date %}
+        Today's Date: {{ selected_date}}</h1>
+        {% else %}
+        Selected Date: {{ selected_date }}
+    {% endif %}
+    <h2>
+        <a href="/{{ day_backward }}">Back One Day</a> & 
+        <a href="/{{day_forward}}">Forward One Day</a></h2>
+    <p>Here would be a daily view of:</p>
+    <ul>
+        <li>What you ate for breakfast and a 
+            <a href="/add_food/breakfast/{{ selected_date }}" name="breakfast">
+                link to add
+            </a>
+        </li>
+        <li>What you ate for lunch and a 
+            <a href="/add_food/lunch/{{ selected_date }}" name="lunch">
+                link to add
+            </a>
+        </li>
+        <li>What you ate for dinner and a 
+            <a href="/add_food/dinner/{{ selected_date }}" name="dinner">
+                link to add
+            </a>
+        </li>
+        <li>Any snacks you ate and a 
+            <a href="/add_food/snack/{{ selected_date }}" name="snacks">
+                link to add
+            </a>
+        </li>
+    </ul>
+    As wells as:<br>
+    <ul>
+        <li>Any symptoms you might have felt and a 
+            <a href="/add_symptom/{{ selected_date }}">
+                link to add
+            </a>
+        </li>
+    </ul>
+
+{% endblock %}
