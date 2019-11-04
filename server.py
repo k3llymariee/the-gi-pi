@@ -22,7 +22,18 @@ current_date = (date.today()).strftime('%Y-%m-%d')
 def index():
     """Defaults user view to today's log entries"""
 
-    return redirect(f"/{current_date}")
+    day_value = datetime.strptime(current_date, '%Y-%m-%d')
+
+    day_forward = (day_value + timedelta(days=1)).strftime('%Y-%m-%d')
+    day_backward = (day_value + timedelta(days=-1)).strftime('%Y-%m-%d')
+
+    return render_template(
+                        'daily_view.html', 
+                        selected_date=current_date,
+                        day_forward=day_forward,
+                        day_backward=day_backward,
+                        current_date=current_date,
+                        )
 
 
 @app.route(f"/<selected_date>")
