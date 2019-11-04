@@ -18,14 +18,26 @@ app.jinja_env.undefined = StrictUndefined
 # current date needed to default homepage to today's date
 current_date = (date.today()).strftime('%Y-%m-%d')
 
+def forward_day(date_string):
+    """Returns a string value of one day forward given a string date input"""
+
+    day_value = datetime.strptime(date_string, '%Y-%m-%d')
+
+    return (day_value + timedelta(days=1)).strftime('%Y-%m-%d')
+
+def backward_day(date_string):
+
+    day_value = datetime.strptime(date_string, '%Y-%m-%d')
+
+    return (day_value + timedelta(days=-1)).strftime('%Y-%m-%d')
+
+
 @app.route('/')
 def index():
     """Defaults user view to today's log entries"""
 
-    day_value = datetime.strptime(current_date, '%Y-%m-%d')
-
-    day_forward = (day_value + timedelta(days=1)).strftime('%Y-%m-%d')
-    day_backward = (day_value + timedelta(days=-1)).strftime('%Y-%m-%d')
+    day_forward = forward_day(current_date)
+    day_backward = backward_day(current_date)
 
     return render_template(
                         'daily_view.html', 
@@ -40,10 +52,8 @@ def index():
 def daily_view(selected_date=current_date):
     """Daily view of foods eaten"""
 
-    day_value = datetime.strptime(selected_date, '%Y-%m-%d')
-
-    day_forward = (day_value + timedelta(days=1)).strftime('%Y-%m-%d')
-    day_backward = (day_value + timedelta(days=-1)).strftime('%Y-%m-%d')
+    day_forward = forward_day(selected_date)
+    day_backward = backward_day(selected_date)
 
     return render_template(
                         'daily_view.html', 
