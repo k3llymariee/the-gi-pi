@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Add a food{% endblock %}
+
+{% block content %}
+<p>Add a food from a database</p>
+
+<form action="/food_search/{{ meal }}/{{ selected_date }}">
+    Search term: <input type="text" name="search_term" size="100" required/><br>
+    <input type="submit" /><br>
+</form>
+
+<div name="search_results"></div>
+
+{% endblock %}

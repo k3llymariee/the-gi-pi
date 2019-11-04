@@ -5,6 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from datetime import datetime, date, timedelta
 
 from model import connect_to_db
+from nutritionix import search
 
 
 app = Flask(__name__)
@@ -73,7 +74,31 @@ def login_form():
 def process_login():
     """Log a user in if the user is in the database and provides correct password"""
 
-    pass
+    login_attempt = request.form
+
+    # check if a user exists in the database
+
+    # check if their password matches
+
+    # if yes to both above, add user_id to session data
+
+    session['user_email'] = login_attempt['email']
+
+    return redirect('/')
+
+@app.route("/add_food/<meal>/<selected_date>")
+def add_food(meal, selected_date):
+
+    return render_template('add_food.html', meal=meal, selected_date=selected_date)
+
+
+@app.route("/food_search/<meal>/<selected_date>")
+def database_search(meal, selected_date):
+    """Search for a food given a user's input"""
+
+    search_term = request.args.get('search_term')
+
+    return search(search_term)
 
 if __name__ == "__main__":
 
