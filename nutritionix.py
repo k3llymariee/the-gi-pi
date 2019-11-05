@@ -20,10 +20,11 @@ def search(search_term):
 
     resp = r.json()
 
-    return resp
+    return resp  
 
-def search_item(item):
-    """Performs a search to obtain nutrients of a specific item"""
+def search_branded_item(item):
+    """Performs a search to obtain nutrients of a branded food item,
+    given its NIX item ID"""
 
     endpoint = urljoin(BASE_URL, 'search/item')
 

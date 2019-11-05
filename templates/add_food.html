@@ -3,13 +3,53 @@
 {% block title %}Add a food{% endblock %}
 
 {% block content %}
-<p>Add a food from a database</p>
+<section id="food-search">
+    <p>Add a food from a database</p>
 
-<form action="/food_search/{{ meal }}/{{ selected_date }}">
-    Search term: <input type="text" name="search_term" size="100" required/><br>
-    <input type="submit" /><br>
-</form>
+    <form id="search-food">
+        <label for="search-term">
+            Enter a term to search:
+        </label>
+        <input type="text" id="search_term" size="100" required /><br>
+        <input type="submit" />
+    </form>
+</section>
 
-<div name="search_results"></div>
+<section id="display-search">Search results go here</section>
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+        "use strict";
+
+
+      $('#search-food').on('submit', (evt) => {
+        evt.preventDefault();
+
+        const searchTerm = $('#search_term').val();
+
+        $.get(`/food_search/${searchTerm}`, (res) => {
+            const foods = res["foods"]
+
+            const container = $('#display-search');
+
+            container.empty()
+
+            for (const food of foods) {
+                container.append(`
+                    <div class='food'>
+                        <p>Brand: ${food.brand_name}</p>
+                        <p>Name: ${food.brand_name_item_name}</p>
+                        <img src='${food.photo.thumb}' />
+                    </div>`
+                );
+            };
+
+        });
+      });
+
+    </script>
 
 {% endblock %}

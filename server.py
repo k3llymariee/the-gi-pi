@@ -1,6 +1,6 @@
 from jinja2 import StrictUndefined
 
-from flask import Flask, render_template, request, flash, redirect, session
+from flask import Flask, render_template, request, flash, redirect, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from datetime import datetime, date, timedelta
 import json
@@ -21,14 +21,14 @@ app.jinja_env.undefined = StrictUndefined
 current_date = (date.today()).strftime('%Y-%m-%d')
 
 def forward_day(date_string):
-    """Returns a string value of one day forward given a string date input"""
+    """Returns a string value of one day ahead given a string date input"""
 
     day_value = datetime.strptime(date_string, '%Y-%m-%d')
 
     return (day_value + timedelta(days=1)).strftime('%Y-%m-%d')
 
 def backward_day(date_string):
-
+    """Returns a string value of one day before given a string date input"""
     day_value = datetime.strptime(date_string, '%Y-%m-%d')
 
     return (day_value + timedelta(days=-1)).strftime('%Y-%m-%d')
@@ -77,12 +77,13 @@ def register_process():
 
     register_form = request.form 
 
-    if register_form['password'] != register_form['confirm_password']:
-        flash('Passwords do not match')
+
+    if User.query.filter(User.email == register_form['email']).first():
+        flash('Email already exists within our userbase')
         return redirect('/register')
 
-    elif User.query.filter(User.email == register_form['email']).first():
-        flash('Email already exists within our userbase')
+    elif register_form['password'] != register_form['confirm_password']:
+        flash('Passwords do not match')
         return redirect('/register')
 
     else:
@@ -107,18 +108,24 @@ def process_login():
 
     login_attempt = request.form
 
-    # check if a user exists in the database
-
-    # check if their password matches
-
-    # if yes to both above, add user_id to session data
-
     user = User.query.filter(User.email == login_attempt['email']).first()
 
-    session['user_email'] = login_attempt['email']
-    flash('Successfully logged in')
+    # check if a user exists in the database
+    if not user:
+        flash('Incorrect email')
+        return redirect("/login")
 
-    return redirect('/')
+    # check if their password matches
+    elif user.password != login_attempt['password']:
+        flash('Incorrect password')
+        return redirect("/login")
+
+    # if yes to both above, add user_id to session data
+    else:
+        session['user_email'] = login_attempt['email']
+        flash('Successfully logged in')
+        return redirect('/')
+
 
 @app.route("/logout")
 def process_logout():
@@ -133,19 +140,25 @@ def add_food(meal, selected_date):
     return render_template('add_food.html', meal=meal, selected_date=selected_date)
 
 
-@app.route("/food_search/<meal>/<selected_date>")
-def database_search(meal, selected_date):
+@app.route("/food_search/<search_term>")
+def database_search(search_term):
     """Search for a food given a user's input"""
 
-    search_term = request.args.get('search_term')
+    # search_term = request.args.get('search_term')
 
-    return search(search_term)
+    results = search(search_term)  # returns a dictionary of results
+
+    branded_foods = results['branded']  # returns a list of branded foods
+
+    return jsonify({"foods": branded_foods})
 
 
 @app.route("/add_symptom")
 def symptom_form():
 
-    return render_template('add_symptom.html', current_time=datetime.today())
+    symptoms = Symptom.query.all()
+
+    return render_template('add_symptom.html', symptoms=symptoms, current_time=datetime.today())
 
 
 @app.route("/add_symptom", methods=['POST'])
@@ -156,11 +169,6 @@ def add_symptom():
     symptom = request.form.get('symptom')
     time = request.form.get('symptom_time')
 
-    print('\n' * 3)
-    print("symptom:", symptom)
-    print('user:', user)
-    print('\n' * 3)
-
     new_symptom = Symptom(name=symptom)
     db.session.add(new_symptom)
     db.session.commit()  # commit first in order to get user_id
@@ -169,7 +177,6 @@ def add_symptom():
     db.session.commit()
 
     return redirect("/")
-
 
 
 if __name__ == "__main__":

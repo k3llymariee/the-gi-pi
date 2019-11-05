@@ -7,9 +7,17 @@
 <p>Add a symptom</p>
 
 <form action="/add_symptom" method="POST">
-    Symptom Felt: <input type="text" name="symptom" size="100" required/><br>
-    Time felt: <input type="datetime-local" name="symptom_time" value={{current_time}} required/>
+    Symptom Felt: 
+    <select name="symptom_to_add">
+        {% for symptom in symptoms %}
+        <option value={{ symptom.name.lower() }}>{{ symptom.name }}</option>    
+        {% endfor %}
+    </select>
+    <br>
+    Time felt: <input type="datetime-local" name="symptom_time" value={{current_time}} required/><br>
     <input type="submit" /><br>
+        
 </form>
 
 {% endblock %}
+

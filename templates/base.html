@@ -17,7 +17,14 @@
 
     </head>
 <body>
-    {% block content %} CONTENT GOES HERE {% endblock %}
+    <!-- Include the page's content with this block. -->
+    {% block content %} 
+    CONTENT GOES HERE 
+    {% endblock %}
+
+    <!-- Include any page-specific Javascript using this block. -->
+    {% block js %}
+    {% endblock %}
 </body>
 <footer>
     <br><br><br>
