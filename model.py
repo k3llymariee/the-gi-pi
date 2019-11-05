@@ -28,6 +28,11 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(50), nullable=False)
 
+    def __repr__(self):
+
+        return f"<User id={self.id} email={self.email}>"
+
+
 class Food(db.Model):
     """Foods added to the database by users"""
 
@@ -43,6 +48,7 @@ class Food(db.Model):
 
         return f"<Food food_id={self.id} brand={self.brand_name} food_name={self.name}>"
 
+
 class Ingredient(db.Model):
     """Ingredients within the database"""
 
@@ -51,9 +57,11 @@ class Ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
 
+
     def __repr(self):
 
         return f"<Ingredient id={self.id} name={self.name}>"
+
 
 class FoodIngredient(db.Model):
     """Tracks the relationship of food items and ingredients"""
@@ -64,12 +72,10 @@ class FoodIngredient(db.Model):
     food_id = db.Column(db.Integer, db.ForeignKey('foods.id'), nullable=False)
     ingredient_id = db.Column(db.Integer, db.ForeignKey('ingredients.id'), nullable=False)
 
+
     def __repr__(self):
 
-        return f"""<FoodIngredient id={self.id} 
-                                   food_id={self.food_id} 
-                                   ingredient_id={self.ingredient_id}
-        >"""
+        return f"<FoodIngredient id={self.id} food_id={self.food_id}>"
 
 
 class Symptom(db.Model):
@@ -85,6 +91,7 @@ class Symptom(db.Model):
 
         return f"<Symptom symptom_id={self.id} name={self.name}>"
 
+
 class FoodLog(db.Model):
     """Instances of food consumed by users"""
 
@@ -99,22 +106,50 @@ class FoodLog(db.Model):
     food = db.relationship('Food', backref='food_logs')
     user = db.relationship('User', backref='food_logs')
 
+
     def __repr__(self):
 
         return f"<FoodLog id={self.id} date={self.ts} meal={self.meal}>"
 
+
 class SymptomLog(db.Model):
     """Foods in the database"""
 
-    __tablename__ = 'symptoms_log'
+    __tablename__ = 'symptom_log'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    timestamp = db.Column(db.DateTime, nullable=False)
+    ts = db.Column(db.DateTime, nullable=False)
     symptom_id = db.Column(db.Integer, db.ForeignKey('symptoms.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     symptom = db.relationship('Symptom', backref='symptom_logs')
     user = db.relationship('User', backref='symptom_logs')
 
+
+    def __repr(self):
+
+        return f"<SymptomLog id={self.id} symtpom_id={self.symptom_id}>"
+
+
+class SymptomFood(db.Model):
+    """Correlates foods with symptoms"""
+
+    __tablename__ = 'symptom_foods'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    ts = db.Column(db.DateTime, nullable=False)
+    symptom_id = db.Column(db.Integer, db.ForeignKey('symptom_log.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    food_id = db.Column(db.Integer, db.ForeignKey('food_log.id'), nullable=False)
+
+    symptom = db.relationship('SymptomLog', backref='symptomfood_logs')
+    user = db.relationship('User', backref='symptomfood_logs')
+    food = db.relationship('FoodLog', backref='symptomfood_logs')
+
+
+    def __repr__(self):
+
+        return f"<SymptomFood id={self.id} date={self.ts}>"
 
 
 

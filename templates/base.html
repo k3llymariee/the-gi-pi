@@ -9,6 +9,12 @@
           integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
           crossorigin="anonymous">
         </script>
+        <ul>
+        {% for message in get_flashed_messages() %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+
     </head>
 <body>
     {% block content %} CONTENT GOES HERE {% endblock %}
@@ -16,5 +22,10 @@
 <footer>
     <br><br><br>
     Go <a href="/">home</a><br>
-    <a href="/login">Login</a></footer>
+    {% if session.get('user_email') %}
+        <a href="/logout">Logout</a><br>
+    {% else %}
+        <a href="/login">Log In</a><br>
+    {% endif %}
+</footer>
 </html>

@@ -1,10 +1,11 @@
 from jinja2 import StrictUndefined
 
 from flask import Flask, render_template, request, flash, redirect, session
-# from flask_debugtoolbar import DebugToolbarExtension
+from flask_debugtoolbar import DebugToolbarExtension
 from datetime import datetime, date, timedelta
+import json
 
-from model import connect_to_db
+from model import db, connect_to_db, User, Food, FoodIngredient, Ingredient, Symptom, SymptomLog, FoodLog, SymptomFood
 from nutritionix import search
 
 
@@ -64,6 +65,36 @@ def daily_view(selected_date=current_date):
                         current_date=current_date,
                         )
 
+
+@app.route('/register')
+def register_form():
+    """Show form for user signup"""
+
+    return render_template('register_form.html')
+
+@app.route('/register', methods=['POST'])
+def register_process():
+
+    register_form = request.form 
+
+    if register_form['password'] != register_form['confirm_password']:
+        flash('Passwords do not match')
+        return redirect('/register')
+
+    elif User.query.filter(User.email == register_form['email']).first():
+        flash('Email already exists within our userbase')
+        return redirect('/register')
+
+    else:
+        new_user = User(email=register_form['email'], password=register_form['password'])
+        db.session.add(new_user)
+        db.session.commit()
+        flash('Added new user')
+        session['user_email'] = register_form['email']
+        flash('Successfully logged in')
+        return redirect('/')
+
+
 @app.route("/login", methods=['GET'])
 def login_form():
     """Show login form"""
@@ -82,9 +113,19 @@ def process_login():
 
     # if yes to both above, add user_id to session data
 
+    user = User.query.filter(User.email == login_attempt['email']).first()
+
     session['user_email'] = login_attempt['email']
+    flash('Successfully logged in')
 
     return redirect('/')
+
+@app.route("/logout")
+def process_logout():
+
+    del session['user_email']
+
+    return redirect("/login")
 
 @app.route("/add_food/<meal>/<selected_date>")
 def add_food(meal, selected_date):
@@ -100,6 +141,37 @@ def database_search(meal, selected_date):
 
     return search(search_term)
 
+
+@app.route("/add_symptom")
+def symptom_form():
+
+    return render_template('add_symptom.html', current_time=datetime.today())
+
+
+@app.route("/add_symptom", methods=['POST'])
+def add_symptom():
+
+    user = User.query.filter(User.email == session['user_email']).first()
+
+    symptom = request.form.get('symptom')
+    time = request.form.get('symptom_time')
+
+    print('\n' * 3)
+    print("symptom:", symptom)
+    print('user:', user)
+    print('\n' * 3)
+
+    new_symptom = Symptom(name=symptom)
+    db.session.add(new_symptom)
+    db.session.commit()  # commit first in order to get user_id
+    symptom_log = SymptomLog(ts=time, symptom_id=new_symptom.id, user_id=user.id)
+    db.session.add(symptom_log)
+    db.session.commit()
+
+    return redirect("/")
+
+
+
 if __name__ == "__main__":
 
     # Remove debug for demo
@@ -108,6 +180,6 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # Use the DebugToolbar
-    # DebugToolbarExtension(app)
+    DebugToolbarExtension(app)
 
     app.run(host="0.0.0.0")
