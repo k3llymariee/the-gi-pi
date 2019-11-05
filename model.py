@@ -19,6 +19,105 @@ def connect_to_db(app):
     db.init_app(app)
 
 
+class User(db.Model):
+    """Users in the system"""
+
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(50), nullable=False)
+
+class Food(db.Model):
+    """Foods added to the database by users"""
+
+    __tablename__ = 'foods'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), nullable=False)
+    brand_name = db.Column(db.String(200), nullable=True)
+
+    
+    def __repr__(self):
+        """Human readable representation of a Food object"""
+
+        return f"<Food food_id={self.id} brand={self.brand_name} food_name={self.name}>"
+
+class Ingredient(db.Model):
+    """Ingredients within the database"""
+
+    __tablename__ = 'ingredients'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+
+    def __repr(self):
+
+        return f"<Ingredient id={self.id} name={self.name}>"
+
+class FoodIngredient(db.Model):
+    """Tracks the relationship of food items and ingredients"""
+
+    __tablename__ = 'food_ingredients'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    food_id = db.Column(db.Integer, db.ForeignKey('foods.id'), nullable=False)
+    ingredient_id = db.Column(db.Integer, db.ForeignKey('ingredients.id'), nullable=False)
+
+    def __repr__(self):
+
+        return f"""<FoodIngredient id={self.id} 
+                                   food_id={self.food_id} 
+                                   ingredient_id={self.ingredient_id}
+        >"""
+
+
+class Symptom(db.Model):
+    """Symptoms added to the database either as defaults, or user-added"""
+
+    __tablename__ = 'symptoms'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+
+    def __repr__(self):
+        """Human readable representation of a Symptom object"""
+
+        return f"<Symptom symptom_id={self.id} name={self.name}>"
+
+class FoodLog(db.Model):
+    """Instances of food consumed by users"""
+
+    __tablename__ = 'food_log'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    ts = db.Column(db.DateTime, nullable=False)
+    meal = db.Column(db.String(20), nullable=False)
+    food_id = db.Column(db.Integer, db.ForeignKey('foods.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    food = db.relationship('Food', backref='food_logs')
+    user = db.relationship('User', backref='food_logs')
+
+    def __repr__(self):
+
+        return f"<FoodLog id={self.id} date={self.ts} meal={self.meal}>"
+
+class SymptomLog(db.Model):
+    """Foods in the database"""
+
+    __tablename__ = 'symptoms_log'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    timestamp = db.Column(db.DateTime, nullable=False)
+    symptom_id = db.Column(db.Integer, db.ForeignKey('symptoms.id'))
+
+    symptom = db.relationship('Symptom', backref='symptom_logs')
+    user = db.relationship('User', backref='symptom_logs')
+
+
+
+
 if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave
     # you in a state of being able to work with the database directly.
@@ -26,4 +125,5 @@ if __name__ == "__main__":
     from server import app
 
     connect_to_db(app)
+    db.create_all()
     print("Connected to DB.")
