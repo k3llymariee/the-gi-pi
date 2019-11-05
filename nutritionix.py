@@ -21,3 +21,16 @@ def search(search_term):
     resp = r.json()
 
     return resp
+
+def search_item(item):
+    """Performs a search to obtain nutrients of a specific item"""
+
+    endpoint = urljoin(BASE_URL, 'search/item')
+
+    params = {'nix_item_id': item}
+
+    r = requests.get(endpoint, params=params, headers=HEADER)
+
+    resp = r.json()
+
+    return resp
