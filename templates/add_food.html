@@ -42,7 +42,9 @@
                     <div class='food'>
                         <p>Brand: ${food.brand_name}</p>
                         <p>Name: ${food.brand_name_item_name}</p>
-                        <img src='${food.photo.thumb}' />
+                        <img src='${food.photo.thumb}' /><br>
+                        <p>NIX ID: ${food.nix_item_id}</p>
+                        <a href='/add_to_db/${food.nix_item_id}'>This one!</a>
                     </div>`
                 );
             };

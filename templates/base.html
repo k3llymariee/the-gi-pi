@@ -15,6 +15,8 @@
         {% endfor %}
         </ul>
 
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+
     </head>
 <body>
     <!-- Include the page's content with this block. -->
@@ -29,7 +31,7 @@
 <footer>
     <br><br><br>
     Go <a href="/">home</a><br>
-    {% if session.get('user_email') %}
+    {% if session.get('user_id') %}
         <a href="/logout">Logout</a><br>
     {% else %}
         <a href="/login">Log In</a><br>

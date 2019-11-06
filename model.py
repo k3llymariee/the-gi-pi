@@ -14,7 +14,7 @@ def connect_to_db(app):
     # Configure to use our PostgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///demo'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_ECHO'] = True
+    # app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
     db.init_app(app)
 
@@ -99,17 +99,25 @@ class FoodLog(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     ts = db.Column(db.DateTime, nullable=False)
-    meal = db.Column(db.String(20), nullable=False)
+    meal_id = db.Column(db.Integer, db.ForeignKey('meals.id'), nullable=False)
     food_id = db.Column(db.Integer, db.ForeignKey('foods.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     food = db.relationship('Food', backref='food_logs')
     user = db.relationship('User', backref='food_logs')
+    meal = db.relationship('Meal', backref='food_logs')
 
 
     def __repr__(self):
 
         return f"<FoodLog id={self.id} date={self.ts} meal={self.meal}>"
+
+class Meal(db.Model):
+
+    __tablename__ = 'meals'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(20), nullable=False)
 
 
 class SymptomLog(db.Model):
@@ -131,20 +139,20 @@ class SymptomLog(db.Model):
         return f"<SymptomLog id={self.id} symtpom_id={self.symptom_id}>"
 
 
-class SymptomFood(db.Model):
+class UserSymptomFoodLink(db.Model):
     """Correlates foods with symptoms"""
 
-    __tablename__ = 'symptom_foods'
+    __tablename__ = 'user_symptom_food_link'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     ts = db.Column(db.DateTime, nullable=False)
-    symptom_id = db.Column(db.Integer, db.ForeignKey('symptom_log.id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    symptom_id = db.Column(db.Integer, db.ForeignKey('symptom_log.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     food_id = db.Column(db.Integer, db.ForeignKey('food_log.id'), nullable=False)
 
-    symptom = db.relationship('SymptomLog', backref='symptomfood_logs')
-    user = db.relationship('User', backref='symptomfood_logs')
-    food = db.relationship('FoodLog', backref='symptomfood_logs')
+    symptom = db.relationship('SymptomLog', backref='user_symptom_food_link')
+    user = db.relationship('User', backref='user_symptom_food_link')
+    food = db.relationship('FoodLog', backref='user_symptom_food_link')
 
 
     def __repr__(self):
