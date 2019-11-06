@@ -1,5 +1,6 @@
 # Models and database functions 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 
 # This is the connection to the PostgreSQL database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
@@ -42,6 +43,10 @@ class Food(db.Model):
     name = db.Column(db.String(100), nullable=False)
     brand_name = db.Column(db.String(200), nullable=True)
 
+    ingredients = db.relationship('Ingredient', 
+                                   secondary='food_ingredients',
+                                   backref='foods')
+
     
     def __repr__(self):
         """Human readable representation of a Food object"""
@@ -58,7 +63,7 @@ class Ingredient(db.Model):
     name = db.Column(db.String(100), nullable=False, unique=True)
 
 
-    def __repr(self):
+    def __repr__(self):
 
         return f"<Ingredient id={self.id} name={self.name}>"
 
@@ -95,7 +100,7 @@ class Symptom(db.Model):
 class FoodLog(db.Model):
     """Instances of food consumed by users"""
 
-    __tablename__ = 'food_log'
+    __tablename__ = 'food_logs'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     ts = db.Column(db.DateTime, nullable=False)
@@ -123,7 +128,7 @@ class Meal(db.Model):
 class SymptomLog(db.Model):
     """Foods in the database"""
 
-    __tablename__ = 'symptom_log'
+    __tablename__ = 'symptom_logs'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     ts = db.Column(db.DateTime, nullable=False)
@@ -142,17 +147,17 @@ class SymptomLog(db.Model):
 class UserSymptomFoodLink(db.Model):
     """Correlates foods with symptoms"""
 
-    __tablename__ = 'user_symptom_food_link'
+    __tablename__ = 'user_symptom_food_links'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     ts = db.Column(db.DateTime, nullable=False)
-    symptom_id = db.Column(db.Integer, db.ForeignKey('symptom_log.id'), nullable=False)
+    symptom_id = db.Column(db.Integer, db.ForeignKey('symptom_logs.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    food_id = db.Column(db.Integer, db.ForeignKey('food_log.id'), nullable=False)
+    food_id = db.Column(db.Integer, db.ForeignKey('food_logs.id'), nullable=False)
 
-    symptom = db.relationship('SymptomLog', backref='user_symptom_food_link')
-    user = db.relationship('User', backref='user_symptom_food_link')
-    food = db.relationship('FoodLog', backref='user_symptom_food_link')
+    symptom = db.relationship('SymptomLog', backref='user_symptom_food_links')
+    user = db.relationship('User', backref='user_symptom_food_links')
+    food = db.relationship('FoodLog', backref='user_symptom_food_links')
 
 
     def __repr__(self):

@@ -151,12 +151,25 @@ def add_food(meal, selected_date):
 
 
 @app.route("/food_search/<search_term>")
-def database_search(search_term):
-    """Search for a food given a user's input"""
+def nutrionix_search(search_term):
+    """Search nutritionix API for a food given a user's input"""
 
     results = search(search_term)  # returns a dictionary of results
     branded_foods = results['branded']  # returns a list of branded foods
     return jsonify({"foods": branded_foods})  # jsonify the list to pass thru
+
+
+@app.route("/db_food_search/<search_term>")
+def database_search(search_term):
+    """Search existing database for a food given a user's input"""
+
+    database_foods = Food.query.filter(Food.name.ilike(f'%{search_term}%'))
+
+    foods = []
+    for food in database_foods:
+        foods.append({'food': food.name, 'brand': food.brand_name})
+
+    return jsonify({"foods": foods})
 
 
 @app.route("/add_symptom", methods=['GET'])

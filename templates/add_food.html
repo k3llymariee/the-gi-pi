@@ -3,19 +3,29 @@
 {% block title %}Add a food{% endblock %}
 
 {% block content %}
+<section>
+    <h1>Add a food from your own history</h1>
+    <form id="db-search">
+        <input type="text" id="db_search_term" 
+            placeholder="Search your foods" 
+            size="100" required />
+        <input type="submit">
+    </form>
+</section>
+
+<section id="display-db-search">Database search results go here</section>
+
 <section id="food-search">
-    <p>Add a food from a database</p>
+    <h1>Add a food from a database</h1>
 
     <form id="search-food">
-        <label for="search-term">
-            Enter a term to search:
-        </label>
-        <input type="text" id="search_term" size="100" required /><br>
+        <input type="text" id="search_term" 
+            placeholder="Search our database" size="100" required />
         <input type="submit" />
     </form>
 </section>
 
-<section id="display-search">Search results go here</section>
+<section id="display-search">Nutrionix search results go here</section>
 
 {% endblock %}
 
@@ -31,10 +41,9 @@
         const searchTerm = $('#search_term').val();
 
         $.get(`/food_search/${searchTerm}`, (res) => {
+            
             const foods = res["foods"]
-
             const container = $('#display-search');
-
             container.empty()
 
             for (const food of foods) {
@@ -48,6 +57,40 @@
                     </div>`
                 );
             };
+
+        });
+      });
+
+    $('#db-search').on('submit', (evt) => {
+        evt.preventDefault();
+
+        const dbSearchTerm = $('#db_search_term').val();
+
+        $.get(`/db_food_search/${dbSearchTerm}`, (res) => {
+            
+            const foods = res["foods"]
+            const container = $('#display-db-search');
+            container.empty()
+
+            ;debugger
+
+            if (foods.length === 0) {
+                container.append('<br><i>No foods found</i>');
+            }
+
+            else {
+
+                container.append('<ul>');
+
+                for (const food of foods) {
+                    container.append(`
+                        <li>${food.food} (${food.brand})
+                        </li>`
+                    );
+
+                container.append('</ul');
+                };
+            }
 
         });
       });
