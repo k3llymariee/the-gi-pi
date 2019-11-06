@@ -40,8 +40,11 @@ def load_symptoms():
 
 
 
+
+
 if __name__ == "__main__":
     connect_to_db(app)
     db.create_all()
 
     load_users()
+    load_symptoms()

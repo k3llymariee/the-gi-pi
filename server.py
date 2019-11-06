@@ -130,9 +130,6 @@ def process_login():
 
     # if yes to both above, add user_id to session data
     else:
-        print('/n' * 4)
-        print(user.id)
-        print('/n' * 4)
         session['user_id'] = user.id
         flash('Successfully logged in')
         return redirect('/')
@@ -164,6 +161,7 @@ def database_search(search_term):
 
 @app.route("/add_symptom", methods=['GET'])
 def symptom_form():
+    """Display form for users to add their symptoms"""
 
     symptoms = Symptom.query.all()
     return render_template('add_symptom.html', 

@@ -1,12 +1,13 @@
 import json
 import requests
 from urllib.parse import urljoin
+import config
 
 BASE_URL = 'https://trackapi.nutritionix.com/v2/'
 
 HEADER = {
-    'X-APP-ID': 'd937c6fe',
-    'X-APP-KEY': 'acdfb54f1c60e9ca2872badb7286ac8b',
+    'X-APP-ID': config.X_APP_ID,
+    'X-APP-KEY': config.X_APP_KEY,
 }
 
 def search(search_term): 
