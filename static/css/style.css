@@ -1,0 +1,13 @@
+div.food {
+    border-radius: 3px;
+    border: 3px solid black;
+    width: 20em;
+    height: 20em;
+    margin: 2em;
+    padding: 1em;
+    display: inline-block;
+}
+
+img {
+    height: 12em;    
+}
