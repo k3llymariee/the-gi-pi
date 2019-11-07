@@ -1,7 +1,7 @@
 from jinja2 import StrictUndefined
 
 from flask import Flask, render_template, request, flash, redirect, session, jsonify
-# from flask_debugtoolbar import DebugToolbarExtension
+from flask_debugtoolbar import DebugToolbarExtension
 from datetime import datetime, date, timedelta
 import json
 
@@ -28,6 +28,8 @@ def backward_day(date_string):
     
     day_value = datetime.strptime(date_string, '%Y-%m-%d')
     return (day_value + timedelta(days=-1)).strftime('%Y-%m-%d')
+
+debug = '\n' * 3
 
 
 @app.route('/')
@@ -159,9 +161,24 @@ def nutrionix_search(search_term):
     return jsonify({"foods": branded_foods})  # jsonify the list to pass thru
 
 
+@app.route("/user_foods.json")
+def search_user_foods():
+
+    user = User.query.get(session['user_id'])
+
+    user_foods = FoodLog.query.filter(FoodLog.user_id == user.id).order_by(FoodLog.ts.desc()).all()
+
+    foods = []
+    for food in user_foods:
+        foods.append({'name': food.food.name, 'brand': food.food.brand_name})
+
+    return jsonify({"foods": foods})
+
 @app.route("/db_food_search/<search_term>")
 def database_search(search_term):
     """Search existing database for a food given a user's input"""
+
+    user = User.query.get(session['user_id'])
 
     database_foods = Food.query.filter(Food.name.ilike(f'%{search_term}%'))
 
@@ -206,6 +223,6 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # Use the DebugToolbar
-    # DebugToolbarExtension(app)
+    DebugToolbarExtension(app)
 
     app.run(host="0.0.0.0")

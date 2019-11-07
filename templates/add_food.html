@@ -13,7 +13,9 @@
     </form>
 </section>
 
-<section id="display-db-search">Database search results go here</section>
+<section id="display-db-search">
+    <br><span class="temporary">Database search results go here</span>
+</section>
 
 <section id="food-search">
     <h1>Add a food from a database</h1>
@@ -25,7 +27,9 @@
     </form>
 </section>
 
-<section id="display-search">Nutrionix search results go here</section>
+<section id="display-search">
+    <br><span class="temporary">Nutrionix search results go here</span>
+</section>
 
 {% endblock %}
 
@@ -33,6 +37,33 @@
 
     <script>
         "use strict";
+
+        function getFoodData() {
+        // Get the up to date food data from DB for the signed in user
+
+        $.get('/user_foods.json', insertFoodData);
+        }
+
+        const insertFoodData = (res) => {
+        // Once the data has been provided by the server,
+        // insert it into the page as an HTML string.
+
+        const listOfFoods = res.foods;
+
+        const container = $('#display-db-search');
+
+        container.empty()
+
+        for (const currentFood of listOfFoods) {
+
+        container.append(`
+            <div><ul>
+                <li>${currentFood.name} (${currentFood.brand})</li>
+            </ul></div>`
+        );
+        }
+        }
+
 
 
       $('#search-food').on('submit', (evt) => {
@@ -83,9 +114,9 @@
                 container.append('<ul>');
 
                 for (const food of foods) {
-                    container.append(`
+                    container.append(`<div>
                         <li>${food.food} (${food.brand})
-                        </li>`
+                        </li></div>`
                     );
 
                 container.append('</ul');
@@ -95,6 +126,8 @@
         });
       });
 
+    // Get intial foods when page initially loads!
+    getFoodData();
     </script>
 
 {% endblock %}

@@ -29,6 +29,10 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(50), nullable=False)
 
+    foods = db.relationship('Food', 
+                             secondary='food_logs',
+                             backref='users')
+
     def __repr__(self):
 
         return f"<User id={self.id} email={self.email}>"
@@ -115,7 +119,7 @@ class FoodLog(db.Model):
 
     def __repr__(self):
 
-        return f"<FoodLog id={self.id} date={self.ts} meal={self.meal}>"
+        return f"<FoodLog id={self.id} date={self.ts} meal={self.meal_id}>"
 
 class Meal(db.Model):
 

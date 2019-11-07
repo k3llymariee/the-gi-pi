@@ -11,3 +11,8 @@ div.food {
 img {
     height: 12em;    
 }
+
+.temporary {
+    color: red;
+    font-style: italic;
+}
