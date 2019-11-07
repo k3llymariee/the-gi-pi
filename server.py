@@ -199,7 +199,9 @@ def database_search(search_term):
 
     foods = []
     for food in database_foods:
-        foods.append({'food': food.name, 'brand': food.brand_name})
+        foods.append({'food': food.name, 
+                      'brand': food.brand_name,
+                      'id': food.id})
 
     return jsonify({"foods": foods})
 
