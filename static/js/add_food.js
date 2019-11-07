@@ -19,7 +19,8 @@ const insertFoodData = (res) => {
 
         container.append(`
             <div><ul>
-                <li>${currentFood.name} (${currentFood.brand})</li>
+                <li>${currentFood.name} (${currentFood.brand}) 
+                    <a href='add/${meal}/${selectedDate}/${currentFood.id}'>ADD ME</a></li>
             </ul></div>`
         );
     }
@@ -48,7 +49,6 @@ $('#search-food').on('submit', (evt) => {
                 </div>`
             );
         };
-
     });
   });
 

@@ -181,7 +181,10 @@ def search_user_foods():
 
     foods = []
     for food in user_foods:
-        foods.append({'name': food.food.name, 'brand': food.food.brand_name})
+        foods.append({'name': food.food.name, 
+                      'brand': food.food.brand_name, 
+                      'id': food.food.id,
+                      })
 
     return jsonify({"foods": foods})
 
