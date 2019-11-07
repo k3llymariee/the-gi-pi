@@ -14,27 +14,56 @@
             <li>{{ message }}</li>
         {% endfor %}
         </ul>
-
+        <link rel="stylesheet"
+          href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.css"/>
         <link rel="stylesheet" type="text/css" href="/static/css/style.css">
 
     </head>
 <body>
-    <!-- Include the page's content with this block. -->
-    {% block content %} 
-    CONTENT GOES HERE 
-    {% endblock %}
+    <div class="navbar navbar-inverse navbar-static-top">
+        <div class="container">
+
+            <div class="navbar-header">
+                <!-- <img src="would go here"> -->
+                <a class="navbar-brand" href="/">Home</a>
+            </div>
+
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    {% if session.get('user_id') %}
+                        <li><a href="/add_food">🍔 Add a Food</a></li>
+                        <li><a href="/add_symptom">📍 Add a Symptom</a></li>
+                        <li><a href="/logout">🔓 Log out</a></li>
+                    {% else %}
+                        <li><a href="/register">📝 Register</a></li>
+                        <li><a href="/login">🔒 Log In</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    <div class="container">
+
+      <!-- Show flashed messages -->
+      {% with messages = get_flashed_messages() %}
+          {% for message in messages %}
+              <div class="alert alert-warning">{{ message }}</div>
+          {% endfor %}
+      {% endwith %}
+
+      <!-- This is where the main content goes. -->
+      {% block content %}
+          CONTENT GOES HERE
+      {% endblock %}
+
+    </div>
 
     <!-- Include any page-specific Javascript using this block. -->
     {% block js %}
     {% endblock %}
 </body>
 <footer>
-    <br><br><br>
-    Go <a href="/">home</a><br>
-    {% if session.get('user_id') %}
-        <a href="/logout">Logout</a><br>
-    {% else %}
-        <a href="/login">Log In</a><br>
-    {% endif %}
+
 </footer>
 </html>

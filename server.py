@@ -146,6 +146,7 @@ def process_logout():
 
 @app.route("/add_food", methods=['GET'])
 def add_food_form():
+    """Displays the general add food template"""
 
     return render_template('add_food.html')
 
@@ -206,7 +207,7 @@ def search_user_foods():
     # ORDER BY fl.ts desc
     # limit 10
 
-    user_foods = FoodLog.query.filter(FoodLog.user_id == user.id).order_by(FoodLog.ts.desc()).all()
+    user_foods = FoodLog.query.filter(FoodLog.user_id == user.id).order_by(FoodLog.ts.desc()).limit(10)
     # i know this will return dupes of foods if 
     # a user has eaten the same thing more than once
 
@@ -237,6 +238,14 @@ def database_search(search_term):
     return jsonify({"foods": foods})
 
 
+@app.route("/manual_add")
+def manually_add_food():
+
+    meals = Meal.query.all()
+
+    return render_template('manual_add.html', meals=meals)
+
+
 @app.route("/add_symptom", methods=['GET'])
 def symptom_form():
     """Display form for users to add their symptoms"""
@@ -244,7 +253,8 @@ def symptom_form():
     symptoms = Symptom.query.all()
     return render_template('add_symptom.html', 
                             symptoms=symptoms, 
-                            current_time=datetime.today())
+                            # current_time=datetime.today(),
+                            )
 
 
 @app.route("/add_symptom", methods=['POST'])

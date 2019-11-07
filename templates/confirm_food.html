@@ -3,7 +3,7 @@
 {% block title %} Confirm & Add Food {% endblock %}
 
 {% block content %}
-
+<div class="container">
 <h1>{{food.name}}</h1>
 <h3>Ingredients:</h3>
 
@@ -24,5 +24,5 @@
     <input type="hidden" name="food_id" value={{food.id}} /><br>
     <input type="submit" />
 </form>
-
+</div>
 {% endblock %}

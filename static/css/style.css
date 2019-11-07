@@ -2,7 +2,7 @@ div.food {
     border-radius: 3px;
     border: 3px solid black;
     width: 20em;
-    height: 20em;
+    height: 21em;
     margin: 2em;
     padding: 1em;
     display: inline-block;
@@ -15,4 +15,13 @@ img {
 .temporary {
     color: red;
     font-style: italic;
+}
+
+textarea {
+    width: 50em;
+}
+
+.boxy {
+    margin-bottom: 10px;
+    margin-top: 5px;
 }

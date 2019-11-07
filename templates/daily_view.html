@@ -3,6 +3,7 @@
 {% block title %}Daily View{% endblock %}
 
 {% block content %}
+<div class="container">
     <h1> {% if selected_date == current_date %}
         Today's Date: {{ selected_date }}</h1>
         {% else %}
@@ -28,8 +29,9 @@
             <div id="symptoms"></div>
         </li>
     </ul>
-
-Add a <a href="/add_food">food</a>!
-Add a <a href="/add_symptom">symptom</a>!
+    <br><br>
+    <button onclick="window.location.href = '/add_food';">Add food!</button>
+    <button onclick="window.location.href = '/add_symptom';">Add symptom!</button>
+</div>
 
 {% endblock %}

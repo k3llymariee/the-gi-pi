@@ -24,8 +24,6 @@ const insertFoodData = (res) => {
                    <a href="/add_food/${currentFood.id}">+</a>
             </li>`
         );
-
-
     }
 
     container.append('</ul>')
@@ -43,7 +41,10 @@ $('#search-food').on('submit', (evt) => {
         const foods = res["foods"]
         const container = $('#display-search');
         container.empty()
-        container.append('<p>Nutritionix food resutls</p>')
+        container.append(`<br><p>
+                            Can't find what you're looking for? 
+                            <a href='/manual_add'>Add it manually</a>
+                        </p>`)
 
         for (const food of foods) {
             container.append(`
@@ -75,7 +76,7 @@ $('#db-search').on('submit', (evt) => {
 
         else {
 
-            container.append('<ul>');
+            container.append("<ul>");
 
             for (const food of foods) {
                 container.append(`<div>

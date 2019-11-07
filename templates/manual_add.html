@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Add a new food{% endblock %}
+
+{% block content %}
+
+<div class="container" id="manual-add">
+    <h1>Add a food by hand</h1>
+
+    <form id="manual-add-form">
+        Brand name: <input type="text" name="brand_name" id="brand_name" size="50" /><br>
+        Food name: <input type="text" name="food_name" id="food_name" size="50" required><br>
+        Ingredients: <br>
+        <textarea name="ingredients" id="ingredients" size="100" required></textarea><br>
+        What time did you eat this? <input type="datetime-local" name="time_eaten" /><br>
+        For which meal? 
+        <select name="meal_to_add">
+            {% for meal in meals %}
+                <option value="{{ meal.name }}">{{ meal.name.capitalize() }}</option>    
+            {% endfor %}
+        </select><br>
+        <input type="submit" />
+    </form>
+</div>
+
+{% endblock %}

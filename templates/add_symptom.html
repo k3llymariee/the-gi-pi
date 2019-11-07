@@ -3,21 +3,20 @@
 {% block title %}Add a symptom{% endblock %}
 
 {%block content %}
+<div class="container">
+    <h2>Add a symptom</h2>
 
-<p>Add a symptom</p>
-
-<form action="/add_symptom" method="POST">
-    Symptom Felt: 
-    <select name="symptom_to_add">
-        {% for symptom in symptoms %}
-        <option value="{{ symptom.name }}">{{ symptom.name.capitalize() }}</option>    
-        {% endfor %}
-    </select>
-    <br>
-    Time felt: <input type="datetime-local" name="symptom_time" value={{current_time}} required/><br>
-    <input type="submit" /><br>
-        
-</form>
-
+    <form action="/add_symptom" method="POST">
+        Symptom Felt: 
+        <select name="symptom_to_add">
+            {% for symptom in symptoms %}
+            <option value="{{ symptom.name }}">{{ symptom.name.capitalize() }}</option>    
+            {% endfor %}
+        </select>
+        <br>
+        Time felt: <input type="datetime-local" name="symptom_time" class="boxy" required/><br>
+        <br><input type="submit" /><br>
+            
+    </form>
+<div>
 {% endblock %}
-

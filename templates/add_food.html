@@ -3,34 +3,36 @@
 {% block title %}Add a food{% endblock %}
 
 {% block content %}
-<section>
-    <h1>Add a food from your own history</h1>
-    <form id="db-search">
-        <input type="text" id="db_search_term" 
-            placeholder="Search your foods" 
-            size="100" required />
-        <input type="submit">
-    </form>
-</section>
+<div class="container"> 
+    <section>
+        <h1>Add a food from your own history</h1>
+        <form id="db-search">
+            <input type="text" id="db_search_term" 
+                placeholder="Search your foods" 
+                size="100" required />
+            <input type="submit">
+        </form>
+    </section>
 
-<section id="display-db-search">
-    <br><span class="temporary">Database search results go here</span>
-</section>
+    <section id="display-db-search">
+        <br><span class="temporary">Database search results go here</span>
+    </section>
 
-<section id="food-search">
-    <h1>Add a food from a database</h1>
+    <section id="food-search">
+        <h1>Add a food from a database</h1>
 
-    <form id="search-food">
-        <input type="text" id="search_term" 
-            placeholder="Search our database" size="100" required />
-        <input type="submit" />
-    </form>
-</section>
+        <form id="search-food">
+            <input type="text" id="search_term" 
+                placeholder="Search our database" size="100" required />
+            <input type="submit" />
+        </form>
+    </section>
 
-<section id="display-search">
-    <br><span class="temporary">Nutritionix search results go here</span>
-</section>
+    <section id="display-search">
+        <br><span class="temporary">Nutritionix search results go here</span>
+    </section>
 
+</div>
 {% endblock %}
 
 {% block js %}
