@@ -12,20 +12,26 @@ const insertFoodData = (res) => {
 
     const listOfFoods = res.foods;
     const container = $('#display-db-search');
-    container.empty()
-    container.append('<p>Recently eaten foods:</p>')
+    container.empty();
+    container.append('<ul>')
 
     for (const currentFood of listOfFoods) {
 
         // consider adding each food as an option and allow them to add with timestamp to food log here
         container.append(`
-            <div><ul>
-                <li>${currentFood.name} (${currentFood.brand}) 
-                    <a href='/add/${meal}/${selectedDate}/${currentFood.id}'>ADD ME</a></li>
-            </ul></div>`
+            <li>
+                   ${currentFood.name} (${currentFood.brand}) 
+                   <a href="/add_food/${currentFood.id}">+</a>
+            </li>`
         );
+
+
     }
+
+    container.append('</ul>')
 }
+
+
 
 $('#search-food').on('submit', (evt) => {
     evt.preventDefault();
@@ -46,7 +52,6 @@ $('#search-food').on('submit', (evt) => {
                     <p>Name: ${food.brand_name_item_name}</p>
                     <img src='${food.photo.thumb}' /><br>
                     <p>NIX ID: ${food.nix_item_id}</p>
-                    <a href='/add_to_db/${food.nix_item_id}'>This one!</a>
                 </div>`
             );
         };
@@ -76,7 +81,7 @@ $('#db-search').on('submit', (evt) => {
                 container.append(`<div>
                     <p>Foods from demo database search:</p>
                     <li>${food.food} (${food.brand})
-                    <a href='/add/${meal}/${selectedDate}/${food.id}'>ADD ME</a></li>
+                    <a href='/add_food/${food.id}'>ADD ME</a></li>
                     </li></div>`
                 );
 

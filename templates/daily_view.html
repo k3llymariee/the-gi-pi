@@ -13,37 +13,23 @@
         <a href="/{{day_forward}}">Forward One Day</a></h2>
     <p>Here would be a daily view of:</p>
     <ul>
-        <li>What you ate for breakfast and a 
-            <a href="/add_food/breakfast/{{ selected_date }}" name="breakfast">
-                link to add
-            </a>
-        </li>
-        <li>What you ate for lunch and a 
-            <a href="/add_food/lunch/{{ selected_date }}" name="lunch">
-                link to add
-            </a>
-        </li>
-        <li>What you ate for dinner and a 
-            <a href="/add_food/dinner/{{ selected_date }}" name="dinner">
-                link to add
-            </a>
-        </li>
-        <li>Any snacks you ate and a 
-            <a href="/add_food/snack/{{ selected_date }}" name="snacks">
-                link to add
-            </a>
-        </li>
+        <li>What you ate for breakfast</li>
+            <div id="breakfast-foods"></div>
+        <li>What you ate for lunch</li>
+            <div id="lunch-foods"></div>
+        <li>What you ate for dinner</li>
+            <div id="dinner-foods"></div>
+        <li>Any snacks you ate</li>
+            <div id="snack-foods"></div>
     </ul>
     As wells as:<br>
     <ul>
-        <li>Any symptoms you might have felt and a 
-            <a href="/add_symptom">
-                link to add
-            </a>
-            <ul> 
-
-            </ul>
+        <li>Any symptoms you might have 
+            <div id="symptoms"></div>
         </li>
     </ul>
+
+Add a <a href="/add_food">food</a>!
+Add a <a href="/add_symptom">symptom</a>!
 
 {% endblock %}

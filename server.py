@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from datetime import datetime, date, timedelta
 import json
 
-from model import db, connect_to_db, User, Food, FoodIngredient, Ingredient, Symptom, SymptomLog, FoodLog, UserSymptomFoodLink
+from model import db, connect_to_db, User, Food, FoodIngredient, Ingredient, Symptom, SymptomLog, FoodLog, UserSymptomFoodLink, Meal
 from nutritionix import search
 
 
@@ -144,12 +144,43 @@ def process_logout():
     del session['user_id']
     return redirect("/login")
 
-@app.route("/add_food/<meal>/<selected_date>")
-def add_food(meal, selected_date):
+@app.route("/add_food", methods=['GET'])
+def add_food_form():
 
-    return render_template('add_food.html', 
-                            meal=meal, 
-                            selected_date=selected_date)
+    return render_template('add_food.html')
+
+@app.route("/add_food", methods=['POST'])
+def add_food_to_log():
+    """Commit food to DB logs"""
+
+    food_id = request.form.get('food_id')
+    food = Food.query.get(food_id)
+    time = request.form.get('time_eaten')
+    user = User.query.get(session['user_id'])
+    meal = request.form.get('meal_to_add')
+    meal = Meal.query.filter(Meal.name == meal).first()
+    time_value = datetime.strptime(time, '%Y-%m-%dT%H:%M')
+
+
+    food_log_entry = FoodLog(meal=meal, 
+                             food_id=food.id, 
+                             user_id=user.id, 
+                             ts=time_value,
+                             )
+
+    db.session.add(food_log_entry)
+    db.session.commit()
+
+    return food_log_entry.id
+
+@app.route("/add_food/<food_id>")
+def confirm_add_food_to_log(food_id):
+    """Confirms which food selected food(s) to users food log"""
+
+    food = Food.query.get(food_id)
+    user = User.query.get(session['user_id'])
+    meals = Meal.query.all()
+    return render_template('confirm_food.html', food=food, meals=meals)
 
 
 @app.route("/food_search/<search_term>")

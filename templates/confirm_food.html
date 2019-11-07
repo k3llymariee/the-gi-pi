@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %} Confirm & Add Food {% endblock %}
+
+{% block content %}
+
+<h1>{{food.name}}</h1>
+<h3>Ingredients:</h3>
+
+<ul>
+    {% for ingredient in food.ingredients %}
+    <li>{{ ingredient.name }}</li>
+    {% endfor %}
+</ul>
+
+<form action="/add_food" method="POST">
+    What time did you eat this? <input type="datetime-local" name="time_eaten" /><br>
+    For which meal? 
+        <select name="meal_to_add">
+            {% for meal in meals %}
+                <option value="{{ meal.name }}">{{ meal.name.capitalize() }}</option>    
+            {% endfor %}
+        </select>
+    <input type="hidden" name="food_id" value={{food.id}} /><br>
+    <input type="submit" />
+</form>
+
+{% endblock %}
