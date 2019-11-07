@@ -28,7 +28,7 @@
 </section>
 
 <section id="display-search">
-    <br><span class="temporary">Nutrionix search results go here</span>
+    <br><span class="temporary">Nutritionix search results go here</span>
 </section>
 
 {% endblock %}
@@ -53,11 +53,13 @@
         const container = $('#display-db-search');
 
         container.empty()
+        container.append('<p>Recently eaten foods:</p>')
 
         for (const currentFood of listOfFoods) {
 
         container.append(`
-            <div><ul>
+            <div>
+            <ul>
                 <li>${currentFood.name} (${currentFood.brand})</li>
             </ul></div>`
         );
@@ -76,6 +78,7 @@
             const foods = res["foods"]
             const container = $('#display-search');
             container.empty()
+            container.append('<p>Nutritionix food resutls</p>')
 
             for (const food of foods) {
                 container.append(`
@@ -115,6 +118,7 @@
 
                 for (const food of foods) {
                     container.append(`<div>
+                        <p>Foods from demo database search:</p>
                         <li>${food.food} (${food.brand})
                         </li></div>`
                     );

@@ -166,7 +166,18 @@ def search_user_foods():
 
     user = User.query.get(session['user_id'])
 
+    # only show foods that the user has eating recently
+
+
+    # SELECT * FROM foods f
+    # LEFT JOIN food_logs fl ON fl.food_id = f.id
+    # WHERE fl.user_id = session['user_id']
+    # ORDER BY fl.ts desc
+    # limit 10
+
     user_foods = FoodLog.query.filter(FoodLog.user_id == user.id).order_by(FoodLog.ts.desc()).all()
+    # i know this will return dupes of foods if 
+    # a user has eaten the same thing more than once
 
     foods = []
     for food in user_foods:
@@ -180,7 +191,8 @@ def database_search(search_term):
 
     user = User.query.get(session['user_id'])
 
-    database_foods = Food.query.filter(Food.name.ilike(f'%{search_term}%'))
+    # search demo database FIRST, from any user
+    database_foods = Food.query.filter(Food.name.ilike(f'%{search_term}%')).all()
 
     foods = []
     for food in database_foods:
