@@ -7,7 +7,7 @@ import json
 
 from model import db, connect_to_db, User, Food, FoodIngredient, Ingredient, Symptom, SymptomLog, FoodLog, UserSymptomFoodLink, Meal
 from nutritionix import search
-
+from sqlalchemy import extract
 
 app = Flask(__name__)
 
@@ -36,26 +36,14 @@ debug = '\n' * 3
 def index():
     """Defaults user view to today's log entries"""
 
-    # current date needed to default homepage to today's date
+    # current date needed to default homepage to today's daily view
     current_date = (date.today()).strftime('%Y-%m-%d')
-
-    next_day = forward_day(current_date)
-    day_before = backward_day(current_date)
-
-    # symptoms = SymptomLog.query.filter(SymptomLog.ts == current_date).all()
 
     if not session.get('user_id'):
         return redirect("/register")
 
     else:
-        return render_template(
-                                'daily_view.html', 
-                                selected_date=current_date,
-                                day_forward=next_day,
-                                day_backward=day_before,
-                                current_date=current_date,
-                                # symptoms=symptoms
-                                )
+        return redirect(f'/{current_date}')
 
 
 @app.route(f"/<selected_date>")
@@ -68,16 +56,18 @@ def daily_view(selected_date):
     day_before = backward_day(selected_date)
     user = User.query.get(session['user_id'])
 
-    day_end = datetime.strptime(selected_date +' 23:59:59', '%Y-%m-%d %H:%M:%S')
-
     meals = Meal.query.all()
 
-    user_foods = FoodLog.query.join(Food).filter(FoodLog.ts.between(day_value, day_end),
-                                                 FoodLog.user_id == user.id ).all()
+    user_foods = FoodLog.query.join(Food).filter(extract('year', FoodLog.ts) == day_value.year,
+                                                 extract('month', FoodLog.ts) == day_value.month,
+                                                 extract('day', FoodLog.ts) == day_value.day,
+                                                 FoodLog.user_id == user.id).all()
 
-    print(debug)
-    print(user_foods)
-    print(debug)
+    
+    day_end = datetime.strptime(selected_date +' 23:59:59', '%Y-%m-%d %H:%M:%S')
+    
+    user_symptoms = SymptomLog.query.join(Symptom).filter(SymptomLog.ts.between(day_value, day_end),
+                                                 SymptomLog.user_id == user.id).all()
 
     return render_template(
                         'daily_view.html', 
@@ -86,6 +76,7 @@ def daily_view(selected_date):
                         day_backward=day_before,
                         current_date=current_date,
                         user_foods=user_foods,
+                        user_symptoms=user_symptoms,
                         meals=meals,
                         )
 

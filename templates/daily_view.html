@@ -29,15 +29,25 @@
     </ul>
     As wells as:<br>
     <ul>
-        <li>Any symptoms you might have 
-            <div id="symptoms"></div>
-        </li>
+        <li>Any symptoms you might have</li>
+            <ul>
+                {% for symptom in user_symptoms %}
+                    <li> {{symptom.symptom.name.capitalize()}} @ {{symptom.ts}}</li>
+                {% endfor %}
+            </ul>
     </ul>
     <br><br>
     <button onclick="window.location.href = '/add_food';">Add food!</button>
     <button onclick="window.location.href = '/add_symptom';">Add symptom!</button>
 
 <br>
+{{ user_foods }}
+
+{% for food in user_foods %}
+    name: {{ food.food.name }}<br>
+    meal: {{ food.meal.name }}<br>
+{% endfor %}
+
 </div>
 
 {% endblock %}

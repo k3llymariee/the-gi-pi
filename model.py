@@ -1,5 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func
 from datetime import datetime
 
 # This is the connection to the PostgreSQL database; we're getting this through
@@ -138,6 +137,15 @@ class Symptom(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
+
+
+    def match_food_to_symptom(self, user_id):
+        """Given a symtpom log event, find foods eaten within a 3 hour window"""
+
+        symptoms = SymptomLog.query.join(Symptom).filter(SymptomLog.user.id == user_id,
+                                                         SymptomLog.symptom.id == self.id).all()
+
+        return symptoms 
 
     def __repr__(self):
         """Human readable representation of a Symptom object"""
