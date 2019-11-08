@@ -50,31 +50,25 @@ def index():
 def daily_view(selected_date):
     """Daily view of foods eaten"""
 
-    current_date = (date.today()).strftime('%Y-%m-%d')
-    day_value = datetime.strptime(selected_date, '%Y-%m-%d')
-    next_day = forward_day(selected_date)
-    day_before = backward_day(selected_date)
     user = User.query.get(session['user_id'])
-
     meals = Meal.query.all()
 
+    day_value = datetime.strptime(selected_date, '%Y-%m-%d')
     user_foods = FoodLog.query.join(Food).filter(extract('year', FoodLog.ts) == day_value.year,
                                                  extract('month', FoodLog.ts) == day_value.month,
                                                  extract('day', FoodLog.ts) == day_value.day,
                                                  FoodLog.user_id == user.id).all()
-
     
     day_end = datetime.strptime(selected_date +' 23:59:59', '%Y-%m-%d %H:%M:%S')
-    
     user_symptoms = SymptomLog.query.join(Symptom).filter(SymptomLog.ts.between(day_value, day_end),
                                                  SymptomLog.user_id == user.id).all()
 
     return render_template(
                         'daily_view.html', 
-                        selected_date=selected_date,
-                        day_forward=next_day,
-                        day_backward=day_before,
-                        current_date=current_date,
+                        selected_date=day_value.strftime("%A, %B %d"),
+                        day_forward=forward_day(selected_date),
+                        day_backward=backward_day(selected_date),
+                        # current_date=date.today().strftime('%Y-%m-%d'),
                         user_foods=user_foods,
                         user_symptoms=user_symptoms,
                         meals=meals,

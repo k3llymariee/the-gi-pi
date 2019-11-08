@@ -4,13 +4,9 @@
 
 {% block content %}
 <div class="container">
-    <div><h1>Your food diary for:
+    <div><h1><i class="far fa-calendar-alt"></i> Your food diary for:<br>
         <a href="/{{ day_backward }}"><i class="fas fa-angle-double-left"></i></a> 
-        {% if selected_date == current_date %}
-            Today
-        {% else %}
             {{ selected_date }}
-        {% endif %}
         <a href="/{{day_forward}}"><i class="fas fa-angle-double-right"></i></a>
         
    </h1></div>
@@ -32,7 +28,8 @@
         <li>Any symptoms you might have</li>
             <ul>
                 {% for symptom in user_symptoms %}
-                    <li> {{symptom.symptom.name.capitalize()}} @ {{symptom.ts}}</li>
+                    <li> {{symptom.symptom.name.capitalize()}} 
+                        @ {{symptom.ts.time().strftime("%I:%M %p")}}</li>
                 {% endfor %}
             </ul>
     </ul>
@@ -41,12 +38,6 @@
     <button onclick="window.location.href = '/add_symptom';">Add symptom!</button>
 
 <br>
-{{ user_foods }}
-
-{% for food in user_foods %}
-    name: {{ food.food.name }}<br>
-    meal: {{ food.meal.name }}<br>
-{% endfor %}
 
 </div>
 
