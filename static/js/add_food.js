@@ -82,7 +82,7 @@ $('#db-search').on('submit', (evt) => {
                 container.append(`<div>
                     <p>Foods from demo database search:</p>
                     <li>${food.food} (${food.brand})
-                    <a href='/add_food/${food.id}'>ADD ME</a></li>
+                    <a href="/add_food/${currentFood.id}">+</a>
                     </li></div>`
                 );
 

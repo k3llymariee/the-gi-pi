@@ -66,12 +66,19 @@ def daily_view(selected_date):
     next_day = forward_day(selected_date)
     day_before = backward_day(selected_date)
 
+    user_foods = FoodLog.query.join(Food).all()
+
+    print(debug)
+    print(user_foods)
+    print(debug)
+
     return render_template(
                         'daily_view.html', 
                         selected_date=selected_date,
                         day_forward=next_day,
                         day_backward=day_before,
                         current_date=current_date,
+                        # user_foods=user_foods,
                         )
 
 
@@ -238,12 +245,38 @@ def database_search(search_term):
     return jsonify({"foods": foods})
 
 
-@app.route("/manual_add")
-def manually_add_food():
+@app.route("/manual_add", methods=['GET'])
+def manually_add_form():
 
     meals = Meal.query.all()
 
     return render_template('manual_add.html', meals=meals)
+
+@app.route("/manual_add", methods=['POST'])
+def manually_add_food():
+    """Add food to foods, ingredient to ingredients, and food log event to DB"""
+
+    # add food to foods table
+    new_food = Food(name=request.form.get('food_name'), 
+                    brand_name=request.form.get('brand_name'))
+    # TODO: need to add error handling for existing foods, probably as a class method
+    db.session.add(new_food)
+
+    # add ingredients and link them to the food
+    ingredient_str = request.form.get('ingredients')
+    ingredient_list = ingredient_str.split(',')
+    new_food.add_ingredients_and_links(ingredient_list)
+
+    # add meal to food log
+    new_food_log = FoodLog(meal_id=request.form.get('meal_to_add'), 
+                           food_id=new_food.id, 
+                           user_id=session['user_id'],
+                           ts=request.form.get('time_eaten'))
+    db.session.add(new_food_log)
+
+    db.session.commit()
+
+    return redirect("/")
 
 
 @app.route("/add_symptom", methods=['GET'])

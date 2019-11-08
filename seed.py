@@ -112,7 +112,7 @@ def load_meals():
     meal_1 = Meal(name='breakfast')
     meal_2 = Meal(name='lunch')
     meal_3 = Meal(name='dinner')
-    meal_4 = Meal(name='lunch')
+    meal_4 = Meal(name='snacks')
 
     db.session.add_all([meal_1, meal_2, meal_3, meal_4])
     db.session.commit()
