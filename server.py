@@ -161,12 +161,10 @@ def add_food_form():
 def add_food_to_log():
     """Commit food to DB logs"""
 
-    food_id = request.form.get('food_id')
-    food = Food.query.get(food_id)
+    food = Food.query.get(request.form.get('food_id'))
     time = request.form.get('time_eaten')
     user = User.query.get(session['user_id'])
-    meal = request.form.get('meal_to_add')
-    meal = Meal.query.filter(Meal.name == meal).first()
+    meal = Meal.query.get(request.form.get('meal_to_add'))
     time_value = datetime.strptime(time, '%Y-%m-%dT%H:%M')
 
 
@@ -179,7 +177,7 @@ def add_food_to_log():
     db.session.add(food_log_entry)
     db.session.commit()
 
-    return food_log_entry.id
+    return redirect("/")
 
 @app.route("/add_food/<food_id>")
 def confirm_add_food_to_log(food_id):
@@ -257,10 +255,12 @@ def manually_add_food():
     """Add food to foods, ingredient to ingredients, and food log event to DB"""
 
     # add food to foods table
-    new_food = Food(name=request.form.get('food_name'), 
-                    brand_name=request.form.get('brand_name'))
-    # TODO: need to add error handling for existing foods, probably as a class method
-    db.session.add(new_food)
+    new_food = Food.add_or_return_food(food_name=request.form.get('food_name'), 
+                                       brand_name=request.form.get('brand_name'))
+
+    if not new_food:  # add_or_return returns false if food exists
+        flash("Food already exists within DB")
+        return redirect('/manual_add')
 
     # add ingredients and link them to the food
     new_food.add_ingredients_and_links(request.form.get('ingredients'))

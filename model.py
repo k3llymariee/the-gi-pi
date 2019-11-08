@@ -51,22 +51,47 @@ class Food(db.Model):
                                    secondary='food_ingredients',
                                    backref='foods')
 
-    # @classmethod
+    @classmethod
+    def add_or_return_food(cls, food_name, brand_name=None):
+        """Check first if a food already exists within the DB to return warning,
+        otherwise create a new food instance"""
+
+        existing_food = Food.query.filter(Food.name == food_name,
+                                          Food.brand_name == brand_name,
+                                          ).first()
+
+        print('\n' * 4)
+        print(existing_food)
+        print('\n' *4)
+        
+        if existing_food:
+            return False
+
+        else:
+            new_food = cls(name=food_name, brand_name=brand_name)
+            db.session.add(new_food)
+            db.session.commit()
+            return new_food
+    
+
     def add_ingredients_and_links(self, ingredient_str):
-        """Given a list of ingredients, create new ingredient objects 
-        and link to food_ingredients table
+        """Given a string 'list' of ingredients (separated by commas), 
+        create new ingredient objects and link to food_ingredients table
 
         Ingredients will always be added at the same time a food is added
         """
         
         for ingredient in ingredient_str.split(','):
 
-            existing_ingredient = Ingredient.query.filter(Ingredient.name == ingredient.lower().split()).first()
+            ingredient = ingredient.lower().strip()
+
+            existing_ingredient = Ingredient.query.filter(Ingredient.name == 
+                                  ingredient).first()
 
             if existing_ingredient:
                 self.ingredients.append(existing_ingredient)
             else: 
-                self.ingredients.append(Ingredient(name=ingredient.lower().strip()))
+                self.ingredients.append(Ingredient(name=ingredient))
 
         db.session.commit()
 

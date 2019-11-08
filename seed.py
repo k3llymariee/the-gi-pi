@@ -1,7 +1,8 @@
 from datetime import datetime
 from sqlalchemy import func
 
-from model import db, connect_to_db, User, Food, FoodIngredient, Ingredient, Symptom, SymptomLog, FoodLog, UserSymptomFoodLink, Meal
+from model import (db, connect_to_db, User, Food, FoodIngredient, Ingredient, 
+    Symptom, SymptomLog, FoodLog, UserSymptomFoodLink, Meal)
 from server import app
 
 def load_users():

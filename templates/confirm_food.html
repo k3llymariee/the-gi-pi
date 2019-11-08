@@ -14,11 +14,11 @@
 </ul>
 
 <form action="/add_food" method="POST">
-    What time did you eat this? <input type="datetime-local" name="time_eaten" /><br>
+    What time did you eat this? <input type="datetime-local" name="time_eaten" required /><br>
     For which meal? 
         <select name="meal_to_add">
             {% for meal in meals %}
-                <option value="{{ meal.name }}">{{ meal.name.capitalize() }}</option>    
+                <option value="{{ meal.id }}">{{ meal.name.capitalize() }}</option>    
             {% endfor %}
         </select>
     <input type="hidden" name="food_id" value={{food.id}} /><br>

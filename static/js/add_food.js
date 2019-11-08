@@ -69,6 +69,7 @@ $('#db-search').on('submit', (evt) => {
         const foods = res["foods"]
         const container = $('#display-db-search');
         container.empty()
+        $('#empty-db').empty()
 
         if (foods.length === 0) {
             container.append('<br><i>No foods found</i>');
@@ -80,9 +81,8 @@ $('#db-search').on('submit', (evt) => {
 
             for (const food of foods) {
                 container.append(`<div>
-                    <p>Foods from demo database search:</p>
                     <li>${food.food} (${food.brand})
-                    <a href="/add_food/${currentFood.id}">+</a>
+                    <a href="/add_food/${food.id}">+</a>
                     </li></div>`
                 );
 
@@ -94,3 +94,14 @@ $('#db-search').on('submit', (evt) => {
 
 // Get intial foods when page initially loads!
 getFoodData();
+
+// show a message if the user doesn't have any foods yet
+if (!getFoodData()) {
+    const container = $('#empty-db');
+    container.append('<br>Whoops, You don\'t have any foods yet!');
+}
+
+if (getFoodData()) {
+    const container = $('#empty-db');
+    container.empty();
+}
