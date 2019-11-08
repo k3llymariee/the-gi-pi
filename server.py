@@ -193,7 +193,7 @@ def confirm_add_food_to_log(food_id):
 def nutrionix_search(search_term):
     """Search nutritionix API for a food given a user's input"""
 
-    results = search(search_term)  # returns a dictionary of results
+    results = search(search_term)  # returns a dictionary of results from API
     branded_foods = results['branded']  # returns a list of branded foods
     return jsonify({"foods": branded_foods})  # jsonify the list to pass thru
 
@@ -204,17 +204,9 @@ def search_user_foods():
     user = User.query.get(session['user_id'])
 
     # only show foods that the user has eating recently
-
-
-    # SELECT * FROM foods f
-    # LEFT JOIN food_logs fl ON fl.food_id = f.id
-    # WHERE fl.user_id = session['user_id']
-    # ORDER BY fl.ts desc
-    # limit 10
-
     user_foods = FoodLog.query.filter(FoodLog.user_id == user.id).order_by(FoodLog.ts.desc()).limit(10)
-    # i know this will return dupes of foods if 
-    # a user has eaten the same thing more than once
+    # TODO: update query to pull only distinct foods for the case when 
+    # a user has eaten the same thing more than once recently 
 
     foods = []
     for food in user_foods:

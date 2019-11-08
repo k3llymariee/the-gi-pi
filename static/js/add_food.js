@@ -20,8 +20,10 @@ const insertFoodData = (res) => {
         // consider adding each food as an option and allow them to add with timestamp to food log here
         container.append(`
             <li>
-                   ${currentFood.name} (${currentFood.brand}) 
-                   <a href="/add_food/${currentFood.id}">+</a>
+                ${currentFood.name} (${currentFood.brand}) 
+                <a href="/add_food/${currentFood.id}">
+                    <i class="fas fa-plus"></i>
+                </a>
             </li>`
         );
     }
@@ -82,7 +84,9 @@ $('#db-search').on('submit', (evt) => {
             for (const food of foods) {
                 container.append(`<div>
                     <li>${food.food} (${food.brand})
-                    <a href="/add_food/${food.id}">+</a>
+                        <a href="/add_food/${food.id}">
+                            <i class="fas fa-plus"></i>
+                        </a>
                     </li></div>`
                 );
 

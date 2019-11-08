@@ -4,14 +4,16 @@
 
 {% block content %}
 <div class="container">
-    <h1> {% if selected_date == current_date %}
-        Today's Date: {{ selected_date }}</h1>
+    <div><h1>Your food diary for:
+        <a href="/{{ day_backward }}"><i class="fas fa-angle-double-left"></i></a> 
+        {% if selected_date == current_date %}
+            Today
         {% else %}
-        Selected Date: {{ selected_date }}
-    {% endif %}
-    <h2>
-        <a href="/{{ day_backward }}">Back One Day</a> & 
-        <a href="/{{day_forward}}">Forward One Day</a></h2>
+            {{ selected_date }}
+        {% endif %}
+        <a href="/{{day_forward}}"><i class="fas fa-angle-double-right"></i></a>
+        
+   </h1></div>
     <p>Here would be a daily view of:</p>
     <ul>
         <li>What you ate for breakfast</li>
