@@ -94,14 +94,3 @@ $('#db-search').on('submit', (evt) => {
 
 // Get intial foods when page initially loads!
 getFoodData();
-
-// show a message if the user doesn't have any foods yet
-if (!getFoodData()) {
-    const container = $('#empty-db');
-    container.append('<br>Whoops, You don\'t have any foods yet!');
-}
-
-if (getFoodData()) {
-    const container = $('#empty-db');
-    container.empty();
-}
