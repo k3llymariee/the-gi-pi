@@ -4,19 +4,15 @@
 
 {% block content %}
 <div class="container"> 
-    <section>
-        <h1>Add a food from your own history</h1>
-        <form id="db-search">
-            <input type="text" id="db_search_term" 
-                placeholder="...or search our growing database!" 
-                size="100" required />
-            <input type="submit">
-        </form>
-    </section>
-    <div id="empty-db"></div>
-    <section id="display-db-search">
-        <br><span class="temporary">Database search results go here</span>
-    </section>
+    <h1>Add a food from your own history</h1>
+    <form id="db-search">
+        <input type="text" id="db_search_term" 
+            placeholder="...or search our growing database!" 
+            size="100" required />
+        <input type="submit">
+    </form>
+    <div id="display-db-search"></div>
+
 
     <section id="food-search">
         <h3>Add a food from an external database</h3>
@@ -26,11 +22,12 @@
                 placeholder="Search our database" size="100" required />
             <input type="submit" />
         </form>
-    </section>
 
-    <section id="display-search">
+
+    <div id="display-search">
         <br><span class="temporary">Nutritionix search results go here</span>
-    </section>
+    </div>
+</section>
 
 </div>
 {% endblock %}

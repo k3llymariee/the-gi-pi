@@ -16,14 +16,16 @@
    </h1></div>
     <p>Here would be a daily view of:</p>
     <ul>
-        <li>What you ate for breakfast</li>
-            <div id="breakfast-foods"></div>
-        <li>What you ate for lunch</li>
-            <div id="lunch-foods"></div>
-        <li>What you ate for dinner</li>
-            <div id="dinner-foods"></div>
-        <li>Any snacks you ate</li>
-            <div id="snack-foods"></div>
+        {% for meal in meals %}
+        <li>What you ate for {{meal.name}}</li>
+        <ul>
+            {% for food in user_foods %}
+                {% if food.meal.name == meal.name %}
+                    <li>{{ food.food.name}}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        {% endfor %}
     </ul>
     As wells as:<br>
     <ul>
@@ -35,6 +37,7 @@
     <button onclick="window.location.href = '/add_food';">Add food!</button>
     <button onclick="window.location.href = '/add_symptom';">Add symptom!</button>
 
+<br>
 </div>
 
 {% endblock %}

@@ -63,10 +63,17 @@ def daily_view(selected_date):
     """Daily view of foods eaten"""
 
     current_date = (date.today()).strftime('%Y-%m-%d')
+    day_value = datetime.strptime(selected_date, '%Y-%m-%d')
     next_day = forward_day(selected_date)
     day_before = backward_day(selected_date)
+    user = User.query.get(session['user_id'])
 
-    user_foods = FoodLog.query.join(Food).all()
+    day_end = datetime.strptime(selected_date +' 23:59:59', '%Y-%m-%d %H:%M:%S')
+
+    meals = Meal.query.all()
+
+    user_foods = FoodLog.query.join(Food).filter(FoodLog.ts.between(day_value, day_end),
+                                                 FoodLog.user_id == user.id ).all()
 
     print(debug)
     print(user_foods)
@@ -78,7 +85,8 @@ def daily_view(selected_date):
                         day_forward=next_day,
                         day_backward=day_before,
                         current_date=current_date,
-                        # user_foods=user_foods,
+                        user_foods=user_foods,
+                        meals=meals,
                         )
 
 
