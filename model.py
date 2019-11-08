@@ -66,7 +66,7 @@ class Food(db.Model):
             if existing_ingredient:
                 self.ingredients.append(existing_ingredient)
             else: 
-                self.ingredients.append(Ingredient(name=ingredient.lower().split()))
+                self.ingredients.append(Ingredient(name=ingredient.lower().strip()))
 
         db.session.commit()
 
