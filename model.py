@@ -1,4 +1,3 @@
-# Models and database functions 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from datetime import datetime
@@ -53,22 +52,21 @@ class Food(db.Model):
                                    backref='foods')
 
     # @classmethod
-    def add_ingredients_and_links(self, ingredient_list):
+    def add_ingredients_and_links(self, ingredient_str):
         """Given a list of ingredients, create new ingredient objects 
         and link to food_ingredients table
 
         Ingredients will always be added at the same time a food is added
         """
-        print('running add ingredient')
-        for ingredient in ingredient_list:
+        
+        for ingredient in ingredient_str.split(','):
 
-            existing_ingredient = Ingredient.query.filter(Ingredient.name == ingredient).first()
+            existing_ingredient = Ingredient.query.filter(Ingredient.name == ingredient.lower().split()).first()
+
             if existing_ingredient:
-                self.food_ingredients.append(existing_ingredient)
+                self.ingredients.append(existing_ingredient)
             else: 
-                new_ingredient = Ingredient(name=ingredient)
-                db.session.add(new_ingredient)
-                self.ingredients.append(new_ingredient)
+                self.ingredients.append(Ingredient(name=ingredient.lower().split()))
 
         db.session.commit()
 
@@ -101,9 +99,6 @@ class FoodIngredient(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     food_id = db.Column(db.Integer, db.ForeignKey('foods.id'), nullable=False)
     ingredient_id = db.Column(db.Integer, db.ForeignKey('ingredients.id'), nullable=False)
-
-    ingredient = db.relationship('Ingredient', backref='food_ingredients')
-    # food = db.relationship('Food', backref='food_ingredients')
 
 
     def __repr__(self):

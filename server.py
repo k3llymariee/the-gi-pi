@@ -1,7 +1,7 @@
 from jinja2 import StrictUndefined
 
 from flask import Flask, render_template, request, flash, redirect, session, jsonify
-from flask_debugtoolbar import DebugToolbarExtension
+# from flask_debugtoolbar import DebugToolbarExtension
 from datetime import datetime, date, timedelta
 import json
 
@@ -263,9 +263,7 @@ def manually_add_food():
     db.session.add(new_food)
 
     # add ingredients and link them to the food
-    ingredient_str = request.form.get('ingredients')
-    ingredient_list = ingredient_str.split(',')
-    new_food.add_ingredients_and_links(ingredient_list)
+    new_food.add_ingredients_and_links(request.form.get('ingredients'))
 
     # add meal to food log
     new_food_log = FoodLog(meal_id=request.form.get('meal_to_add'), 
@@ -314,6 +312,6 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     app.run(host="0.0.0.0")
