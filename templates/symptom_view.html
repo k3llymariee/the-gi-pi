@@ -12,6 +12,13 @@
     {% endfor %}
     </ul>
 
+<h2>Foods that might be related to this symptom:</h2>
+    <ul>
+        {% for food in matched_foods %}
+            <li> {{food}} </li>
+        {% endfor %}
+    </ul>
+
 </div>
 
 {% endblock %}
