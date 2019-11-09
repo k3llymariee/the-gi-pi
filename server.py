@@ -278,14 +278,15 @@ def add_symptom():
 
     user = User.query.filter(User.id == session['user_id']).first()
 
-    symptom = request.form.get('symptom_to_add')
-    time = request.form.get('symptom_time')
-    new_symptom = Symptom.query.filter(Symptom.name == symptom).first()
+    symptom_log = SymptomLog(ts=request.form.get('symptom_time'), 
+                             symptom_id=request.form.get('symptom_to_add'), 
+                             user_id=user.id)
 
-    symptom_log = SymptomLog(ts=time, symptom_id=new_symptom.id, user_id=user.id)
     db.session.add(symptom_log)
     db.session.commit()
 
+    symptom_log.match_foods()
+    
     return redirect("/")
 
 

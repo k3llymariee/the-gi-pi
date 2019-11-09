@@ -10,7 +10,7 @@
         Symptom Felt: 
         <select name="symptom_to_add">
             {% for symptom in symptoms %}
-            <option value="{{ symptom.name }}">{{ symptom.name.capitalize() }}</option>    
+            <option value="{{ symptom.id }}">{{ symptom.name.capitalize() }}</option>    
             {% endfor %}
         </select>
         <br>
