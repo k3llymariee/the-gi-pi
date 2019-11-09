@@ -44,7 +44,7 @@ $('#search-food').on('submit', (evt) => {
         const container = $('#display-search');
         container.empty()
         container.append(`<br><p>
-                            Can't find what you're looking for? 
+                            Still can't find what you're looking for? 
                             <a href='/manual_add'>Add it manually</a>
                         </p>`)
 

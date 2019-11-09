@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # This is the connection to the PostgreSQL database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
@@ -32,6 +32,10 @@ class User(db.Model):
                              secondary='food_logs',
                              backref='users')
 
+    symptoms = db.relationship('Symptom', 
+                             secondary='symptom_logs',
+                             backref='users')
+
     def __repr__(self):
 
         return f"<User id={self.id} email={self.email}>"
@@ -58,10 +62,6 @@ class Food(db.Model):
         existing_food = Food.query.filter(Food.name == food_name,
                                           Food.brand_name == brand_name,
                                           ).first()
-
-        print('\n' * 4)
-        print(existing_food)
-        print('\n' *4)
         
         if existing_food:
             return False
@@ -139,14 +139,6 @@ class Symptom(db.Model):
     name = db.Column(db.String(100), unique=True, nullable=False)
 
 
-    def match_food_to_symptom(self, user_id):
-        """Given a symtpom log event, find foods eaten within a 3 hour window"""
-
-        symptoms = SymptomLog.query.join(Symptom).filter(SymptomLog.user.id == user_id,
-                                                         SymptomLog.symptom.id == self.id).all()
-
-        return symptoms 
-
     def __repr__(self):
         """Human readable representation of a Symptom object"""
 
@@ -193,6 +185,25 @@ class SymptomLog(db.Model):
 
     symptom = db.relationship('Symptom', backref='symptom_logs')
     user = db.relationship('User', backref='symptom_logs')
+
+    def match_foods(self):
+        """Given a symtpom log event, find foods eaten within a 3 hour window"""
+
+        window_begin = self.ts + timedelta(hours=-3)
+
+        matched_foods = FoodLog.query.filter(FoodLog.user == self.user,
+                                          FoodLog.ts.between(window_begin, self.ts)).all()
+
+        for food in matched_foods:
+            new_link = UserSymptomFoodLink(ts=self.ts, 
+                                           symptom_id=self.id,
+                                           user_id=self.user_id, 
+                                           food_id = food.id)
+            db.session.add(new_link)
+
+        db.session.commit()
+        
+        return matched_foods
 
 
     def __repr(self):

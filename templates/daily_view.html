@@ -17,7 +17,7 @@
         <ul>
             {% for food in user_foods %}
                 {% if food.meal.name == meal.name %}
-                    <li>{{ food.food.name}}</li>
+                    <li>{{ food.food.name}} @ {{food.ts.time().strftime("%I:%M %p")}}</li>
                 {% endif %}
             {% endfor %}
         </ul>
