@@ -289,6 +289,18 @@ def add_symptom():
     
     return redirect("/")
 
+@app.route("/symptom_view/<symptom_id>")
+def symptom_detail(symptom_id):
+
+    user = User.query.get(session['user_id'])
+
+    symptom_experiences = SymptomLog.query.filter(SymptomLog.user_id == user.id, 
+                                                  SymptomLog.symptom_id == symptom_id).all()
+
+    return render_template('symptom_view.html', symptom=Symptom.query.get(symptom_id),
+                                                symptoms=symptom_experiences,
+                                                )
+
 
 if __name__ == "__main__":
 

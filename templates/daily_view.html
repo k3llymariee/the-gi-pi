@@ -29,7 +29,9 @@
             <ul>
                 {% for symptom in user_symptoms %}
                     <li> {{symptom.symptom.name.capitalize()}} 
-                        @ {{symptom.ts.time().strftime("%I:%M %p")}}</li>
+                        @ {{symptom.ts.time().strftime("%I:%M %p")}}
+                        <a href="/symptom_view/{{symptom.symptom.id}}">i</a>
+                    </li>
                 {% endfor %}
             </ul>
     </ul>

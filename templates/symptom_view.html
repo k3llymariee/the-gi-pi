@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Symptom Detail{% endblock %}
+
+{% block content %}
+
+<div class="container">
+<h1>All the times you felt: {{ symptom.name }}</h1>
+    <ul>
+    {% for symptom in symptoms %}
+        <li> {{ symptom.ts.strftime('%A, %B %d @ %I:%M %p') }}</li>
+    {% endfor %}
+    </ul>
+
+</div>
+
+{% endblock %}
