@@ -29,7 +29,7 @@ def load_symptoms():
     print('Adding symptoms...')
 
     symp_1 = Symptom(name='heartburn')
-    symp_2 = Symptom(name='migrain')
+    symp_2 = Symptom(name='migraine')
     symp_3 = Symptom(name='nausea')
     symp_4 = Symptom(name='indigestion')
     symp_5 = Symptom(name='upset stomach')

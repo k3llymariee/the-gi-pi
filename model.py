@@ -155,7 +155,7 @@ class Symptom(db.Model):
 
         food_logs = []
         for log in symptom_logs:
-            foods.extend(log.match_foods())
+            food_logs.extend(log.match_foods())
 
         return food_logs
 

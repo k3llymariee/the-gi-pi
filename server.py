@@ -293,12 +293,12 @@ def add_symptom():
 def symptom_detail(symptom_id):
 
     user = User.query.get(session['user_id'])
+    symptom = Symptom.query.get(symptom_id)
 
     symptom_experiences = SymptomLog.query.filter(SymptomLog.user_id == user.id, 
                                                   SymptomLog.symptom_id == symptom_id).all()
 
-    matched_foods = UserSymptomFoodLink.query.filter(UserSymptomFoodLink.symptom_id == symptom_id,
-                                                     UserSymptomFoodLink.user_id == user.id).all()
+    matched_foods = symptom.find_matched_foods(user.id)
 
     return render_template('symptom_view.html', symptom=Symptom.query.get(symptom_id),
                                                 symptoms=symptom_experiences,
