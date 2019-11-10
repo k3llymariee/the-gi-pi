@@ -153,11 +153,19 @@ class Symptom(db.Model):
         symptom_logs = SymptomLog.query.filter(SymptomLog.symptom_id == self.id,
                                                SymptomLog.user_id == user_id).all()
 
-        food_logs = []
-        for log in symptom_logs:
-            food_logs.extend(log.match_foods())
+        print('\n' * 4)
+        print('MODEL: symptom_logs:', symptom_logs)
 
-        return food_logs
+        food_logs = []
+
+        # combines all food logs from all symptom log events
+        for log in symptom_logs:
+            food_logs.extend(log.match_foods())  #match foods for symptom LOG
+
+        print('MODEL: food logs', food_logs)
+        print('\n' * 4)
+
+        return food_logs  # match foods for all food logs for one SYMPTOM
 
 
     def __repr__(self):
@@ -208,23 +216,24 @@ class SymptomLog(db.Model):
     user = db.relationship('User', backref='symptom_logs')
 
     def match_foods(self):
-        """Given a symtpom log event, find foods eaten within a 3 hour window"""
+        """Given a symptom log event, find food_logs within a 3 hour window"""
 
-        window_begin = self.ts + timedelta(hours=-3)
+        window_begin = self.ts + timedelta(minutes=-self.symptom.window_minutes)
 
-        matched_foods = FoodLog.query.filter(FoodLog.user == self.user,
-                                          FoodLog.ts.between(window_begin, self.ts)).all()
+        matched_food_logs = FoodLog.query.filter(FoodLog.user == self.user,
+                                             FoodLog.ts.between(window_begin, self.ts),
+                                             ).all()
 
-        for food in matched_foods:
-            new_link = UserSymptomFoodLink(ts=self.ts, 
-                                           symptom_id=self.id,
-                                           user_id=self.user_id, 
-                                           food_id = food.id)
-            db.session.add(new_link)
+        # for food in matched_foods:
+        #     new_link = UserSymptomFoodLink(ts=self.ts, 
+        #                                    symptom_id=self.id,
+        #                                    user_id=self.user_id, 
+        #                                    food_id = food.id)
+        #     db.session.add(new_link)
 
-        db.session.commit()
+        # db.session.commit()
 
-        return matched_foods
+        return matched_food_logs
 
 
     def __repr(self):

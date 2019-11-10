@@ -5,7 +5,8 @@ from flask import Flask, render_template, request, flash, redirect, session, jso
 from datetime import datetime, date, timedelta
 import json
 
-from model import db, connect_to_db, User, Food, FoodIngredient, Ingredient, Symptom, SymptomLog, FoodLog, UserSymptomFoodLink, Meal
+from model import (db, connect_to_db, User, Food, FoodIngredient, Ingredient, 
+    Symptom, SymptomLog, FoodLog, UserSymptomFoodLink, Meal)
 from nutritionix import search
 from sqlalchemy import extract
 
@@ -295,12 +296,20 @@ def symptom_detail(symptom_id):
     user = User.query.get(session['user_id'])
     symptom = Symptom.query.get(symptom_id)
 
-    symptom_experiences = SymptomLog.query.filter(SymptomLog.user_id == user.id, 
+    symptom_experiences = SymptomLog.query.filter(SymptomLog.user_id == session['user_id'], 
                                                   SymptomLog.symptom_id == symptom_id).all()
+
+
 
     matched_foods = symptom.find_matched_foods(user.id)
 
-    return render_template('symptom_view.html', symptom=Symptom.query.get(symptom_id),
+    print(debug)
+    print('symptom:', symptom)
+    print('user:',user)
+    print('matched_foods', matched_foods)
+    print(debug)
+
+    return render_template('symptom_view.html', symptom=symptom,
                                                 symptoms=symptom_experiences,
                                                 matched_foods=matched_foods,
                                                 )
