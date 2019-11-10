@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
+import re
 
 # This is the connection to the PostgreSQL database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
@@ -27,6 +28,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(50), nullable=False)
+    timezone = db.Column(db.String(50), default="America/Los_Angeles")
 
     foods = db.relationship('Food', 
                              secondary='food_logs',
@@ -80,9 +82,16 @@ class Food(db.Model):
         Ingredients will always be added at the same time a food is added
         """
         
-        for ingredient in ingredient_str.split(','):
+        ingredient_list = re.findall(r"[\w?\s\w+]+", ingredient_str)
+
+        for ingredient in ingredient_list:
 
             ingredient = ingredient.lower().strip()
+            if ingredient[-3] == 'oes':  #tomatoes, potatoes >> tomato, potato
+                ingredient = ingredient[-2]
+            if ingredient[-1] == 's':   # seeds, bananas >> seed, banana
+                ingredient = ingredient[:-1]
+            ingredient = ''.join(c for c in ingredient if c not in '*()')
 
             existing_ingredient = Ingredient.query.filter(Ingredient.name == 
                                   ingredient).first()
@@ -137,6 +146,18 @@ class Symptom(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
+    window_minutes = db.Column(db.Integer, default=180)
+
+    def find_matched_foods(self, user_id):
+
+        symptom_logs = SymptomLog.query.filter(SymptomLog.symptom_id == self.id,
+                                               SymptomLog.user_id == user_id).all()
+
+        food_logs = []
+        for log in symptom_logs:
+            foods.extend(log.match_foods())
+
+        return food_logs
 
 
     def __repr__(self):
@@ -202,7 +223,7 @@ class SymptomLog(db.Model):
             db.session.add(new_link)
 
         db.session.commit()
-        
+
         return matched_foods
 
 
@@ -217,6 +238,7 @@ class UserSymptomFoodLink(db.Model):
     __tablename__ = 'user_symptom_food_links'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    created_at = db.Column(db.DateTime, default=datetime.now(), nullable=False)
     ts = db.Column(db.DateTime, nullable=False)
     symptom_id = db.Column(db.Integer, db.ForeignKey('symptom_logs.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
