@@ -18,17 +18,7 @@ app.secret_key = "super-secret"
 # raise an error in Jinja2 when using an undefined variable
 app.jinja_env.undefined = StrictUndefined
 
-def forward_day(date_string):
-    """Returns a string value of one day ahead given a string date input"""
 
-    day_value = datetime.strptime(date_string, '%Y-%m-%d')
-    return (day_value + timedelta(days=1)).strftime('%Y-%m-%d')
-
-def backward_day(date_string):
-    """Returns a string value of one day before given a string date input"""
-    
-    day_value = datetime.strptime(date_string, '%Y-%m-%d')
-    return (day_value + timedelta(days=-1)).strftime('%Y-%m-%d')
 
 debug = '\n' * 3
 
@@ -41,39 +31,11 @@ def index():
     current_date = (date.today()).strftime('%Y-%m-%d')
 
     if not session.get('user_id'):
+        flash('You must be a registered user to access this application')
         return redirect("/register")
 
     else:
         return redirect(f'/{current_date}')
-
-
-@app.route(f"/<selected_date>")
-def daily_view(selected_date):
-    """Daily view of foods eaten"""
-
-    user = User.query.get(session['user_id'])
-    meals = Meal.query.all()
-
-    day_value = datetime.strptime(selected_date, '%Y-%m-%d')
-    user_foods = FoodLog.query.join(Food).filter(extract('year', FoodLog.ts) == day_value.year,
-                                                 extract('month', FoodLog.ts) == day_value.month,
-                                                 extract('day', FoodLog.ts) == day_value.day,
-                                                 FoodLog.user_id == user.id).all()
-    
-    day_end = datetime.strptime(selected_date +' 23:59:59', '%Y-%m-%d %H:%M:%S')
-    user_symptoms = SymptomLog.query.join(Symptom).filter(SymptomLog.ts.between(day_value, day_end),
-                                                 SymptomLog.user_id == user.id).all()
-
-    return render_template(
-                        'daily_view.html', 
-                        selected_date=day_value.strftime("%A, %B %d"),
-                        day_forward=forward_day(selected_date),
-                        day_backward=backward_day(selected_date),
-                        # current_date=date.today().strftime('%Y-%m-%d'),
-                        user_foods=user_foods,
-                        user_symptoms=user_symptoms,
-                        meals=meals,
-                        )
 
 
 @app.route('/register', methods=['GET'])
@@ -82,8 +44,10 @@ def register_form():
 
     return render_template('register_form.html')
 
+
 @app.route('/register', methods=['POST'])
 def register_process():
+    """Create new user in the database"""
 
     register_form = request.form 
 
@@ -96,6 +60,7 @@ def register_process():
         return redirect('/register')
 
     else:
+        # TODO: add user timezone
         new_user = User(email=register_form['email'],
                         password=register_form['password'])
         db.session.add(new_user)
@@ -107,13 +72,14 @@ def register_process():
         return redirect('/')
 
 
-@app.route("/login", methods=['GET'])
+@app.route('/login', methods=['GET'])
 def login_form():
     """Show login form"""
 
     return render_template('login.html')
 
-@app.route("/login", methods=['POST'])
+
+@app.route('/login', methods=['POST'])
 def process_login():
     """Log a user in if the user is in the database and provides correct password"""
 
@@ -123,12 +89,12 @@ def process_login():
 
     # check if a user exists in the database
     if not user:
-        flash('Incorrect email')
+        flash('Incorrect email or password')
         return redirect("/login")
 
     # check if their password matches
     elif user.password != login_attempt['password']:
-        flash('Incorrect password')
+        flash('Incorrect password or email')
         return redirect("/login")
 
     # if yes to both above, add user_id to session data
@@ -138,20 +104,80 @@ def process_login():
         return redirect('/')
 
 
-@app.route("/logout")
+@app.route('/logout')
 def process_logout():
     """Log a user out by deleting their session variable"""
 
     del session['user_id']
     return redirect("/login")
 
-@app.route("/add_food", methods=['GET'])
+
+@app.route(f'/<selected_date>')
+def daily_view(selected_date):
+    """Daily view of foods eaten"""
+
+    def forward_day(date_string):
+        """Returns a string value of one day ahead given a string date input"""
+
+        day_value = datetime.strptime(date_string, '%Y-%m-%d')
+        return (day_value + timedelta(days=1)).strftime('%Y-%m-%d')
+
+    def backward_day(date_string):
+        """Returns a string value of one day before given a string date input"""
+        
+        day_value = datetime.strptime(date_string, '%Y-%m-%d')
+        return (day_value + timedelta(days=-1)).strftime('%Y-%m-%d')
+
+    user = User.query.get(session['user_id'])
+    meals = Meal.query.all()
+
+    day_value = datetime.strptime(selected_date, '%Y-%m-%d')
+    
+    # the following queries find log events for a specific day in slightly
+    # different manners.
+
+    # the first is perhaps more expressive but in a larger data set would
+    # take longer to run as it checks the ts column three times
+    user_foods = FoodLog.query.join(Food).filter(extract('year', FoodLog.ts) == day_value.year,
+                                                 extract('month', FoodLog.ts) == day_value.month,
+                                                 extract('day', FoodLog.ts) == day_value.day,
+                                                 FoodLog.user_id == user.id).all()
+    
+    # the second requires an extra variable but only requires the ts field
+    # to be checked once. Since the data set is small the difference is small.
+    day_end = datetime.strptime(selected_date +' 23:59:59', '%Y-%m-%d %H:%M:%S')
+    user_symptoms = SymptomLog.query.join(Symptom).filter(SymptomLog.ts.between(day_value, day_end),
+                                                 SymptomLog.user_id == user.id).all()
+
+    return render_template(
+                        'daily_view.html', 
+                        selected_date=day_value.strftime('%A, %B %d'),
+                        day_forward=forward_day(selected_date),
+                        day_backward=backward_day(selected_date),
+                        user_foods=user_foods,
+                        user_symptoms=user_symptoms,
+                        meals=meals,
+                        )
+
+
+@app.route('/add_food', methods=['GET'])
 def add_food_form():
     """Displays the general add food template"""
 
     return render_template('add_food.html')
 
-@app.route("/add_food", methods=['POST'])
+
+@app.route('/add_food/<food_id>')
+def confirm_add_food_to_log(food_id):
+    """Confirms which food selected food(s) to users food log"""
+
+    food = Food.query.get(food_id)
+    user = User.query.get(session['user_id'])
+    meals = Meal.query.all()
+    return render_template('confirm_food.html', food=food, meals=meals)
+
+
+@app.route('/add_food', methods=['POST'])
 def add_food_to_log():
     """Commit food to DB logs"""
 
@@ -160,7 +186,6 @@ def add_food_to_log():
     user = User.query.get(session['user_id'])
     meal = Meal.query.get(request.form.get('meal_to_add'))
     time_value = datetime.strptime(time, '%Y-%m-%dT%H:%M')
-
 
     food_log_entry = FoodLog(meal=meal, 
                              food_id=food.id, 
@@ -171,19 +196,16 @@ def add_food_to_log():
     db.session.add(food_log_entry)
     db.session.commit()
 
-    return redirect("/")
+    print(debug)
+    print('timevalue:', time_value)
+    print(type(time_value))
+    print(debug)
 
-@app.route("/add_food/<food_id>")
-def confirm_add_food_to_log(food_id):
-    """Confirms which food selected food(s) to users food log"""
-
-    food = Food.query.get(food_id)
-    user = User.query.get(session['user_id'])
-    meals = Meal.query.all()
-    return render_template('confirm_food.html', food=food, meals=meals)
+    # TODO: redirect to date of time eaten
+    return redirect(f'/')
 
 
-@app.route("/food_search/<search_term>")
+@app.route('/food_search/<search_term>')
 def nutrionix_search(search_term):
     """Search nutritionix API for a food given a user's input"""
 
@@ -192,7 +214,7 @@ def nutrionix_search(search_term):
     return jsonify({"foods": branded_foods})  # jsonify the list to pass thru
 
 
-@app.route("/user_foods.json")
+@app.route('/user_foods.json')
 def search_user_foods():
 
     user = User.query.get(session['user_id'])
@@ -209,15 +231,13 @@ def search_user_foods():
                       'id': food.food.id,
                       })
 
-    return jsonify({"foods": foods})
+    return jsonify({'foods': foods})
 
-@app.route("/db_food_search/<search_term>")
+@app.route('/db_food_search/<search_term>')
 def database_search(search_term):
     """Search existing database for a food given a user's input"""
 
-    user = User.query.get(session['user_id'])
-
-    # search demo database FIRST, from any user
+    # search demo database, from any user
     database_foods = Food.query.filter(Food.name.ilike(f'%{search_term}%')).all()
 
     foods = []
@@ -226,17 +246,19 @@ def database_search(search_term):
                       'brand': food.brand_name,
                       'id': food.id})
 
-    return jsonify({"foods": foods})
+    return jsonify({'foods': foods})
 
 
-@app.route("/manual_add", methods=['GET'])
+@app.route('/manual_add', methods=['GET'])
 def manually_add_form():
+    """Display form for manually adding a food"""
 
     meals = Meal.query.all()
 
     return render_template('manual_add.html', meals=meals)
 
-@app.route("/manual_add", methods=['POST'])
+
+@app.route('/manual_add', methods=['POST'])
 def manually_add_food():
     """Add food to foods, ingredient to ingredients, and food log event to DB"""
 
@@ -245,7 +267,7 @@ def manually_add_food():
                                        brand_name=request.form.get('brand_name'))
 
     if not new_food:  # add_or_return returns false if food exists
-        flash("Food already exists within DB")
+        flash('Food already exists within DB')
         return redirect('/manual_add')
 
     # add ingredients and link them to the food
@@ -260,22 +282,22 @@ def manually_add_food():
 
     db.session.commit()
 
-    return redirect("/")
+    return redirect('/')  # TODO: redirect to date of time eaten
 
 
-@app.route("/add_symptom", methods=['GET'])
+@app.route('/add_symptom', methods=['GET'])
 def symptom_form():
     """Display form for users to add their symptoms"""
 
     symptoms = Symptom.query.all()
     return render_template('add_symptom.html', 
                             symptoms=symptoms, 
-                            # current_time=datetime.today(),
                             )
 
 
-@app.route("/add_symptom", methods=['POST'])
+@app.route('/add_symptom', methods=['POST'])
 def add_symptom():
+    """Add symptom log event to the DB for the signed in user"""
 
     user = User.query.filter(User.id == session['user_id']).first()
 
@@ -285,12 +307,10 @@ def add_symptom():
 
     db.session.add(symptom_log)
     db.session.commit()
-
-    symptom_log.match_foods()
     
-    return redirect("/")
+    return redirect('/')
 
-@app.route("/symptom_view/<symptom_id>")
+@app.route('/symptom_view/<symptom_id>')
 def symptom_detail(symptom_id):
 
     user = User.query.get(session['user_id'])
@@ -298,8 +318,6 @@ def symptom_detail(symptom_id):
 
     symptom_experiences = SymptomLog.query.filter(SymptomLog.user_id == session['user_id'], 
                                                   SymptomLog.symptom_id == symptom_id).all()
-
-
 
     matched_foods = symptom.find_matched_foods(user.id)
 
@@ -315,7 +333,7 @@ def symptom_detail(symptom_id):
                                                 )
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
     # Remove debug for demo
     app.debug = True
@@ -325,4 +343,4 @@ if __name__ == "__main__":
     # Use the DebugToolbar
     # DebugToolbarExtension(app)
 
-    app.run(host="0.0.0.0")
+    app.run(host='0.0.0.0')
