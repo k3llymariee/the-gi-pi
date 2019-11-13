@@ -6,8 +6,9 @@ from datetime import datetime, date, timedelta
 import json
 
 from model import (db, connect_to_db, User, Food, FoodIngredient, Ingredient, 
-    Symptom, SymptomLog, FoodLog, UserSymptomFoodLink, Meal)
+    Symptom, SymptomLog, FoodLog, UserSymptomFoodLink, Meal, find_common_ingredients)
 from nutritionix import search
+from magic import find_common_ingredients
 from sqlalchemy import extract
 
 app = Flask(__name__)
@@ -138,16 +139,18 @@ def daily_view(selected_date):
 
     # the first is perhaps more expressive but in a larger data set would
     # take longer to run as it checks the ts column three times
-    user_foods = FoodLog.query.join(Food).filter(extract('year', FoodLog.ts) == day_value.year,
-                                                 extract('month', FoodLog.ts) == day_value.month,
-                                                 extract('day', FoodLog.ts) == day_value.day,
-                                                 FoodLog.user_id == user.id).all()
+    user_foods = FoodLog.query.join(Food) \
+                 .filter(extract('year', FoodLog.ts) == day_value.year,
+                        extract('month', FoodLog.ts) == day_value.month,
+                        extract('day', FoodLog.ts) == day_value.day,
+                        FoodLog.user_id == user.id).all()
     
     # the second requires an extra variable but only requires the ts field
     # to be checked once. Since the data set is small the difference is small.
     day_end = datetime.strptime(selected_date +' 23:59:59', '%Y-%m-%d %H:%M:%S')
-    user_symptoms = SymptomLog.query.join(Symptom).filter(SymptomLog.ts.between(day_value, day_end),
-                                                 SymptomLog.user_id == user.id).all()
+    user_symptoms = SymptomLog.query.join(Symptom) \
+                    .filter(SymptomLog.ts.between(day_value, day_end),
+                    SymptomLog.user_id == user.id).all()
 
     return render_template(
                         'daily_view.html', 
@@ -220,7 +223,8 @@ def search_user_foods():
     user = User.query.get(session['user_id'])
 
     # only show foods that the user has eating recently
-    user_foods = FoodLog.query.filter(FoodLog.user_id == user.id).order_by(FoodLog.ts.desc()).limit(10)
+    user_foods = FoodLog.query.filter(FoodLog.user_id == user.id) \
+                 .order_by(FoodLog.ts.desc()).limit(10)
     # TODO: update query to pull only distinct foods for the case when 
     # a user has eaten the same thing more than once recently 
 
@@ -279,10 +283,10 @@ def manually_add_food():
                            user_id=session['user_id'],
                            ts=request.form.get('time_eaten'))
     db.session.add(new_food_log)
-
     db.session.commit()
 
-    return redirect('/')  # TODO: redirect to date of time eaten
+    # TODO: redirect to the day for which the food log was added
+    return redirect('/')
 
 
 @app.route('/add_symptom', methods=['GET'])
@@ -301,13 +305,14 @@ def add_symptom():
 
     user = User.query.filter(User.id == session['user_id']).first()
 
+    # create a new SymptomLog record
     symptom_log = SymptomLog(ts=request.form.get('symptom_time'), 
                              symptom_id=request.form.get('symptom_to_add'), 
                              user_id=user.id)
-
     db.session.add(symptom_log)
     db.session.commit()
     
+    # TODO: redirect to the day for which the symptom log was added
     return redirect('/')
 
 @app.route('/symptom_view/<symptom_id>')
@@ -316,16 +321,16 @@ def symptom_detail(symptom_id):
     user = User.query.get(session['user_id'])
     symptom = Symptom.query.get(symptom_id)
 
-    symptom_experiences = SymptomLog.query.filter(SymptomLog.user_id == session['user_id'], 
-                                                  SymptomLog.symptom_id == symptom_id).all()
+    symptom_experiences = SymptomLog.query.filter \
+                         (SymptomLog.user_id == session['user_id'], 
+                          SymptomLog.symptom_id == symptom_id) \
+                         .all()
 
     matched_foods = symptom.find_matched_foods(user.id)
 
-    print(debug)
-    print('symptom:', symptom)
-    print('user:',user)
-    print('matched_foods', matched_foods)
-    print(debug)
+    matched_foods = find_common_ingredients(matched_foods)
+
+
 
     return render_template('symptom_view.html', symptom=symptom,
                                                 symptoms=symptom_experiences,

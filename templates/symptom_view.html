@@ -14,11 +14,9 @@
 
 <h2>Foods that might be related to this symptom:</h2>
     <ul>
-        {% for food in matched_foods %}
-            <li> {{food.food.name}} </li>
-            <ul> {% for ingredient in food.food.ingredients %}
-                <li> {{ ingredient.name }}</li>
-            {% endfor %}</ul>
+        {% for ingredient in matched_foods %}
+            <li> {{ingredient.name}} ({{matched_foods[ingredient]}} times)</li>
+              
         {% endfor %}
     </ul>
 

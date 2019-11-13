@@ -62,8 +62,8 @@ class Food(db.Model):
         otherwise create a new food instance"""
 
         existing_food = Food.query.filter(Food.name == food_name,
-                                          Food.brand_name == brand_name,
-                                          ).first()
+                                          Food.brand_name == brand_name) \
+                                          .first()
         
         if existing_food:
             return False
@@ -86,15 +86,16 @@ class Food(db.Model):
 
         for ingredient in ingredient_list:
 
+            # further sanitization of ingredient name
             ingredient = ingredient.lower().strip()
             if ingredient[-3] == 'oes':  #tomatoes, potatoes >> tomato, potato
                 ingredient = ingredient[-2]
             if ingredient[-1] == 's':   # seeds, bananas >> seed, banana
                 ingredient = ingredient[:-1]
-            ingredient = ''.join(c for c in ingredient if c not in '*()')
 
-            existing_ingredient = Ingredient.query.filter(Ingredient.name == 
-                                  ingredient).first()
+            existing_ingredient = Ingredient.query \
+                                    .filter(Ingredient.name == ingredient) \
+                                    .first()
 
             if existing_ingredient:
                 self.ingredients.append(existing_ingredient)
@@ -123,6 +124,23 @@ class Ingredient(db.Model):
 
         return f"<Ingredient id={self.id} name={self.name}>"
 
+def find_common_ingredients(ingredient_lists_list):
+    """Takes in a list of ingredient lists and returns the ingredients 
+    in common between (2+ occurences) lists within a dictionary"""
+
+    all_ingredients = {}
+    common_ingredients = {}
+
+    for ingredient_list in ingredient_lists_list:
+        for ingredient in ingredient_list:
+            all_ingredients[ingredient] = all_ingredients.get(ingredient, 0) + 1
+
+    for ingredient, count in all_ingredients.items():
+        if count > 1:
+            common_ingredients[ingredient] = count
+
+    return common_ingredients
+
 
 class FoodIngredient(db.Model):
     """Tracks the relationship of food items and ingredients"""
@@ -131,7 +149,9 @@ class FoodIngredient(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     food_id = db.Column(db.Integer, db.ForeignKey('foods.id'), nullable=False)
-    ingredient_id = db.Column(db.Integer, db.ForeignKey('ingredients.id'), nullable=False)
+    ingredient_id = db.Column(db.Integer, 
+                              db.ForeignKey('ingredients.id'), 
+                              nullable=False)
 
 
     def __repr__(self):
@@ -151,21 +171,21 @@ class Symptom(db.Model):
     def find_matched_foods(self, user_id):
 
         symptom_logs = SymptomLog.query.filter(SymptomLog.symptom_id == self.id,
-                                               SymptomLog.user_id == user_id).all()
-
-        print('\n' * 4)
-        print('MODEL: symptom_logs:', symptom_logs)
+                                               SymptomLog.user_id == user_id) \
+                                              .all()
 
         food_logs = []
 
         # combines all food logs from all symptom log events
         for log in symptom_logs:
-            food_logs.extend(log.match_foods())  #match foods for symptom LOG
+            food_logs.extend(log.match_foods(self.window_minutes))  #match foods for symptom LOG
 
-        print('MODEL: food logs', food_logs)
-        print('\n' * 4)
+        # create a list of ingredient lists for comparison 
+        ingredient_lists_list = [] 
+        for food_log in food_logs:
+            ingredient_lists_list.append(food_log.food.ingredients)
 
-        return food_logs  # match foods for all food logs for one SYMPTOM
+        return ingredient_lists_list  # finds foods for all food logs for one SYMPTOM
 
 
     def __repr__(self):
@@ -215,23 +235,15 @@ class SymptomLog(db.Model):
     symptom = db.relationship('Symptom', backref='symptom_logs')
     user = db.relationship('User', backref='symptom_logs')
 
-    def match_foods(self):
+    def match_foods(self, window_minutes):
         """Given a symptom log event, find food_logs within a 3 hour window"""
 
-        window_begin = self.ts + timedelta(minutes=-self.symptom.window_minutes)
+        window_begin = self.ts - timedelta(minutes=window_minutes)
 
-        matched_food_logs = FoodLog.query.filter(FoodLog.user == self.user,
-                                             FoodLog.ts.between(window_begin, self.ts),
-                                             ).all()
-
-        # for food in matched_foods:
-        #     new_link = UserSymptomFoodLink(ts=self.ts, 
-        #                                    symptom_id=self.id,
-        #                                    user_id=self.user_id, 
-        #                                    food_id = food.id)
-        #     db.session.add(new_link)
-
-        # db.session.commit()
+        matched_food_logs = FoodLog.query \
+                            .filter(FoodLog.user == self.user,
+                            FoodLog.ts.between(window_begin, self.ts)) \
+                            .all()
 
         return matched_food_logs
 
