@@ -262,7 +262,10 @@ def database_search(search_term):
     """Search existing database for a food given a user's input"""
 
     # search demo database, from any user
-    database_foods = Food.query.filter(Food.name.ilike(f'%{search_term}%')).all()
+    database_foods = Food.query.filter( \
+                     (Food.name.ilike(f'%{search_term}%')) |
+                     (Food.brand_name.ilike(f'%{search_term}%'))
+                     ).all()
 
     foods = []
     for food in database_foods:
