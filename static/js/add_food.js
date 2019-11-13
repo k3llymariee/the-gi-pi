@@ -26,8 +26,7 @@ const insertFoodData = (res) => {
                 </a>
             </li>`
         );
-    }
-
+    };
     container.append('</ul>')
 }
 
@@ -55,6 +54,7 @@ $('#search-food').on('submit', (evt) => {
                     <p>Name: ${food.brand_name_item_name}</p>
                     <img src='${food.photo.thumb}' /><br>
                     <p>NIX ID: ${food.nix_item_id}</p>
+                    <p><a href="nutrionix/${food.nix_item_id}">Add this food</a></p>
                 </div>`
             );
         };

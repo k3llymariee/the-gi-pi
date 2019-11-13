@@ -25,3 +25,7 @@ textarea {
     margin-bottom: 10px;
     margin-top: 5px;
 }
+
+#daily_date {
+    font-family: Consolas, monaco, monospace;
+}

@@ -6,8 +6,8 @@ from datetime import datetime, date, timedelta
 import json
 
 from model import (db, connect_to_db, User, Food, FoodIngredient, Ingredient, 
-    Symptom, SymptomLog, FoodLog, UserSymptomFoodLink, Meal, find_common_ingredients)
-from nutritionix import search
+    Symptom, SymptomLog, FoodLog, UserSymptomFoodLink, Meal)
+from nutritionix import search, search_branded_item
 from magic import find_common_ingredients
 from sqlalchemy import extract
 
@@ -18,8 +18,6 @@ app.secret_key = "super-secret"
 
 # raise an error in Jinja2 when using an undefined variable
 app.jinja_env.undefined = StrictUndefined
-
-
 
 debug = '\n' * 3
 
@@ -154,7 +152,7 @@ def daily_view(selected_date):
 
     return render_template(
                         'daily_view.html', 
-                        selected_date=day_value.strftime('%A, %B %d'),
+                        selected_date=day_value.strftime('%a, %b %d'),
                         day_forward=forward_day(selected_date),
                         day_backward=backward_day(selected_date),
                         user_foods=user_foods,
@@ -199,11 +197,6 @@ def add_food_to_log():
     db.session.add(food_log_entry)
     db.session.commit()
 
-    print(debug)
-    print('timevalue:', time_value)
-    print(type(time_value))
-    print(debug)
-
     # TODO: redirect to date of time eaten
     return redirect(f'/')
 
@@ -215,6 +208,33 @@ def nutrionix_search(search_term):
     results = search(search_term)  # returns a dictionary of results from API
     branded_foods = results['branded']  # returns a list of branded foods
     return jsonify({"foods": branded_foods})  # jsonify the list to pass thru
+
+
+@app.route('/nutrionix/<nix_id>')
+def nutrionix_confirm(nix_id):
+    """Confirms the addition of a nutrionix food search result to the DB"""
+
+    result = search_branded_item(nix_id)
+
+    # food_name = result['foods']
+
+    new_food = Food.add_or_return_food(food_name=result['food_name'], 
+                                       brand_name=result['brand_name'])
+
+    print(debug)
+    print(new_food)
+    print(debug)
+
+    # if not new_food:  # add_or_return returns false if food exists
+    #     flash('Food already exists within DB')
+    #     return redirect('/manual_add')
+
+    # add ingredients and link them to the food
+    # new_food.add_ingredients_and_links(request.form.get('ingredients'))
+
+
+
+    return result
 
 
 @app.route('/user_foods.json')
@@ -278,15 +298,16 @@ def manually_add_food():
     new_food.add_ingredients_and_links(request.form.get('ingredients'))
 
     # add meal to food log
+    time_eaten = request.form.get('time_eaten')
     new_food_log = FoodLog(meal_id=request.form.get('meal_to_add'), 
                            food_id=new_food.id, 
                            user_id=session['user_id'],
-                           ts=request.form.get('time_eaten'))
+                           ts=time_eaten)
     db.session.add(new_food_log)
     db.session.commit()
 
-    # TODO: redirect to the day for which the food log was added
-    return redirect('/')
+    # redirect to the day for which the food log was added
+    return redirect(f'/{time_eaten[:10]}')
 
 
 @app.route('/add_symptom', methods=['GET'])
@@ -304,16 +325,17 @@ def add_symptom():
     """Add symptom log event to the DB for the signed in user"""
 
     user = User.query.filter(User.id == session['user_id']).first()
+    symptom_time = request.form.get('symptom_time')
 
     # create a new SymptomLog record
-    symptom_log = SymptomLog(ts=request.form.get('symptom_time'), 
+    symptom_log = SymptomLog(ts=symptom_time, 
                              symptom_id=request.form.get('symptom_to_add'), 
                              user_id=user.id)
     db.session.add(symptom_log)
     db.session.commit()
-    
-    # TODO: redirect to the day for which the symptom log was added
-    return redirect('/')
+
+    # redirect to the day for which the symptom log was added
+    return redirect(f'/{symptom_time[:10]}')
 
 @app.route('/symptom_view/<symptom_id>')
 def symptom_detail(symptom_id):
@@ -328,13 +350,18 @@ def symptom_detail(symptom_id):
 
     matched_foods = symptom.find_matched_foods(user.id)
 
-    matched_foods = find_common_ingredients(matched_foods)
+    print(debug)
+    print('matched_foods:', matched_foods)
+
+    common_ingredients = find_common_ingredients(matched_foods)
+
+    print
 
 
 
     return render_template('symptom_view.html', symptom=symptom,
                                                 symptoms=symptom_experiences,
-                                                matched_foods=matched_foods,
+                                                common_ingredients=common_ingredients,
                                                 )
 
 

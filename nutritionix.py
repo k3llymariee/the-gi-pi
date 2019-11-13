@@ -35,4 +35,6 @@ def search_branded_item(item):
 
     resp = r.json()
 
-    return resp
+    food_info = resp['foods'][0]
+
+    return food_info

@@ -7,19 +7,30 @@
 <div class="container">
 <h1>All the times you felt: {{ symptom.name }}</h1>
     <ul>
+    {% if not symptoms %}
+        Oops! Looks like there's nothing to see here 👀
+    {% endif %}
     {% for symptom in symptoms %}
         <li> {{ symptom.ts.strftime('%A, %B %d @ %I:%M %p') }}</li>
     {% endfor %}
     </ul>
 
-<h2>Foods that might be related to this symptom:</h2>
+<h2>Ingredients that might be related to this symptom:</h2>
     <ul>
-        {% for ingredient in matched_foods %}
-            <li> {{ingredient.name}} ({{matched_foods[ingredient]}} times)</li>
-              
+        {% if not common_ingredients %}
+            None yet! We need to collect more data 👩🏽‍🔬
+        {% endif %}
+        {% for ingredient in common_ingredients %}
+            <li> 
+                {{ingredient.name}} ({{common_ingredients[ingredient]}} times)
+                {% if common_ingredients[ingredient] > 2 %}
+                    <a href="/link" class="linked">
+                        <i class="fas fa-link"></i>
+                    </a>
+                {% endif %}
+            </li>
         {% endfor %}
     </ul>
-
 </div>
 
 {% endblock %}
