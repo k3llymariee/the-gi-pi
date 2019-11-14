@@ -13,7 +13,7 @@ HEADER = {
 def search(search_term): 
     """Perfrom a simple instant search on the nutrionix API"""
 
-    params = {'query': search_term}
+    params = {'query': search_term, 'detailed': 'True'}
 
     endpoint = urljoin(BASE_URL, 'search/instant')
 

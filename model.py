@@ -88,10 +88,16 @@ class Food(db.Model):
 
             # further sanitization of ingredient name
             ingredient = ingredient.lower().strip()
-            if ingredient[-3] == 'oes':  #tomatoes, potatoes >> tomato, potato
-                ingredient = ingredient[-2]
+            # if ingredient[-3] == 'oes':  #tomatoes, potatoes >> tomato, potato
+            #     ingredient = ingredient[-2]
             if ingredient[-1] == 's':   # seeds, bananas >> seed, banana
                 ingredient = ingredient[:-1]
+
+            if ingredient == 'and':
+                continue
+
+            ingredient = ingredient.replace('and ', '')
+            ingredient = ingredient.replace('organic ', '')
 
             existing_ingredient = Ingredient.query \
                                     .filter(Ingredient.name == ingredient) \

@@ -136,12 +136,12 @@ if __name__ == "__main__":
     connect_to_db(app)
     db.create_all()
 
-    # load_users()
-    # load_symptoms()
+    load_users()
+    load_symptoms()
     # load_foods()
     # load_ingredients()
     # load_food_ingredients()
-    # load_meals()
+    load_meals()
     # load_food_logs()
 
     print('All done!')

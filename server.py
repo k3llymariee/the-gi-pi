@@ -216,25 +216,26 @@ def nutrionix_confirm(nix_id):
 
     result = search_branded_item(nix_id)
 
+    if not result['nf_ingredient_statement']:  
+        flash('Unfortunately this record has no ingredient info 😢 please try another')
+        return redirect('/add_food')
+
     # food_name = result['foods']
 
     new_food = Food.add_or_return_food(food_name=result['food_name'], 
                                        brand_name=result['brand_name'])
 
-    print(debug)
-    print(new_food)
-    print(debug)
-
-    # if not new_food:  # add_or_return returns false if food exists
-    #     flash('Food already exists within DB')
-    #     return redirect('/manual_add')
+    if not new_food:  # add_or_return returns false if food exists
+        existing_food = Food.query.filter(Food.name == result['food_name'],
+                                          Food.brand_name == result['brand_name']) \
+                                          .first()
+        flash('Food already exists within DB')
+        return redirect(f'/add_food/{existing_food.id}')
 
     # add ingredients and link them to the food
-    # new_food.add_ingredients_and_links(request.form.get('ingredients'))
+    new_food.add_ingredients_and_links(result['nf_ingredient_statement'])
 
-
-
-    return result
+    return redirect(f'/add_food/{new_food.id}')
 
 
 @app.route('/user_foods.json')
@@ -257,6 +258,7 @@ def search_user_foods():
 
     return jsonify({'foods': foods})
 
+
 @app.route('/db_food_search/<search_term>')
 def database_search(search_term):
     """Search existing database for a food given a user's input"""
@@ -278,7 +280,7 @@ def database_search(search_term):
 
 @app.route('/manual_add', methods=['GET'])
 def manually_add_form():
-    """Display form for manually adding a food"""
+    """Display form for manually adding a food with its ingredients"""
 
     meals = Meal.query.all()
 
@@ -311,6 +313,15 @@ def manually_add_food():
 
     # redirect to the day for which the food log was added
     return redirect(f'/{time_eaten[:10]}')
+
+
+@app.route('/food_view/<food_id>')
+def food_detail(food_id):
+    """Show information related to the food selected"""
+
+    food = Food.query.get(food_id)
+
+    return render_template('food_view.html', food=food)
 
 
 @app.route('/add_symptom', methods=['GET'])
