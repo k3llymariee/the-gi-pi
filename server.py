@@ -378,6 +378,14 @@ def symptom_detail(symptom_id):
                                                 common_ingredients=common_ingredients,
                                                 )
 
+@app.route('/new_link', methods=['POST'])
+def link_ingredient_to_symptom():
+
+    ingredient = Ingredient.query.get(request.form.get('ingredient_id'))
+    symptom = Symptom.query.get(request.form.get('symptom_id'))
+
+    return symptom.name 
+
 
 if __name__ == '__main__':
 

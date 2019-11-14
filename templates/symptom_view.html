@@ -24,9 +24,28 @@
             <li> 
                 {{ingredient['ingredient']}} ({{ingredient['count']}} times)
                 {% if ingredient['count'] > 2 %}
-                    <a href="/link" class="linked">
+                    <a href="/new_link" id="{{ingredient['ingredient_id']}}">
                         <i class="fas fa-link"></i>
                     </a>
+                    
+                    <script>
+                    $('#{{ingredient['ingredient_id']}}').on('click', (evt) => {
+                        evt.preventDefault();
+
+                        if (confirm("Confirm {{ingredient['ingredient']}} as a cause of {{symptom.name}}")) {
+
+                            const formInputs = {
+                                'ingredient_id': {{ingredient['ingredient_id']}},
+                                'symptom_id': {{symptom.id}}
+                            };
+
+                            $.post('/new_link', formInputs, (res) => {
+                                alert(res);
+                            });
+                        }
+                    });
+                </script>
+
                 {% endif %}
             </li>
         {% endfor %}

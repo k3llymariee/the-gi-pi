@@ -28,12 +28,22 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
                     {% if session.get('user_id') %}
-                        <li><a href="/add_food">🍔 Add a Food</a></li>
-                        <li><a href="/add_symptom">📍 Add a Symptom</a></li>
-                        <li><a href="/logout">🔓 Log out</a></li>
+                        <li><a href="/add_food">
+                          <i class="fas fa-utensils"></i> Add a Food
+                        </a></li>
+                        <li><a href="/add_symptom">
+                          <i class="far fa-heart"></i> Add a Symptom
+                        </a></li>
+                        <li><a href="/logout">
+                          <i class="fas fa-lock-open"></i> Log out
+                        </a></li>
                     {% else %}
-                        <li><a href="/register">📝 Register</a></li>
-                        <li><a href="/login">🔒 Log In</a></li>
+                        <li><a href="/register">
+                          <i class="far fa-clipboard"></i> Register
+                        </a></li>
+                        <li><a href="/login">
+                          <i class="fas fa-lock"></i> Log In
+                        </a></li>
                     {% endif %}
                 </ul>
             </div>
