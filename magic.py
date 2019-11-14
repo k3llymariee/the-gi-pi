@@ -3,7 +3,7 @@ def find_common_ingredients(ingredient_lists_list):
     in common between (2+ occurences) lists within a dictionary"""
 
     all_ingredients = {}
-    common_ingredients = {}
+    common_ingredients = []
 
     for ingredient_list in ingredient_lists_list:
         for ingredient in ingredient_list:
@@ -11,6 +11,10 @@ def find_common_ingredients(ingredient_lists_list):
 
     for ingredient, count in all_ingredients.items():
         if count > 1:
-            common_ingredients[ingredient] = count
+            common_ingredients.append({'ingredient': ingredient.name, 
+                                        'count': count})
+
+    common_ingredients = sorted(common_ingredients, key = lambda i: i['count'], reverse=True)
 
     return common_ingredients
+    # return a list of dictionaries
