@@ -82,7 +82,7 @@ class Food(db.Model):
         Ingredients will always be added at the same time a food is added
         """
         
-        ingredient_list = re.findall(r"[\w?\s\w+]+", ingredient_str)
+        ingredient_list = re.findall(r"[\w*\.*\-?\s\w]+", ingredient_str)
 
         for ingredient in ingredient_list:
 
