@@ -4,14 +4,19 @@
 
 {% block content %}
 
-<h1>SYMPTOMS:</h1>
-<uL>{% for symptom in user_symptoms %}
-    <li>{{symptom}}</li>
-{% endfor %}</uL>
-
-<h1>INTOLERANCES</h1>
-<uL>{% for intolerance in intolerances %}
-    <li>{{intolerance}}</li>
-{% endfor %}</uL>
+<p>KNOWN ISSUES:</p>
+    <ul>
+        {% for symptom in user_symptoms %}
+            <li>Ingredients that cause {{symptom.name}}</li>
+                <ul>
+                    {% for intolerance in intolerances %}
+                        {% if intolerance.symptom.name == symptom.name %}
+                            <li>{{ intolerance.ingredient.name }}</li>
+                        {% endif %}
+                    {% endfor %}
+                
+                </ul>
+        {% endfor %}
+    </ul>
 
 {% endblock %}

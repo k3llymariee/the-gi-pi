@@ -42,8 +42,8 @@ class User(db.Model):
         """For a given user, return all the symptoms they've experienced"""
 
         distinct_symptoms = db.session.query(Symptom).distinct() \
-                            .join(SymptomLog) \
-                            .filter(SymptomLog.user_id == self.id) \
+                            .join(UserSymptomIngredientLink) \
+                            .filter(UserSymptomIngredientLink.user_id == self.id) \
                             .all()
         
         return distinct_symptoms
