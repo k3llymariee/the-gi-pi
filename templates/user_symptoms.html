@@ -4,8 +4,14 @@
 
 {% block content %}
 
+<h1>SYMPTOMS:</h1>
 <uL>{% for symptom in user_symptoms %}
     <li>{{symptom}}</li>
+{% endfor %}</uL>
+
+<h1>INTOLERANCES</h1>
+<uL>{% for intolerance in intolerances %}
+    <li>{{intolerance}}</li>
 {% endfor %}</uL>
 
 {% endblock %}

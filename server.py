@@ -400,14 +400,10 @@ def show_all_symptoms():
 
     user = User.query.get(session['user_id'])
 
-    # TODO: make sure we don't add duplicate rows to the table (class method)
-    # user_symptoms = UserSymptomIngredientLink.query \
-    #                 .filter(
-    #                     UserSymptomIngredientLink.user_id == user.id).all()
-
-    user_symptoms = user.return_symptoms()
-
-    return render_template('user_symptoms.html', user_symptoms=user_symptoms)
+    return render_template('user_symptoms.html', 
+                            user_symptoms=user.return_symptoms(),
+                            intolerances=user.return_intolerances(),
+                            )
 
 
 

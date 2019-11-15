@@ -41,33 +41,21 @@ class User(db.Model):
     def return_symptoms(self):
         """For a given user, return all the symptoms they've experienced"""
 
-        # distinct_symptoms = db.session.query(SymptomLog.symptom.name.distinct())\
-        #                 .filter(SymptomLog.user_id == self.id) \
-        #                 .all()
-
         distinct_symptoms = db.session.query(Symptom).distinct() \
-                            .join(SymptomLog).filter(SymptomLog.user_id == self.id) \
+                            .join(SymptomLog) \
+                            .filter(SymptomLog.user_id == self.id) \
                             .all()
-
-        # SQL:
-        # SELECT DISTINCT symptom
-        # FROM symptom_logs
-        # LEFT JOIN symptoms on symptoms.id = symptom_logs.symptom_id
-        # WHERE symptom_logs.user_id = user.id
-        
-
-        # print('\n' * 8)
-        # print(distinct_symptoms)
-        # print('\n' * 8) 
-
-        # user_symptoms = []
-
-        # for symptom in distinct_symptoms:
-        #     user_symptoms.append(symptom[0].symptom.name)
-
-        # db.session.query(Employee.employee_id, Employee.name).all()
         
         return distinct_symptoms
+
+    def return_intolerances(self):
+        """For a given user, return all the symptom ingredient links"""
+
+        intolerances = UserSymptomIngredientLink.query \
+                       .filter(UserSymptomIngredientLink.user_id == self.id)
+
+        return intolerances
+
 
     def __repr__(self):
 
