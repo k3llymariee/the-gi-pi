@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}User {{ session['user_id']}}'s intolerances {% endblock %}
+
+{% block content %}
+
+<uL>{% for symptom in user_symptoms %}
+    <li>{{symptom}}</li>
+{% endfor %}</uL>
+
+{% endblock %}

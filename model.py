@@ -38,6 +38,37 @@ class User(db.Model):
                              secondary='symptom_logs',
                              backref='users')
 
+    def return_symptoms(self):
+        """For a given user, return all the symptoms they've experienced"""
+
+        # distinct_symptoms = db.session.query(SymptomLog.symptom.name.distinct())\
+        #                 .filter(SymptomLog.user_id == self.id) \
+        #                 .all()
+
+        distinct_symptoms = db.session.query(Symptom).distinct() \
+                            .join(SymptomLog).filter(SymptomLog.user_id == self.id) \
+                            .all()
+
+        # SQL:
+        # SELECT DISTINCT symptom
+        # FROM symptom_logs
+        # LEFT JOIN symptoms on symptoms.id = symptom_logs.symptom_id
+        # WHERE symptom_logs.user_id = user.id
+        
+
+        # print('\n' * 8)
+        # print(distinct_symptoms)
+        # print('\n' * 8) 
+
+        # user_symptoms = []
+
+        # for symptom in distinct_symptoms:
+        #     user_symptoms.append(symptom[0].symptom.name)
+
+        # db.session.query(Employee.employee_id, Employee.name).all()
+        
+        return distinct_symptoms
+
     def __repr__(self):
 
         return f"<User id={self.id} email={self.email}>"
@@ -242,26 +273,25 @@ class SymptomLog(db.Model):
         return f"<SymptomLog id={self.id} symtpom_id={self.symptom_id}>"
 
 
-class UserSymptomFoodLink(db.Model):
+class UserSymptomIngredientLink(db.Model):
     """Correlates foods with symptoms"""
 
-    __tablename__ = 'user_symptom_food_links'
+    __tablename__ = 'user_symptom_ingredient_links'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     created_at = db.Column(db.DateTime, default=datetime.now(), nullable=False)
-    ts = db.Column(db.DateTime, nullable=False)
-    symptom_id = db.Column(db.Integer, db.ForeignKey('symptom_logs.id'), nullable=False)
+    symptom_id = db.Column(db.Integer, db.ForeignKey('symptoms.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    food_id = db.Column(db.Integer, db.ForeignKey('food_logs.id'), nullable=False)
+    ingredient_id = db.Column(db.Integer, db.ForeignKey('ingredients.id'), nullable=False)
 
-    symptom = db.relationship('SymptomLog', backref='user_symptom_food_links')
+    symptom = db.relationship('Symptom', backref='user_symptom_food_links')
     user = db.relationship('User', backref='user_symptom_food_links')
-    food = db.relationship('FoodLog', backref='user_symptom_food_links')
+    ingredient = db.relationship('Ingredient', backref='user_symptom_food_links')
 
 
     def __repr__(self):
 
-        return f"<SymptomFood id={self.id} date={self.ts}>"
+        return f"<SymptomFood id={self.id}>"
 
 
 

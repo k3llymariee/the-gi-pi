@@ -6,7 +6,7 @@ from datetime import datetime, date, timedelta
 import json
 
 from model import (db, connect_to_db, User, Food, FoodIngredient, Ingredient, 
-    Symptom, SymptomLog, FoodLog, UserSymptomFoodLink, Meal)
+    Symptom, SymptomLog, FoodLog, UserSymptomIngredientLink, Meal)
 from nutritionix import search, search_branded_item
 from magic import find_common_ingredients
 from sqlalchemy import extract
@@ -137,7 +137,7 @@ def daily_view(selected_date):
 
     # the first is perhaps more expressive but in a larger data set would
     # take longer to run as it checks the ts column three times
-    user_foods = FoodLog.query.join(Food) \
+    user_foods = FoodLog.query \
                  .filter(extract('year', FoodLog.ts) == day_value.year,
                         extract('month', FoodLog.ts) == day_value.month,
                         extract('day', FoodLog.ts) == day_value.day,
@@ -146,7 +146,7 @@ def daily_view(selected_date):
     # the second requires an extra variable but only requires the ts field
     # to be checked once. Since the data set is small the difference is small.
     day_end = datetime.strptime(selected_date +' 23:59:59', '%Y-%m-%d %H:%M:%S')
-    user_symptoms = SymptomLog.query.join(Symptom) \
+    user_symptoms = SymptomLog.query \
                     .filter(SymptomLog.ts.between(day_value, day_end),
                     SymptomLog.user_id == user.id).all()
 
@@ -384,7 +384,31 @@ def link_ingredient_to_symptom():
     ingredient = Ingredient.query.get(request.form.get('ingredient_id'))
     symptom = Symptom.query.get(request.form.get('symptom_id'))
 
-    return symptom.name 
+    new_link = UserSymptomIngredientLink(symptom_id=symptom.id,
+                                         user_id=session['user_id'],
+                                         ingredient_id=ingredient.id,
+                                         )
+
+    db.session.add(new_link)
+    db.session.commit()
+
+    return redirect('/user_symptoms')
+
+@app.route('/user_symptoms')
+def show_all_symptoms():
+    """Show all symptoms and known intolerances for a signed in user"""
+
+    user = User.query.get(session['user_id'])
+
+    # TODO: make sure we don't add duplicate rows to the table (class method)
+    # user_symptoms = UserSymptomIngredientLink.query \
+    #                 .filter(
+    #                     UserSymptomIngredientLink.user_id == user.id).all()
+
+    user_symptoms = user.return_symptoms()
+
+    return render_template('user_symptoms.html', user_symptoms=user_symptoms)
+
 
 
 if __name__ == '__main__':
