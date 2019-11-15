@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
+from magic import return_ingredient_list
 import re
 
 # This is the connection to the PostgreSQL database; we're getting this through
@@ -28,7 +29,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(50), nullable=False)
-    timezone = db.Column(db.String(50), default="America/Los_Angeles")
+    timezone = db.Column(db.String(50), default="America/Los_Angeles", nullable=False)
 
     foods = db.relationship('Food', 
                              secondary='food_logs',
@@ -38,13 +39,26 @@ class User(db.Model):
                              secondary='symptom_logs',
                              backref='users')
 
+    # TODO: add ingredients relationship
+    def return_foods(self):
+        """For a given user, return distinct food items they've eaten in order
+        of most recently eaten"""
+
+        user_foods = db.session.query(Food).distinct() \
+                     .join(FoodLog) \
+                     .filter(FoodLog.user_id == self.id) \
+                     .order_by(FoodLog.ts.desc()) \
+                     .limit(10).all()
+
+        return user_foods
+
     def return_symptoms(self):
         """For a given user, return all the symptoms they've experienced"""
 
         distinct_symptoms = db.session.query(Symptom).distinct() \
                             .join(UserSymptomIngredientLink) \
                             .filter(UserSymptomIngredientLink.user_id == self.id) \
-                            .all()
+                            .all() # TODO: consider setting limits on all .all()'s
         
         return distinct_symptoms
 
@@ -80,11 +94,12 @@ class Food(db.Model):
         """Check first if a food already exists within the DB to return warning,
         otherwise create a new food instance"""
 
+        # TODO: it's weird that you're returning two different things :thinking_face:
         existing_food = Food.query.filter(Food.name == food_name,
                                           Food.brand_name == brand_name) \
                                           .first()
         
-        if existing_food:
+        if existing_food:  # TODO: consider breaking this true/false as a separate function
             return False
 
         else:
@@ -92,7 +107,6 @@ class Food(db.Model):
             db.session.add(new_food)
             db.session.commit()
             return new_food
-    
 
     def add_ingredients_and_links(self, ingredient_str):
         """Given a string 'list' of ingredients (separated by commas), 
@@ -101,33 +115,21 @@ class Food(db.Model):
         Ingredients will always be added at the same time a food is added
         """
         
-        ingredient_list = re.findall(r"[\w*\.*\-?\s\w]+", ingredient_str)
+        ingredient_list = return_ingredient_list(ingredient_str)
 
         for ingredient in ingredient_list:
-
-            # further sanitization of ingredient name
-            ingredient = ingredient.lower().strip()
-            # if ingredient[-3] == 'oes':  #tomatoes, potatoes >> tomato, potato
-            #     ingredient = ingredient[-2]
-            if ingredient[-1] == 's':   # seeds, bananas >> seed, banana
-                ingredient = ingredient[:-1]
-
-            if ingredient == 'and':
-                continue
-
-            ingredient = ingredient.replace('and ', '')
-            ingredient = ingredient.replace('organic ', '')
-
             existing_ingredient = Ingredient.query \
                                     .filter(Ingredient.name == ingredient) \
                                     .first()
 
-            if existing_ingredient:
+            if existing_ingredient: 
                 self.ingredients.append(existing_ingredient)
             else: 
                 self.ingredients.append(Ingredient(name=ingredient))
 
         db.session.commit()
+
+        return None
 
     
     def __repr__(self):
@@ -178,6 +180,9 @@ class Symptom(db.Model):
 
     def find_matched_foods(self, user_id):
 
+        # TODO: look at the return type - if you're looking for ingredients, it should
+        # be on the ingredients
+
         symptom_logs = SymptomLog.query.filter(SymptomLog.symptom_id == self.id,
                                                SymptomLog.user_id == user_id) \
                                               .all()
@@ -185,8 +190,8 @@ class Symptom(db.Model):
         food_logs = []
 
         # combines all food logs from all symptom log events
-        for log in symptom_logs:
-            food_logs.extend(log.match_foods(self.window_minutes))  #match foods for symptom LOG
+        for symptom_log in symptom_logs:
+            food_logs.extend(symptom_log.match_foods(self.window_minutes))  #match foods for symptom LOG
 
         # create a list of ingredient lists for comparison 
         ingredient_lists_list = [] 

@@ -168,12 +168,12 @@ def add_food_form():
     return render_template('add_food.html')
 
 
-@app.route('/add_food/<food_id>')
+@app.route('/add_food/<food_id>', methods=['GET'])
 def confirm_add_food_to_log(food_id):
     """Confirms which food selected food(s) to users food log"""
 
     food = Food.query.get(food_id)
-    user = User.query.get(session['user_id'])
+    user = User.query.get(session['user_id']) # TODO: better way to grab this w/Flask
     meals = Meal.query.all()
     return render_template('confirm_food.html', food=food, meals=meals)
 
@@ -202,8 +202,10 @@ def add_food_to_log():
 
 
 @app.route('/food_search/<search_term>')
-def nutrionix_search(search_term):
+def nutritionix_search(search_term):
     """Search nutritionix API for a food given a user's input"""
+
+    # TODO: implement image magick to determine photo quality
 
     results = search(search_term)  # returns a dictionary of results from API
     branded_foods = results['branded']  # returns a list of branded foods
@@ -241,19 +243,15 @@ def nutrionix_confirm(nix_id):
 @app.route('/user_foods.json')
 def search_user_foods():
 
-    user = User.query.get(session['user_id'])
-
     # only show foods that the user has eating recently
-    user_foods = FoodLog.query.filter(FoodLog.user_id == user.id) \
-                 .order_by(FoodLog.ts.desc()).limit(10)
-    # TODO: update query to pull only distinct foods for the case when 
-    # a user has eaten the same thing more than once recently 
+    user = User.query.get(session['user_id'])
+    user_foods = user.return_foods()
 
     foods = []
     for food in user_foods:
-        foods.append({'name': food.food.name, 
-                      'brand': food.food.brand_name, 
-                      'id': food.food.id,
+        foods.append({'name': food.name, 
+                      'brand': food.brand_name, 
+                      'id': food.id,
                       })
 
     return jsonify({'foods': foods})
