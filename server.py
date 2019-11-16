@@ -212,6 +212,25 @@ def nutritionix_search(search_term):
     return jsonify({"foods": branded_foods})  # jsonify the list to pass thru
 
 
+@app.route('/nutrionix_check/<nix_id>')
+def nutrionix_check(nix_id):
+    """Check if the food has ingredients and what they are before the users
+    adds the food to the database"""
+
+    result = search_branded_item(nix_id)
+
+    if not result['nf_ingredient_statement']:  
+        response = {'text': 'Unfortunately this record has no ingredient info 😢 please try another',
+                    'food_name': result['food_name'],
+                    'ingredients': None}
+    else:
+        response = {'text': 'Confirm you want to add the following food',
+                    'food_name': result['food_name'],
+                    'ingredients': result['nf_ingredient_statement']}    
+
+    return response
+
+
 @app.route('/nutrionix/<nix_id>')
 def nutrionix_confirm(nix_id):
     """Confirms the addition of a nutrionix food search result to the DB"""
