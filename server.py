@@ -161,6 +161,32 @@ def daily_view(selected_date):
                         )
 
 
+# TODO: this route isn't actually hooked up to anything
+@app.route('/api/user_daily_foods', methods=['GET'])
+def read_daily_foods():
+
+    user = User.query.get(session['user_id'])
+    selected_date = request.args.get('selected_date')
+    day_value = datetime.strptime(selected_date, '%Y-%m-%d')
+
+    user_food_logs = FoodLog.query \
+                    .filter(extract('year', FoodLog.ts) == day_value.year,
+                            extract('month', FoodLog.ts) == day_value.month,
+                            extract('day', FoodLog.ts) == day_value.day,
+                            FoodLog.user_id == user.id).all()
+
+    food_logs = []
+    for food_log in user_food_logs:
+        food_logs.append({'id': food_log.id, 
+                      'food_name': food_log.food.name, 
+                      'ts': food_log.ts,
+                      'meal': food_log.meal.name
+                      })
+
+    return jsonify({'food_logs': food_logs})
+
+
+
 @app.route('/add_food', methods=['GET'])
 def add_food_form():
     """Displays the general add food template"""
@@ -332,13 +358,37 @@ def manually_add_food():
     return redirect(f'/{time_eaten[:10]}')
 
 
-@app.route('/food_view/<food_id>')
+@app.route('/food_view/<food_id>', methods=['GET'])
 def food_detail(food_id):
     """Show information related to the food selected"""
 
     food = Food.query.get(food_id)
 
     return render_template('food_view.html', food=food)
+
+
+@app.route('/food_log_view/<food_log_id>', methods=['GET'])
+def food_log_detail(food_log_id):
+    """Show information related to the food log selected"""
+
+    food_log = FoodLog.query.get(food_log_id)
+
+    return render_template('food_log_view.html', food_log=food_log)
+
+
+@app.route('/delete_food_log', methods=['POST'])
+def delete_food_log():
+
+    food_log_id = request.form.get('food_log_id')
+    food_log = FoodLog.query.get(food_log_id)
+
+    redirect_date = food_log.ts
+    string_date = redirect_date.strftime('%Y-%m-%d')
+
+    db.session.delete(food_log)
+    db.session.commit()
+
+    return redirect(f'/{string_date}')
 
 
 @app.route('/add_symptom', methods=['GET'])

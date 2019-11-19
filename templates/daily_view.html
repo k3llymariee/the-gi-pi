@@ -18,7 +18,7 @@
             {% for food in user_foods %}
                 {% if food.meal.name == meal.name %}
                     <li>{{ food.food.name}} @ {{food.ts.time().strftime("%I:%M %p")}}
-                        <a href="/food_view/{{food.food.id}}">
+                        <a href="/food_log_view/{{food.id}}">
                             <i class="fas fa-search"></i>
                         </a>
                     </li>

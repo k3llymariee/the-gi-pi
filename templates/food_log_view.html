@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{food_log.food.name}}{% endblock %}
+
+{% block content %}
+<div class="container">
+<h1>{{food_log.food.name}}</h1>
+<h2>Eaten at: {{food_log.ts}}</h2>
+<a href="/food_log_view/{{food_log.id}}" id="delete-link">Delete me</a>
+
+<ul>
+    {% for ingredient in food_log.food.ingredients %}
+        <li>{{ingredient.name}}</li>
+    {% endfor %}
+</ul>
+
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+
+$('#delete-link').on('click', (evt) => {
+  evt.preventDefault();
+
+    if (confirm("Delete {{food_log.food.name}} from {{food_log.ts}}")) {
+
+        const formInputs = {
+            'food_log_id': {{food_log.id}}
+        };
+
+        $.post('/delete_food_log', formInputs, () => {
+            window.location = '/'
+        });
+    }
+})
+
+
+</script>
+{% endblock %}
