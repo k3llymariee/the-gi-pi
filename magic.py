@@ -27,6 +27,9 @@ def return_ingredient_list(ingredient_str):
 
     # replace all delimiters with commas
     pre_split = ingredient_str.replace('(', ',')
+    pre_split = pre_split.replace('and/or', ',')
+    pre_split = pre_split.replace(', and', ',')
+    pre_split = pre_split.replace(' or ', ',')
     pre_split = pre_split.replace('[', ',')
     pre_split = pre_split.replace('.', ',')
     pre_split = pre_split.replace(':', ',')
@@ -36,7 +39,7 @@ def return_ingredient_list(ingredient_str):
     pre_split = pre_split.replace(']', '')
     pre_split = pre_split.replace('*', '')
 
-    # replace all adjectives with blanks
+    # replace adjectives with blanks
     pre_split = pre_split.replace('Organic', '')
     pre_split = pre_split.replace('Natural', '')
 

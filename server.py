@@ -8,7 +8,7 @@ import json
 from model import (db, connect_to_db, User, Food, FoodIngredient, Ingredient, 
     Symptom, SymptomLog, FoodLog, UserSymptomIngredientLink, Meal)
 from nutritionix import search, search_branded_item
-from magic import find_common_ingredients
+from magic import find_common_ingredients, return_ingredient_list
 from sqlalchemy import extract
 
 app = Flask(__name__)
@@ -223,8 +223,10 @@ def add_food_to_log():
     db.session.add(food_log_entry)
     db.session.commit()
 
+    string_date = time_value.strftime('%Y-%m-%d')
+
     # TODO: redirect to date of time eaten
-    return redirect(f'/')
+    return redirect(f'/{string_date}')
 
 
 @app.route('/food_search/<search_term>')
@@ -244,15 +246,18 @@ def nutrionix_check(nix_id):
     adds the food to the database"""
 
     result = search_branded_item(nix_id)
+    ingredient_str = result['nf_ingredient_statement']
+    ingredient_list = return_ingredient_list(ingredient_str)
+
 
     if not result['nf_ingredient_statement']:  
         response = {'text': 'Unfortunately this record has no ingredient info 😢 please try another',
                     'food_name': result['food_name'],
                     'ingredients': None}
     else:
-        response = {'text': 'Confirm you want to add the following food',
+        response = {'text': 'Confirm you want to add the following food: ',
                     'food_name': result['food_name'],
-                    'ingredients': result['nf_ingredient_statement']}    
+                    'ingredients': ingredient_list}    
 
     return response
 
@@ -261,6 +266,10 @@ def nutrionix_check(nix_id):
 def nutrionix_confirm(nix_id):
     """Confirms the addition of a nutrionix food search result to the DB"""
 
+    print(debug)
+    print('NIX_ID:', nix_id)
+    print(debug)
+    
     result = search_branded_item(nix_id)
 
     if not result['nf_ingredient_statement']:  
@@ -382,8 +391,7 @@ def delete_food_log():
     food_log_id = request.form.get('food_log_id')
     food_log = FoodLog.query.get(food_log_id)
 
-    redirect_date = food_log.ts
-    string_date = redirect_date.strftime('%Y-%m-%d')
+    string_date = food_log.ts.strftime('%Y-%m-%d')
 
     db.session.delete(food_log)
     db.session.commit()

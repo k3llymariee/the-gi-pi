@@ -61,9 +61,15 @@ $('#search-food').on('submit', (evt) => {
                 </div>`
             );
 
-            $.get(`#${food.nix_item_id}`).on('click', (res) => {
-                alert(res['text']);
-            })
+            $(`#${food.nix_item_id}`).on('click', (evt) => {
+
+                evt.preventDefault();
+
+              $.get(`/nutrionix_check/${food.nix_item_id}`, (res) => {
+                if(confirm(res['text'] + res['food_name'] + '\n\n Ingredients:' + res['ingredients']))
+                    window.location.href=`/nutrionix/${food.nix_item_id}`
+              });
+            });
 
             
         };

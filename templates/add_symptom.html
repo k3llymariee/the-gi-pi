@@ -14,9 +14,15 @@
             {% endfor %}
         </select>
         <br>
-        Time felt: <input type="datetime-local" name="symptom_time" class="boxy" required/><br>
+        Time felt: <input type="datetime-local" id="symptom_time" name="symptom_time" class="boxy" required/><br>
         <br><input type="submit" /><br>
             
     </form>
 <div>
+{% endblock %}
+
+{% block js %}
+
+    <script src='/static/js/add_symptom.js'></script>
+
 {% endblock %}
