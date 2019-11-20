@@ -269,7 +269,7 @@ def nutrionix_confirm(nix_id):
     print(debug)
     print('NIX_ID:', nix_id)
     print(debug)
-    
+
     result = search_branded_item(nix_id)
 
     if not result['nf_ingredient_statement']:  
@@ -426,32 +426,64 @@ def add_symptom():
     # redirect to the day for which the symptom log was added
     return redirect(f'/{symptom_time[:10]}')
 
+
+@app.route('/user_symptom_logs.json', methods=['GET'])
+def get_user_symptom_logs():
+
+    user = User.query.get(session['user_id'])
+    symptom_id = request.args.get('symptom_id')
+
+    symptom_logs = user.return_symptom_logs(symptom_id)
+
+    symptom_experiences = []
+    for symptom_log in symptom_logs:
+        symptom_experiences.append({'symptom_name': symptom_log.symptom.name, 
+                      'symptom_time': symptom_log.ts,
+                      'id': symptom_log.id})
+
+    return jsonify({'symptom_experiences': symptom_experiences})
+
+@app.route('/display_base')
+def display_base():
+    """Route to test base.html"""
+
+    return render_template('new_base.html')
+
 @app.route('/symptom_view/<symptom_id>')
 def symptom_detail(symptom_id):
 
     user = User.query.get(session['user_id'])
     symptom = Symptom.query.get(symptom_id)
 
-    symptom_experiences = SymptomLog.query.filter \
-                         (SymptomLog.user_id == session['user_id'], 
-                          SymptomLog.symptom_id == symptom_id) \
-                         .all()
+    symptom_experiences = user.return_symptom_logs(symptom_id)
 
     matched_foods = symptom.find_matched_foods(user.id)
-
-    print(debug)
-    print('matched_foods:', matched_foods)
-
     common_ingredients = find_common_ingredients(matched_foods)
 
-    print
+    return render_template('symptom_view.html', 
+                            symptom=symptom,
+                            symptoms=symptom_experiences,
+                            common_ingredients=common_ingredients,
+                            )
 
+@app.route('/delete_symptom_log', methods=['POST'])
+def delete_symptom_log():
 
+    print(debug)
+    print('DELETEeee')
+    print(debug)
 
-    return render_template('symptom_view.html', symptom=symptom,
-                                                symptoms=symptom_experiences,
-                                                common_ingredients=common_ingredients,
-                                                )
+    food_log_id = request.form.get('symptom_log_id')
+    symptom_log = SymptomLog.query.get(food_log_id)
+
+    print(symptom_log)
+
+    string_date = symptom_log.ts.strftime('%Y-%m-%d')
+
+    db.session.delete(symptom_log)
+    db.session.commit()
+
+    return redirect(f'/{string_date}')
 
 @app.route('/new_link', methods=['POST'])
 def link_ingredient_to_symptom():
@@ -479,7 +511,6 @@ def show_all_symptoms():
                             user_symptoms=user.return_symptoms(),
                             intolerances=user.return_intolerances(),
                             )
-
 
 
 if __name__ == '__main__':

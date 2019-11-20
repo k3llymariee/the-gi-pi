@@ -62,6 +62,17 @@ class User(db.Model):
         
         return distinct_symptoms
 
+    def return_symptom_logs(self, symptom_id):
+        """For a user and a specific symptom, return 15 most recent instances of 
+        that user experiencing the symptom"""
+
+        symptom_experiences = SymptomLog.query.filter \
+                         (SymptomLog.user_id == self.id, 
+                          SymptomLog.symptom_id == symptom_id) \
+                         .limit(15).all()
+
+        return symptom_experiences
+
     def return_intolerances(self):
         """For a given user, return all the symptom ingredient links"""
 

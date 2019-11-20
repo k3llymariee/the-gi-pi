@@ -6,14 +6,16 @@
 
 <div class="container">
 <h1>All the times you felt: {{ symptom.name }}</h1>
-    <ul>
-    {% if not symptoms %}
-        Oops! Looks like there's nothing to see here 👀
-    {% endif %}
-    {% for symptom in symptoms %}
-        <li> {{ symptom.ts.strftime('%A, %B %d @ %I:%M %p') }}</li>
-    {% endfor %}
-    </ul>
+    <div id="symptom_logs">
+        <ul>
+        {% if not symptoms %}
+            Oops! Looks like there's nothing to see here 👀
+        {% endif %}
+        {% for symptom in symptoms %}
+            <li> OLD: {{ symptom.ts.strftime('%A, %B %d @ %I:%M %p') }}</li>
+        {% endfor %}
+        </ul>
+    </div>
 
 <h2>Ingredients that might be related to this symptom:</h2>
     <ul>
@@ -51,5 +53,15 @@
         {% endfor %}
     </ul>
 </div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    const symptomID = {{symptom.id}};
+</script>
+<script src='/static/js/moment.js'></script>
+<script src='/static/js/moment-timezone.js'></script>
+<script src='/static/js/symptom_view.js'></script>
 
 {% endblock %}
