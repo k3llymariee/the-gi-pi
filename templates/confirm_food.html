@@ -8,7 +8,7 @@
 <form action="/add_food" method="POST">
     <div class="form-group">
         <label for="timeEaten">What time did you eat this?</label>
-        <input type="datetime-local" class="form-control" id="time_eaten" placeholder="Enter email" size="50" required>
+        <input type="datetime-local" class="form-control" name="time_eaten" id="time_eaten" required>
     For which meal? 
         <select name="meal_to_add" id="meal_to_add">
             {% for meal in meals %}

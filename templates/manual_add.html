@@ -4,6 +4,8 @@
 
 {% block content %}
 
+
+
 <div class="container" id="manual-add">
     <h1>Add a food manually</h1>
 
@@ -12,9 +14,9 @@
         Food name: <input type="text" name="food_name" id="food_name" size="50" required><br>
         Ingredients: <br>
         <textarea name="ingredients" id="ingredients" size="100" required></textarea><br>
-        What time did you eat this? <input type="datetime-local" name="time_eaten" /><br>
+        What time did you eat this? <input type="datetime-local" id="time_eaten" name="time_eaten" /><br>
         For which meal? 
-        <select name="meal_to_add">
+        <select id="meal_to_add" name="meal_to_add">
             {% for meal in meals %}
                 <option value="{{ meal.id }}">{{ meal.name.capitalize() }}</option>    
             {% endfor %}
@@ -22,5 +24,11 @@
         <input type="submit" />
     </form>
 </div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script src='/static/js/manual_add.js'></script>
 
 {% endblock %}
