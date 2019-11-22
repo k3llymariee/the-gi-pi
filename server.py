@@ -415,11 +415,14 @@ def add_symptom():
 
     user = User.query.filter(User.id == session['user_id']).first()
     symptom_time = request.form.get('symptom_time')
+    severity = request.form.get('symptom_severity')
 
     # create a new SymptomLog record
     symptom_log = SymptomLog(ts=symptom_time, 
                              symptom_id=request.form.get('symptom_to_add'), 
-                             user_id=user.id)
+                             user_id=user.id,
+                             severity=severity,
+                             )
     db.session.add(symptom_log)
     db.session.commit()
 

@@ -61,6 +61,7 @@ class User(db.Model):
                             .all() # TODO: consider setting limits on all .all()'s
         
         return distinct_symptoms
+        
 
     def return_symptom_logs(self, symptom_id):
         """For a user and a specific symptom, return 15 most recent instances of 
@@ -72,6 +73,7 @@ class User(db.Model):
                          .limit(15).all()
 
         return symptom_experiences
+
 
     def return_intolerances(self):
         """For a given user, return all the symptom ingredient links"""
@@ -255,6 +257,7 @@ class SymptomLog(db.Model):
     ts = db.Column(db.DateTime, nullable=False)
     symptom_id = db.Column(db.Integer, db.ForeignKey('symptoms.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    severity = db.Column(db.Integer, nullable=True)
 
     symptom = db.relationship('Symptom', backref='symptom_logs')
     user = db.relationship('User', backref='symptom_logs')
