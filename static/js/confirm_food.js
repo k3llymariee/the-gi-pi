@@ -18,7 +18,6 @@ const updateMeal = () => {
     } else {
         $('#meal_to_add').val('4');  // snacks
     }
-
 };
 
 const pad = (n) => {

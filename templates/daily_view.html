@@ -13,18 +13,10 @@
     <p>Here would be a daily view of:</p>
     <ul>
         {% for meal in meals %}
-        <li>What you ate for {{meal.name}}</li>
-        <ul>
-            {% for food in user_foods %}
-                {% if food.meal.name == meal.name %}
-                    <li>{{ food.food.name}} @ {{food.ts.time().strftime("%I:%M %p")}}
-                        <a href="/food_log_view/{{food.id}}">
-                            <i class="fas fa-search"></i>
-                        </a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+            <li>What you ate for {{meal.name}}</li>
+            <ul>
+                <div id={{meal.name}}></div>
+            </ul>
         {% endfor %}
     </ul>
     As wells as:<br>
@@ -49,4 +41,15 @@
 
 </div>
 
+{% endblock %}
+
+{% block js %}
+<script>
+    const selectedDate = '2019-11-25'
+    console.log(selectedDate)
+</script>
+<script src='/static/js/moment.js'></script>
+<script src='/static/js/moment-timezone.js'></script>
+
+<script src='/static/js/daily_view.js'></script>
 {% endblock %}

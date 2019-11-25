@@ -20,7 +20,6 @@ const defaultTime = () => {
     const currentDateTime  = pad(year) + "-" + pad(month) + "-" + pad(date)
         + "T" + pad(hours) + ":" + pad(minutes);
 
-    ;debugger 
     $('#symptom_time').val(currentDateTime);
 }
 

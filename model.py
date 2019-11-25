@@ -1,7 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from magic import return_ingredient_list
-import re
+import flask_restless
+from sqlalchemy import extract
 
 # This is the connection to the PostgreSQL database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
@@ -38,8 +39,21 @@ class User(db.Model):
     symptoms = db.relationship('Symptom', 
                              secondary='symptom_logs',
                              backref='users')
-
+    
     # TODO: add ingredients relationship
+    def get_daily_food_logs(self, selected_date):
+        """Return food logs for a specific date"""
+        day_value = datetime.strptime(selected_date, '%Y-%m-%d')
+
+        daily_food_logs = FoodLog.query \
+                          .filter(extract('year', FoodLog.ts) == day_value.year,
+                                  extract('month', FoodLog.ts) == day_value.month,
+                                  extract('day', FoodLog.ts) == day_value.day,
+                                  FoodLog.user_id == self.id) \
+                          .all()
+
+        return daily_food_logs
+
     def return_foods(self):
         """For a given user, return distinct food items they've eaten in order
         of most recently eaten"""
@@ -70,6 +84,7 @@ class User(db.Model):
         symptom_experiences = SymptomLog.query.filter \
                          (SymptomLog.user_id == self.id, 
                           SymptomLog.symptom_id == symptom_id) \
+                         .order_by(SymptomLog.ts.desc()) \
                          .limit(15).all()
 
         return symptom_experiences
@@ -231,9 +246,9 @@ class FoodLog(db.Model):
     food_id = db.Column(db.Integer, db.ForeignKey('foods.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-    food = db.relationship('Food', backref='food_logs')
+    food = db.relationship('Food')
     user = db.relationship('User', backref='food_logs')
-    meal = db.relationship('Meal', backref='food_logs')
+    meal = db.relationship('Meal')
 
 
     def __repr__(self):
@@ -310,4 +325,8 @@ if __name__ == "__main__":
 
     connect_to_db(app)
     db.create_all()
+
+    # Create the Flask-Restless API manager.
+
+
     print("Connected to DB.")

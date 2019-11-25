@@ -24,7 +24,8 @@
         {% endif %}
         {% for ingredient in common_ingredients %}
             <li> 
-                {{ingredient['ingredient']}} ({{ingredient['count']}} times)
+                {{ingredient['ingredient']}} 
+                    {% for i in range (ingredient['count']) %} <i class="fas fa-circle"></i> {% endfor %}
                 {% if ingredient['count'] > 2 %}
                     <a href="/new_link" id="{{ingredient['ingredient_id']}}">
                         <i class="fas fa-link"></i>

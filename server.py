@@ -10,6 +10,7 @@ from model import (db, connect_to_db, User, Food, FoodIngredient, Ingredient,
 from nutritionix import search, search_branded_item
 from magic import find_common_ingredients, return_ingredient_list
 from sqlalchemy import extract
+import flask_restless
 
 app = Flask(__name__)
 
@@ -116,13 +117,13 @@ def daily_view(selected_date):
     """Daily view of foods eaten"""
 
     def forward_day(date_string):
-        """Returns a string value of one day ahead given a string date input"""
+        """Returns a string value of one day after, given a string date input"""
 
         day_value = datetime.strptime(date_string, '%Y-%m-%d')
         return (day_value + timedelta(days=1)).strftime('%Y-%m-%d')
 
     def backward_day(date_string):
-        """Returns a string value of one day before given a string date input"""
+        """Returns a string value of one day before, given a string date input"""
         
         day_value = datetime.strptime(date_string, '%Y-%m-%d')
         return (day_value + timedelta(days=-1)).strftime('%Y-%m-%d')
@@ -150,9 +151,12 @@ def daily_view(selected_date):
                     .filter(SymptomLog.ts.between(day_value, day_end),
                     SymptomLog.user_id == user.id).all()
 
+    print('STRING DATE:', selected_date)
+
     return render_template(
                         'daily_view.html', 
                         selected_date=day_value.strftime('%a, %b %d'),
+                        string_date=day_value,
                         day_forward=forward_day(selected_date),
                         day_backward=backward_day(selected_date),
                         user_foods=user_foods,
@@ -162,6 +166,25 @@ def daily_view(selected_date):
 
 
 # TODO: this route isn't actually hooked up to anything
+
+@app.route('/api/food_logs/<selected_date>', methods=['GET'])
+def read_daily_food_logs(selected_date):
+    """Read daily food logs for a certain user"""
+
+    user = User.query.get(session['user_id'])
+    daily_food_logs = user.get_daily_food_logs(selected_date)
+    
+    return_food_logs = []
+    for food_log in daily_food_logs:
+        return_food_logs.append({'id': food_log.id, 
+                      'food_name': food_log.food.name, 
+                      'ts': food_log.ts,
+                      'meal': food_log.meal.name
+                      })    
+
+    return jsonify({'food_logs': return_food_logs})
+
+
 @app.route('/api/user_daily_foods', methods=['GET'])
 def read_daily_foods():
 
@@ -180,7 +203,8 @@ def read_daily_foods():
         food_logs.append({'id': food_log.id, 
                       'food_name': food_log.food.name, 
                       'ts': food_log.ts,
-                      'meal': food_log.meal.name
+                      'meal': food_log.meal.name,
+                      'food_id': food_log.food.id,
                       })
 
     return jsonify({'food_logs': food_logs})
@@ -199,7 +223,7 @@ def confirm_add_food_to_log(food_id):
     """Confirms which food selected food(s) to users food log"""
 
     food = Food.query.get(food_id)
-    user = User.query.get(session['user_id']) # TODO: better way to grab this w/Flask
+    # user = User.query.get(session['user_id']) # TODO: better way to grab this w/Flask
     meals = Meal.query.all()
     return render_template('confirm_food.html', food=food, meals=meals)
 
@@ -246,20 +270,22 @@ def nutrionix_check(nix_id):
     adds the food to the database"""
 
     result = search_branded_item(nix_id)
-    ingredient_str = result['nf_ingredient_statement']
-    ingredient_list = return_ingredient_list(ingredient_str)
-
 
     if not result['nf_ingredient_statement']:  
-        response = {'text': 'Unfortunately this record has no ingredient info 😢 please try another',
-                    'food_name': result['food_name'],
-                    'ingredients': None}
-    else:
+        response = {'text': 'This food doesn\'t have any ingredients, please try another',
+                'food_name': '',
+                'ingredients': 'n/a'}    
+
+    else:                       
+        ingredient_str = result['nf_ingredient_statement']
+        ingredient_list = return_ingredient_list(ingredient_str)
+
+
         response = {'text': 'Confirm you want to add the following food: ',
                     'food_name': result['food_name'],
                     'ingredients': ingredient_list}    
 
-    return response
+    return response 
 
 
 @app.route('/nutrionix/<nix_id>')
@@ -273,7 +299,7 @@ def nutrionix_confirm(nix_id):
     result = search_branded_item(nix_id)
 
     if not result['nf_ingredient_statement']:  
-        flash('Unfortunately this record has no ingredient info 😢 please try another')
+        # flash('Unfortunately this record has no ingredient info 😢 please try another')
         return redirect('/add_food')
 
     # food_name = result['foods']
@@ -446,11 +472,11 @@ def get_user_symptom_logs():
 
     return jsonify({'symptom_experiences': symptom_experiences})
 
-@app.route('/display_base')
+@app.route('/display_new')
 def display_base():
     """Route to test base.html"""
 
-    return render_template('new_base.html')
+    return render_template('new_daily_view.html')
 
 @app.route('/symptom_view/<symptom_id>')
 def symptom_detail(symptom_id):
@@ -522,6 +548,17 @@ if __name__ == '__main__':
     app.debug = True
 
     connect_to_db(app)
+
+    manager = flask_restless.APIManager(app, flask_sqlalchemy_db=db)
+
+    # Create API endpoints, which will be available at /api/<tablename> by
+    # default. Allowed HTTP methods can be specified as well.
+    manager.create_api(Food, methods=['GET', 'POST'])
+    manager.create_api(Symptom, methods=['GET', 'POST'])
+    manager.create_api(FoodLog, methods=['GET', 'POST', 'DELETE'])
+    manager.create_api(SymptomLog, methods=['GET', 'POST', 'DELETE'])
+    manager.create_api(Ingredient, methods=['GET', 'POST', 'DELETE'])
+    manager.create_api(User, methods=['GET', 'POST' ])
 
     # Use the DebugToolbar
     # DebugToolbarExtension(app)

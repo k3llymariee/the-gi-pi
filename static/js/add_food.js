@@ -111,5 +111,5 @@ $('#db-search').on('submit', (evt) => {
     });
 });
 
-// Get intial foods when page initially loads!
+// Get intial user foods when page initially loads!
 getFoodData();
