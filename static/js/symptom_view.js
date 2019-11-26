@@ -70,16 +70,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const symptom_logs = res[symptomName]['results']
 
     for (const symptom_log in symptom_logs) {
-        ;debugger
-      // symptom = string ('heartburn')
-      // for (const symptom_log of res[symptom]['results']) {
-        // symptom_log_object = object
           const logEvent = {
             id: symptom_logs[symptom_log]['id'],
             title: symptom_logs[symptom_log]['title'],
             start: symptom_logs[symptom_log]['start'],
-            // color: res[symptom]['color'],
+            color: res[symptomName]['color'],
           };
+          ;debugger
 
           calendar.addEvent(logEvent);
       // }
