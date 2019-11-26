@@ -2,7 +2,6 @@
 
 const getDailyFoodLogs = () => {
     // Get the up to date food data from DB for the signed in user
-    ;debugger
     $.get(`/api/food_logs/${moment(selectedDate).format('YYYY-MM-DD')}`, insertFoodLogs);
 }
 

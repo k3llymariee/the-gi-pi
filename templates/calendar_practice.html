@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+  {% block extraHead %}
+    <meta charset='utf-8' />
+
+    <link href='/static/fullcalendar/packages/core/main.css' rel='stylesheet' />
+    <link href='/static/fullcalendar/packages/daygrid/main.css' rel='stylesheet' />
+
+    <script src='/static/fullcalendar/packages/core/main.js'></script>
+    <script src='/static/fullcalendar/packages/daygrid/main.js'></script>
+
+    <script>
+
+      document.addEventListener('DOMContentLoaded', function() {
+        const calendarEl = document.getElementById('calendar');
+
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+          schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
+          plugins: [ 'dayGrid' ],
+          defaultView: 'dayGridWeek',
+          height: 200
+        });
+
+        calendar.render();
+
+        const testEvent = {
+          id: 'a',
+          title: 'my event',
+          start: '2019-11-26'
+        };
+
+        calendar.addEvent(testEvent);
+      });
+
+    </script>
+  {% endblock %}
+  {% block content %}
+
+    <div class="container">
+      <div id='calendar'></div>
+    </div>
+
+  {% endblock %}
+</html>

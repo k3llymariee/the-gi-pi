@@ -498,14 +498,8 @@ def symptom_detail(symptom_id):
 @app.route('/delete_symptom_log', methods=['POST'])
 def delete_symptom_log():
 
-    print(debug)
-    print('DELETEeee')
-    print(debug)
-
     food_log_id = request.form.get('symptom_log_id')
     symptom_log = SymptomLog.query.get(food_log_id)
-
-    print(symptom_log)
 
     string_date = symptom_log.ts.strftime('%Y-%m-%d')
 
@@ -540,6 +534,27 @@ def show_all_symptoms():
                             user_symptoms=user.return_symptoms(),
                             intolerances=user.return_intolerances(),
                             )
+
+@app.route('/calendar_practice/<selected_date>')
+def display_calendar(selected_date):
+
+    return render_template('calendar_practice.html')
+
+@app.route('/api/user_symptom_logs')
+def json_user_symptom_logs():
+
+    user = User.query.get(session['user_id'])
+    
+    working_list = user.return_all_symptom_logs()
+
+    user_symptom_logs = []
+    for symptom_log in working_list:
+        user_symptom_logs.append({'id': symptom_log.id, 
+                      'symptom_name': symptom_log.symptom.name, 
+                      'ts': symptom_log.ts
+                      })    
+
+    return jsonify({'user_symptom_logs': user_symptom_logs})
 
 
 if __name__ == '__main__':

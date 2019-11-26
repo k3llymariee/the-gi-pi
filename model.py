@@ -54,6 +54,15 @@ class User(db.Model):
 
         return daily_food_logs
 
+    def get_all_food_logs(self):
+        """Return all food logs for a user"""
+
+        daily_food_logs = FoodLog.query \
+                          .filter(FoodLog.user_id == self.id) \
+                          .all()
+
+        return daily_food_logs
+
     def return_foods(self):
         """For a given user, return distinct food items they've eaten in order
         of most recently eaten"""
@@ -86,6 +95,17 @@ class User(db.Model):
                           SymptomLog.symptom_id == symptom_id) \
                          .order_by(SymptomLog.ts.desc()) \
                          .limit(15).all()
+
+        return symptom_experiences
+
+    def return_all_symptom_logs(self):
+        """For a user and a specific symptom, return 15 most recent instances of 
+        that user experiencing the symptom"""
+
+        symptom_experiences = SymptomLog.query.filter \
+                         (SymptomLog.user_id == self.id) \
+                         .order_by(SymptomLog.ts.desc()) \
+                         .all()
 
         return symptom_experiences
 
