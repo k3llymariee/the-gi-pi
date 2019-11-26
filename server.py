@@ -156,7 +156,7 @@ def daily_view(selected_date):
     return render_template(
                         'daily_view.html', 
                         selected_date=day_value.strftime('%a, %b %d'),
-                        string_date=day_value,
+                        string_date=selected_date,
                         day_forward=forward_day(selected_date),
                         day_backward=backward_day(selected_date),
                         user_foods=user_foods,

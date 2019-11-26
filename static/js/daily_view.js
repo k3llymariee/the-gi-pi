@@ -2,7 +2,8 @@
 
 const getDailyFoodLogs = () => {
     // Get the up to date food data from DB for the signed in user
-    $.get(`/api/food_logs/${selectedDate}`, insertFoodLogs);
+    ;debugger
+    $.get(`/api/food_logs/${moment(selectedDate).format('YYYY-MM-DD')}`, insertFoodLogs);
 }
 
 const insertFoodLogs = (res) => {
@@ -32,7 +33,7 @@ const insertFoodLogs = (res) => {
         
             evt.preventDefault();
 
-            if (confirm(`Delete ${currentFood.food_name} from ${currentFood.ts}`)) {
+            if (confirm(`Delete ${currentFood.food_name} from ${currentFood.meal} at ${timeValue.tz('Etc/UTC').format('h:mm a')}`)) {
 
                 const formInputs = {
                     'food_log_id': currentFood.id

@@ -6,7 +6,7 @@
 <div class="container">
     <div><h1><i class="far fa-calendar-alt"></i> Your food diary for:<br>
         <a href="/{{ day_backward }}"><i class="fas fa-angle-double-left"></i></a> 
-            <span id="daily_date">{{ selected_date }}</span>
+            <span id="daily_date" name='{{string_date}}'>{{ selected_date }}</span>
         <a href="/{{day_forward}}"><i class="fas fa-angle-double-right"></i></a>
         
    </h1></div>
@@ -44,12 +44,18 @@
 {% endblock %}
 
 {% block js %}
-<script>
-    const selectedDate = '2019-11-25'
-    console.log(selectedDate)
-</script>
 <script src='/static/js/moment.js'></script>
 <script src='/static/js/moment-timezone.js'></script>
+<script>
+
+    
+    const selectedDate = new Date($('#daily_date').attr('name'));
+    console.log(selectedDate);
+    // const dayString = {{string_date}}
+
+    // console.log(dayString)
+</script>
+
 
 <script src='/static/js/daily_view.js'></script>
 {% endblock %}
