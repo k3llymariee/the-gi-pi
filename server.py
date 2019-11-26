@@ -11,6 +11,7 @@ from nutritionix import search, search_branded_item
 from magic import find_common_ingredients, return_ingredient_list
 from sqlalchemy import extract
 import flask_restless
+from random import choice
 
 app = Flask(__name__)
 
@@ -34,8 +35,7 @@ def index():
         flash('You must be a registered user to access this application')
         return redirect("/register")
 
-    else:
-        return redirect(f'/{current_date}')
+    return redirect(f'/{current_date}')
 
 
 @app.route('/register', methods=['GET'])
@@ -535,10 +535,16 @@ def show_all_symptoms():
                             intolerances=user.return_intolerances(),
                             )
 
-@app.route('/calendar_practice/<selected_date>')
-def display_calendar(selected_date):
+@app.route('/my_symptoms')
+def display_calendar():
 
-    return render_template('calendar_practice.html')
+    user = User.query.get(session['user_id'])
+
+    
+
+    return render_template('calendar_practice.html',
+                            user_symptoms=user.return_symptoms(),
+                            intolerances=user.return_intolerances())
 
 @app.route('/api/user_symptom_logs')
 def json_user_symptom_logs():
@@ -547,9 +553,35 @@ def json_user_symptom_logs():
     
     working_list = user.return_all_symptom_logs()
 
-    user_symptom_logs = []
+    # loop through each symptom returned by function
+    # check to see if the symptom name already exists in the dict
+    # if it DOES exist, append new log event to the list at the key
+    # if it doesn't, create a new list at the symptom name key and then append
+
+    # heartburn: [{}]
+    # heartburn: {
+    #     color: 'blue',
+    #     results: [{}]
+    # }
+    colors = ['#00B667', '#021E5C', '#AF2796', '#FD741D', '#6BD5C8']
+    colors_copy = colors[:]
+
+    user_symptom_logs = {}
     for symptom_log in working_list:
-        user_symptom_logs.append({'id': symptom_log.id, 
+        if not user_symptom_logs.get(symptom_log.symptom.name):
+            user_symptom_logs[symptom_log.symptom.name] = {}
+            color_choice = choice(colors_copy)
+            colors_copy.remove(color_choice)
+            user_symptom_logs[symptom_log.symptom.name]['color'] = color_choice
+            user_symptom_logs[symptom_log.symptom.name]['results'] = [{
+                'id': symptom_log.id, 
+                'title': symptom_log.symptom.name, 
+                'start': symptom_log.ts.isoformat(),
+                'stop': symptom_log.ts.isoformat()
+                }]
+        else:
+            user_symptom_logs[symptom_log.symptom.name]['results'].append(
+                     {'id': symptom_log.id, 
                       'title': symptom_log.symptom.name, 
                       'start': symptom_log.ts.isoformat(),
                       'stop': symptom_log.ts.isoformat()

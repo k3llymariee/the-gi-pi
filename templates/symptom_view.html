@@ -1,11 +1,29 @@
 {% extends 'base.html' %}
+{% block extraHead %}
+    <meta charset='utf-8' />
+
+    <link href='/static/fullcalendar/packages/core/main.css' rel='stylesheet' />
+    <link href='/static/fullcalendar/packages/daygrid/main.css' rel='stylesheet' />
+    <link href='/static/fullcalendar/packages/bootstrap/main.css' rel='stylesheet' />
+
+    <script src='/static/fullcalendar/packages/core/main.js'></script>
+    <script src='/static/fullcalendar/packages/daygrid/main.js'></script>
+    <script src='/static/fullcalendar/packages/bootstrap/main.js'></script>
+
+    <script src='/static/js/calendar.js'></script>
+    
+  {% endblock %}
 
 {% block title %}Symptom Detail{% endblock %}
 
 {% block content %}
 
 <div class="container">
-<h1>All the times you felt: {{ symptom.name }}</h1>
+      <div id='ccalendar'></div>
+</div>
+
+<div class="container">
+<h1><span id="symptom_header" name={{symptom.name}}>All the times you felt: {{ symptom.name }}</span></h1>
     <div id="symptom_logs">
         <ul>
         {% if not symptoms %}
@@ -60,6 +78,7 @@
 {% block js %}
 <script>
     const symptomID = {{symptom.id}};
+    const symptomName = $('#symptom_header').attr('name')
 </script>
 <script src='/static/js/moment.js'></script>
 <script src='/static/js/moment-timezone.js'></script>

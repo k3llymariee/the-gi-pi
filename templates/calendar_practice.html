@@ -4,9 +4,11 @@
 
     <link href='/static/fullcalendar/packages/core/main.css' rel='stylesheet' />
     <link href='/static/fullcalendar/packages/daygrid/main.css' rel='stylesheet' />
+    <link href='/static/fullcalendar/packages/bootstrap/main.css' rel='stylesheet' />
 
     <script src='/static/fullcalendar/packages/core/main.js'></script>
     <script src='/static/fullcalendar/packages/daygrid/main.js'></script>
+    <script src='/static/fullcalendar/packages/bootstrap/main.js'></script>
 
     <script src='/static/js/calendar.js'></script>
     
@@ -17,5 +19,21 @@
       <div id='calendar'></div>
     </div>
 
+    <div class="container">
+      <p>KNOWN ISSUES:</p>
+        <ul>
+            {% for symptom in user_symptoms %}
+                <li>Ingredients that cause {{symptom.name}}</li>
+                    <ul>
+                        {% for intolerance in intolerances %}
+                            {% if intolerance.symptom.name == symptom.name %}
+                                <li>{{ intolerance.ingredient.name }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    
+                    </ul>
+            {% endfor %}
+        </ul>
+    </div>  
   {% endblock %}
 </html>
