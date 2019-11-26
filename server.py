@@ -550,11 +550,12 @@ def json_user_symptom_logs():
     user_symptom_logs = []
     for symptom_log in working_list:
         user_symptom_logs.append({'id': symptom_log.id, 
-                      'symptom_name': symptom_log.symptom.name, 
-                      'ts': symptom_log.ts
+                      'title': symptom_log.symptom.name, 
+                      'start': symptom_log.ts.isoformat(),
+                      'stop': symptom_log.ts.isoformat()
                       })    
 
-    return jsonify({'user_symptom_logs': user_symptom_logs})
+    return jsonify(user_symptom_logs)
 
 
 if __name__ == '__main__':
