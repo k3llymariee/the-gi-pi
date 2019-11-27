@@ -335,9 +335,16 @@ class UserSymptomIngredientLink(db.Model):
 
         return f"<SymptomFood id={self.id}>"
 
+def init_app():
+    from flask import Flask
+    app = Flask(__name___)
+
+    connect_to_db(app)
+    print("Connected to DB")
+
 def example_data():
     """Create sample data for testing"""
-
+    db.create_all()
     # In case this is run more than once, empty out existing data
     User.query.delete()
     Food.query.delete()
@@ -413,11 +420,4 @@ if __name__ == "__main__":
     # you in a state of being able to work with the database directly.
 
     from server import app
-
-    connect_to_db(app)
-    db.create_all()
-
-    # Create the Flask-Restless API manager.
-
-
-    print("Connected to DB.")
+    init_app()
