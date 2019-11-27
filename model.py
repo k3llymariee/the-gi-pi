@@ -335,7 +335,75 @@ class UserSymptomIngredientLink(db.Model):
 
         return f"<SymptomFood id={self.id}>"
 
+def example_data():
+    """Create sample data for testing"""
 
+    # In case this is run more than once, empty out existing data
+    User.query.delete()
+    Food.query.delete()
+    Ingredient.query.delete()
+    Symptom.query.delete()
+    FoodIngredient.query.delete()
+    FoodLog.query.delete()
+    SymptomLog.query.delete()
+    UserSymptomIngredientLink.query.delete()
+
+    # Add sample user
+    user_1 = User(email='john@doe.com', password='fluffy89')
+
+    # Add base list symptoms
+    symp_1 = Symptom(name='heartburn')
+    symp_2 = Symptom(name='migraine')
+    symp_3 = Symptom(name='nausea')
+    symp_4 = Symptom(name='indigestion')
+    symp_5 = Symptom(name='upset stomach')
+
+    # Add meals
+    meal_1 = Meal(name='breakfast')
+    meal_2 = Meal(name='lunch')
+    meal_3 = Meal(name='dinner')
+    meal_4 = Meal(name='snacks')
+
+    # Add sample food
+    food_1 = Food(name='Pumpkin Chia Pudding', brand_name='Thistle')
+
+    # Add sample ingredients
+    ingrd_1 = Ingredient(name='hemp milk')
+    ingrd_2 = Ingredient(name='pumpkin')
+    ingrd_3 = Ingredient(name='banana')
+    ingrd_4 = Ingredient(name='maple syrup')
+    ingrd_5 = Ingredient(name='chia seeds')
+    ingrd_6 = Ingredient(name='pea protein powder')
+    ingrd_7 = Ingredient(name='orange zest')
+
+    # Link ingredients to food
+    food_ingrd_1 = FoodIngredient(food_id=1, ingredient_id=1)
+    food_ingrd_2 = FoodIngredient(food_id=1, ingredient_id=2)
+    food_ingrd_3 = FoodIngredient(food_id=1, ingredient_id=3)
+    food_ingrd_4 = FoodIngredient(food_id=1, ingredient_id=4)
+    food_ingrd_5 = FoodIngredient(food_id=1, ingredient_id=5)
+    food_ingrd_6 = FoodIngredient(food_id=1, ingredient_id=6)
+    food_ingrd_7 = FoodIngredient(food_id=1, ingredient_id=7)
+
+    # Add a sample food log
+    food_log_1 = FoodLog(ts=datetime.now(), meal_id=1, user_id=1, food_id=1)
+
+    # Add a sample symptom log
+    symptom_log_1 = SymptomLog(ts=datetime.now(), symptom_id=2, severity=3)
+
+    # Add a user symptom ingredient link
+    user_symptom_ingredient_link_1 = UserSymptomIngredientLink(user_id=1,
+                                    symptom_id=2, ingredient_id=7)
+    
+    db.session.add_all([user_1, symp_1, symp_2, symp_3, symp_4, symptom_log_1,
+                        symp_5, meal_1, meal_2, meal_3, meal_4, food_1, ingrd_1, 
+                        ingrd_2, ingrd_3, ingrd_4, ingrd_5, ingrd_6, ingrd_7,
+                        food_ingrd_1, food_ingrd_2, food_ingrd_3, food_ingrd_4, 
+                        food_ingrd_5, food_ingrd_6, food_ingrd_7, food_log_1,
+                        user_symptom_ingredient_link_1,
+                        ])
+
+    db.session.commit()
 
 if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave
