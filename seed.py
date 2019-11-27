@@ -68,7 +68,7 @@ def load_symptoms():
 #     ingrd_4 = Ingredient(name='salt')
 #     ingrd_5 = Ingredient(name='whey')
 #     ingrd_6 = Ingredient(name='hemp milk')
-#     ingrd_7 = Ingredient(name='pumkin')
+#     ingrd_7 = Ingredient(name='pumpkin')
 #     ingrd_8 = Ingredient(name='banana')
 #     ingrd_9 = Ingredient(name='maple syrup')
 #     ingrd_10 = Ingredient(name='chia seeds')

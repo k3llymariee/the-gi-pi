@@ -151,8 +151,6 @@ def daily_view(selected_date):
                     .filter(SymptomLog.ts.between(day_value, day_end),
                     SymptomLog.user_id == user.id).all()
 
-    print('STRING DATE:', selected_date)
-
     return render_template(
                         'daily_view.html', 
                         selected_date=day_value.strftime('%a, %b %d'),
