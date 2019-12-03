@@ -29,3 +29,58 @@ textarea {
 #daily_date {
     font-family: 'Roboto Mono', monospace;
 }   
+
+h1, h3 {
+    font-family: 'Montserrat', sans-serif;
+    color: #FFC7D5;
+}
+
+body {
+    background-color: #032059;
+    font-family: 'Roboto', sans-serif;
+    color: #FFFFFF;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1DC77D;
+    border-color: #1DC77D;
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+    color: #fff;
+    background-color: #1D52F2;
+    border-color: #1D52F2;
+}
+
+a {
+    color: #F2385A;
+    text-decoration: none;
+    background-color: transparent;
+}
+
+.alert-warning {
+    color: #FFC7D5;
+    background-color: #A62690;
+    border-color: #A62690;
+    font-family: 'Roboto', sans-serif;
+}
+
+.text-muted {
+    color: #FFC7D5!important;
+}
+
+.card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+    color: #032059;
+}

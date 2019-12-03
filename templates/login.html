@@ -3,14 +3,18 @@
 {% block title %} User Login {% endblock %}
 {% block content %}
 <div class="container">
+    <div class="col-sm-4" id="login-user">
     <h1>User login</h1>
-
-    <form action="/login" method="POST">
-        Email: <br>
-        <input type="text" name="email" size="50"/><br>
-        Password: <br>
-        <input type="password" name="password" size="50"/><br><br>
-        <input type="submit" value="Submit" /><br>
+      <form action="/login" method="POST">
+        <div class="form-group">
+          <label for="InputEmail1">Email address</label>
+          <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Enter email" required>
+        </div>
+        <div class="form-group">
+          <label for="InputPassword1">Password</label>
+          <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
 
     </form>
 </div>

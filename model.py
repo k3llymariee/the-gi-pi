@@ -225,6 +225,7 @@ class Symptom(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
     window_minutes = db.Column(db.Integer, default=180)
+    display_color = db.Column(db.String(7))
 
     def find_matched_foods(self, user_id):
 
@@ -337,7 +338,7 @@ class UserSymptomIngredientLink(db.Model):
 
 def init_app():
     from flask import Flask
-    app = Flask(__name___)
+    app = Flask(__name__)
 
     connect_to_db(app)
     print("Connected to DB")
@@ -399,10 +400,10 @@ def example_data():
     food_ingrd_7 = FoodIngredient(id=7, food_id=1, ingredient_id=7)
 
     # Add a sample food log
-    food_log_1 = FoodLog(id=1, ts=datetime.now(), meal_id=1, user_id=1, food_id=1)
+    food_log_1 = FoodLog(id=1, ts=datetime(2019, 11, 27, 8, 0, 0), meal_id=1, user_id=1, food_id=1)
 
     # Add a sample symptom log
-    symptom_log_1 = SymptomLog(id=1, ts=datetime.now(), symptom_id=2, severity=3)
+    symptom_log_1 = SymptomLog(id=1, ts=datetime(2019, 11, 27, 8, 0, 0), symptom_id=2, severity=3)
 
     # Add a user symptom ingredient link
     user_symptom_ingredient_link_1 = UserSymptomIngredientLink(id=1, user_id=1,

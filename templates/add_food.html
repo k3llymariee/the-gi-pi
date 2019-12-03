@@ -5,28 +5,50 @@
 {% block content %}
 <div class="container"> 
     <h1>Add a food from your own history</h1>
-    <form id="db-search">
+    <div id="display-db-search"></div><br>
+    <form>
+      <div class="form-group">
+        <input type="text" class="form-control" id="db_search_term" name="db_search_term" placeholder="...or search our growing database!">
+      </div>
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+
+<!--     <form id="db-search">
         <input type="text" id="db_search_term" 
             placeholder="...or search our growing database!" 
             size="100" required />
         <input type="submit" class="btn btn-dark">
-    </form>
-    <div id="display-db-search"></div>
+    </form> -->
+<br><br>
+    
 
 
     <section id="food-search">
-        <h3>Add a food from an external database</h3>
+        <h3>Or, add a food from an external database</h3>
 
         <form id="search-food">
+          <div class="form-group">
+            <input type="text" class="form-control" id="search_term" name="search_term">
+          </div>
+          <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+<!--         <form id="search-food">
             <input type="text" id="search_term" 
                 placeholder="Search external database" size="100" required />
             <input type="submit" class="btn btn-dark"/>
-        </form>
+        </form> -->
 
 
-        <div id="display-search">
-            <br><span class="temporary">Nutritionix search results go here</span>
+        <div class="container">
+        <div class="row" id="manual_add"></div>
+
+            <div class="row" id="display-search">
+                <br><span class="temporary">Nutritionix search results go here</span>
+            </div>
         </div>
+
     </section>
 
 </div>

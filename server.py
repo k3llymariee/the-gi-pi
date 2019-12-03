@@ -129,7 +129,7 @@ def daily_view(selected_date):
         return (day_value + timedelta(days=-1)).strftime('%Y-%m-%d')
 
     user = User.query.get(session['user_id'])
-    meals = Meal.query.all()
+    meals = Meal.query.all()  # TODO: replace with meal API 
 
     day_value = datetime.strptime(selected_date, '%Y-%m-%d')
     
@@ -163,8 +163,6 @@ def daily_view(selected_date):
                         )
 
 
-# TODO: this route isn't actually hooked up to anything
-
 @app.route('/api/food_logs/<selected_date>', methods=['GET'])
 def read_daily_food_logs(selected_date):
     """Read daily food logs for a certain user"""
@@ -181,32 +179,6 @@ def read_daily_food_logs(selected_date):
                       })    
 
     return jsonify({'food_logs': return_food_logs})
-
-
-@app.route('/api/user_daily_foods', methods=['GET'])
-def read_daily_foods():
-
-    user = User.query.get(session['user_id'])
-    selected_date = request.args.get('selected_date')
-    day_value = datetime.strptime(selected_date, '%Y-%m-%d')
-
-    user_food_logs = FoodLog.query \
-                    .filter(extract('year', FoodLog.ts) == day_value.year,
-                            extract('month', FoodLog.ts) == day_value.month,
-                            extract('day', FoodLog.ts) == day_value.day,
-                            FoodLog.user_id == user.id).all()
-
-    food_logs = []
-    for food_log in user_food_logs:
-        food_logs.append({'id': food_log.id, 
-                      'food_name': food_log.food.name, 
-                      'ts': food_log.ts,
-                      'meal': food_log.meal.name,
-                      'food_id': food_log.food.id,
-                      })
-
-    return jsonify({'food_logs': food_logs})
-
 
 
 @app.route('/add_food', methods=['GET'])
@@ -570,7 +542,7 @@ def json_user_symptom_logs():
             user_symptom_logs[symptom_log.symptom.name] = {}
             color_choice = choice(colors_copy)
             colors_copy.remove(color_choice)
-            user_symptom_logs[symptom_log.symptom.name]['color'] = color_choice
+            user_symptom_logs[symptom_log.symptom.name]['color'] = symptom_log.symptom.display_color
             user_symptom_logs[symptom_log.symptom.name]['results'] = [{
                 'id': symptom_log.id, 
                 'title': symptom_log.symptom.name, 

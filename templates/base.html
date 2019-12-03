@@ -12,9 +12,6 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <!-- Fontawesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
-
     <!-- jQuery -->
     <script
           src="https://code.jquery.com/jquery-3.4.1.js"
@@ -22,53 +19,38 @@
           crossorigin="anonymous">
     </script>
 
+    <!-- Font awesome script -->
+    <script src="https://kit.fontawesome.com/afd81002a4.js" crossorigin="anonymous"></script>
+
     <!-- Overriding CSS -->
     <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+
+    <!-- Google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:900|Roboto+Mono:400,700|Roboto:400,400i,900&display=swap" rel="stylesheet">
 
     <title>{%block title %}title goes here{% endblock %}</title>
 
   </head>
   <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/"><i class="fab fa-connectdevelop"> </i>Demo Home</a>
+    <nav class="navbar navbar-expand-lg ">
+      <a class="navbar-brand" href="/"> <i class="fas fa-search"></i><b>The G.I. P.I.</b></a>
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           {% if session.get('user_id') %}
             <li class="nav-item">
-              <a class="nav-link" href="/add_food">
-                <i class="fas fa-utensils"></i> Add a Food
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/add_symptom">
-                <i class="far fa-heart"></i> Add a Symptom
-              </a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link" href="/my_symptoms">
                 <i class="fas fa-notes-medical"></i> My Symptoms
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/logout">
+          </ul>
+          <span class="navbar-text">
+            <a class="nav-link" href="/logout">
                 <i class="fas fa-lock-open"></i> Log out
               </a>
-            </li>
-            {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="/register">
-                <i class="far fa-clipboard"></i> Register
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/login">
-                <i class="fas fa-lock"></i> Log In
-              </a>
-            </li>
+          </span>
           {% endif %}
-        </ul>
       </div>
     </nav>
           <!-- Show flashed messages -->

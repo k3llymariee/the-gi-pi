@@ -4,24 +4,46 @@
 
 {% block content %}
 <div class="container">
-    <form action="/register" method="POST">
-      <div class="form-group" id="register-form">
-        <label for="InputEmail1">Email address</label>
-        <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Enter email" required>
-        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-      </div>
-      <div class="form-group">
-        <label for="InputPassword1">Password</label>
-        <input type="password" class="form-control" name="password" aria-describedby="passwordHelp" id="InputPassword1" placeholder="Enter password" required>
-        <small id="passwordHelp" class="form-text text-muted">Passwords must be 8-16 characters in length and contain at least one number.</small>
-      </div>
-      <div class="form-group">
-        <label for="InputPassword2">Confirm Password</label>
-        <input type="password" class="form-control" name="confirm_password" id="InputPassword2" placeholder="Confirm password" required>
-      </div>
-      
-      <button type="submit" class="btn btn-primary">Submit</button>
+  <div class="row">
+    <div class="col-sm" id="register-user">
+      <h1>Register new user.</h1>
+      <form action="/register" method="POST">
+        <div class="form-group" id="register-form">
+          <label for="InputEmail1">Email address</label>
+          <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Enter email" required>
+          <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group">
+          <label for="InputPassword1">Password</label>
+          <input type="password" class="form-control" name="password" aria-describedby="passwordHelp" id="InputPassword1" placeholder="Enter password" required>
+          <small id="passwordHelp" class="form-text text-muted">Passwords must be 8-16 characters in length and contain at least one number.</small>
+        </div>
+        <div class="form-group">
+          <label for="InputPassword2">Confirm Password</label>
+          <input type="password" class="form-control" name="confirm_password" id="InputPassword2" placeholder="Confirm password" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+    <div class="col-sm-1" id="middle-block">
+    </div>
+    <div class="col-sm" id="login-user">
+      <h1>Log in existing user.</h1>
+      <form action="/login" method="POST">
+        <div class="form-group">
+          <label for="InputEmail1">Email address</label>
+          <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Enter email" required>
+        </div>
+        <div class="form-group">
+          <label for="InputPassword1">Password</label>
+          <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+
     </form>
+    </div>
+  </div>
 </div>
 
 {% endblock %}

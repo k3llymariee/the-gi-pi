@@ -41,25 +41,29 @@ $('#search-food').on('submit', (evt) => {
         
         const foods = res["foods"]
         const container = $('#display-search');
+        const manualAdd = $('#manual_add')
+        manualAdd.empty()
         container.empty()
-        container.append(`<br><p>
+        manualAdd.append(`<br><br><p>
                             Still can't find what you're looking for? 
                             <a href='/manual_add'>Add it manually</a>
                         </p>`)
 
         for (const food of foods) {
+
             container.append(`
-                <div class='food'>
-                    <p>Brand: ${food.brand_name}</p>
-                    <p>Name: ${food.brand_name_item_name}</p>
-                    <img src='${food.photo.thumb}' /><br>
-                    <p>NIX ID: ${food.nix_item_id}</p>
-                    <p><a href="nutrionix_check/${food.nix_item_id}"
-                        id="${food.nix_item_id}">
-                        Add this food
-                    </a></p>
-                </div>`
-            );
+                <div class="col mb-4">
+                    <div class="card" style="width: 18rem;">
+                        <img src="${food.photo.thumb}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">${food.brand_name_item_name}</h5>
+                            <p class="card-text">(${food.brand_name})</p>
+                            <a href="nutrionix_check/${food.nix_item_id}"
+                                id="${food.nix_item_id}" class="btn btn-primary">Add food</a>
+                        </div>
+                    </div>
+                </div>
+                `);
 
             $(`#${food.nix_item_id}`).on('click', (evt) => {
 
@@ -69,10 +73,9 @@ $('#search-food').on('submit', (evt) => {
                 if(confirm(res['text'] + res['food_name'] + '\n\n Ingredients:' + res['ingredients']))
                     window.location.href=`/nutrionix/${food.nix_item_id}`
               });
-            });
-
-            
+            });   
         };
+        container.append('</div>')
     });
   });
 
