@@ -89,27 +89,3 @@ a:hover {
     border-radius: .25rem;
     color: #032059;
 }
-
-:root { 
-    --blue:#1D52F2;   /* mine */
-    --indigo:#6610f2;
-    --purple:#6f42c1;
-    --pink:#e83e8c;
-    --red:#F2385A;  /* mine */
-    --orange:#fd7e14;
-    --yellow:#ffc107;
-    --green:#1DC77D;  /* mine */
-    --teal:#20c997;
-    --cyan:#17a2b8;
-    --white:#fff;
-    --gray:#6c757d;
-    --gray-dark:#667084;  /* mine */
-    --primary:#1D52F2;   /* mine, same as blue */
-    --secondary:#6c757d;
-    --success:#28a745;
-    --info:#17a2b8;
-    --warning:#ffc107;
-    --danger:#dc3545;
-    --light:#f8f9fa;
-    --dark:#343a40;
-}

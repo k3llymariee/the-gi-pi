@@ -87,7 +87,7 @@ $('#db-search').on('submit', (evt) => {
     $.get(`/db_food_search/${dbSearchTerm}`, (res) => {
         
         const foods = res["foods"]
-        const container = $('#display-db-search');
+        const container = $('#display-db-search-specific');
         container.empty()
         $('#empty-db').empty()
 
