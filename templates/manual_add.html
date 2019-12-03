@@ -10,6 +10,42 @@
     <h1>Add a food manually</h1>
 
     <form id="manual-add-form" action="/manual_add" method="POST">
+        <div class="row">
+            <div class="col">
+                <label for="brand_name">Brand Name</label>
+                <input type="text" class="form-control" name="brand_name" id="brand_name">
+            </div>
+            <div class="col">
+                <label for="food_name">Food Name</label>
+                <input type="text" class="form-control" name="food_name" id="food_name" required>
+            </div>
+        </div><br>
+        <div class="row">
+            <div class="col">
+                <label for="ingredients">Ingredients</label>
+                <textarea class="form-control" id="ingredients" name="ingredients" rows="3" required></textarea>
+            </div><br>
+        </div><br>
+        <div class="row">
+            <div class="col-4">
+                <label for="time_eaten">What time did you eat this?</label>
+                <input type="datetime-local" class="form-control" name="time_eaten" id="time_eaten">
+            </div>
+        </div><br>
+        <div class="row">
+            <div class="col-4">
+                <label for="meal_to_add">For which meal?</label>
+                <select class="custom-select" id="meal_to_add" name="meal_to_add">
+                    {% for meal in meals %}
+                    <option value="{{ meal.id }}">{{ meal.name.capitalize() }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div><br><br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+<!--     <form id="manual-add-form" action="/manual_add" method="POST">
         Brand name: <input type="text" name="brand_name" id="brand_name" size="50" /><br>
         Food name: <input type="text" name="food_name" id="food_name" size="50" required><br>
         Ingredients: <br>
@@ -22,7 +58,7 @@
             {% endfor %}
         </select><br>
         <input type="submit" />
-    </form>
+    </form> -->
 </div>
 
 {% endblock %}
