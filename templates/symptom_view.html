@@ -3,11 +3,11 @@
     <meta charset='utf-8' />
 
     <link href='/static/fullcalendar/packages/core/main.css' rel='stylesheet' />
-    <link href='/static/fullcalendar/packages/list/main.css' rel='stylesheet' />
+    <link href='/static/fullcalendar/packages/daygrid/main.css' rel='stylesheet' />
     <link href='/static/fullcalendar/packages/bootstrap/main.css' rel='stylesheet' />
 
     <script src='/static/fullcalendar/packages/core/main.js'></script>
-    <script src='/static/fullcalendar/packages/list/main.js'></script>
+    <script src='/static/fullcalendar/packages/daygrid/main.js'></script>
     <script src='/static/fullcalendar/packages/bootstrap/main.js'></script>
 
     <script src='/static/js/calendar.js'></script>
@@ -23,8 +23,16 @@
 </div> -->
 
 <div class="container">
-<h1><span id="symptom_header" name={{symptom.name}}>All the times you felt: {{ symptom.name }}</span></h1>
-    <div id="symptom_logs">
+    <div class="row">
+        <div class="col">
+            <h1><span id="symptom_header" name={{symptom.name}}>
+                Recent {{ symptom.name }} experiences: 
+            </span></h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+<!--     <div id="symptom_logs">
         <ul>
         {% if not symptoms %}
             Oops! Looks like there's nothing to see here 👀
@@ -33,44 +41,50 @@
             <li> OLD: {{ symptom.ts.strftime('%A, %B %d @ %I:%M %p') }}</li>
         {% endfor %}
         </ul>
+    </div> -->
+            <div id="weekly-calendar"></div>
+        </div>
     </div>
-
-<h2>Ingredients that might be related to this symptom:</h2>
-    <ul>
-        {% if not common_ingredients %}
-            None yet! We need to collect more data 👩🏽‍🔬
-        {% endif %}
-        {% for ingredient in common_ingredients %}
-            <li> 
-                {{ingredient['ingredient']}} 
-                    {% for i in range (ingredient['count']) %} <i class="fas fa-circle"></i> {% endfor %}
-                {% if ingredient['count'] > 2 %}
-                    <a href="/new_link" id="{{ingredient['ingredient_id']}}">
-                        <i class="fas fa-link"></i>
-                    </a>
-                    
-                    <script>
-                    $('#{{ingredient['ingredient_id']}}').on('click', (evt) => {
-                        evt.preventDefault();
-
-                        if (confirm("Confirm {{ingredient['ingredient']}} as a cause of {{symptom.name}}")) {
-
-                            const formInputs = {
-                                'ingredient_id': {{ingredient['ingredient_id']}},
-                                'symptom_id': {{symptom.id}}
-                            };
-
-                            $.post('/new_link', formInputs, (res) => {
-                                window.location.href = "/user_symptoms";
-                            });
-                        }
-                    });
-                </script>
-
+    <br>
+    <div class="row">
+        <div class="col">
+            <h3>Ingredients that might be related to this symptom:</h3>
+            <ul>
+                {% if not common_ingredients %}
+                    None yet! We need to do more sleuthing 🕵🏻‍♀️
                 {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
+                {% for ingredient in common_ingredients %}
+                    <li> 
+                        {{ingredient['ingredient']}} 
+                            {% for i in range (ingredient['count']) %} <i class="fas fa-circle"></i> {% endfor %}
+                        {% if ingredient['count'] > 2 %}
+                            <a href="/new_link" id="{{ingredient['ingredient_id']}}">
+                                <i class="fas fa-link"></i>
+                            </a>
+                            
+                            <script>
+                                $('#{{ingredient['ingredient_id']}}').on('click', (evt) => {
+                                    evt.preventDefault();
+
+                                    if (confirm("Confirm {{ingredient['ingredient']}} as a cause of {{symptom.name}}")) {
+
+                                        const formInputs = {
+                                            'ingredient_id': {{ingredient['ingredient_id']}},
+                                            'symptom_id': {{symptom.id}}
+                                        };
+
+                                        $.post('/new_link', formInputs, (res) => {
+                                            window.location.href = "/user_symptoms";
+                                        });
+                                    }
+                                });
+                            </script>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
@@ -79,6 +93,7 @@
 <script>
     const symptomID = {{symptom.id}};
     const symptomName = $('#symptom_header').attr('name')
+
 </script>
 <script src='/static/js/moment.js'></script>
 <script src='/static/js/moment-timezone.js'></script>

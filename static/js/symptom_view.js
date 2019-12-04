@@ -49,29 +49,51 @@ const insertSymptomData = (res) => {
 
 // begin calendar
 document.addEventListener('DOMContentLoaded', function() {
-  const calendarEl = document.getElementById('ccalendar');
+  const calendarEl = document.getElementById('weekly-calendar');
+
 
   $.get('/api/user_symptom_logs', (res) => {
 
+    console.log('OG RES:', res);
+    console.log('type of res:', typeof(res));
+
+    console.log('Symptom name', symptomName);
+
+    const symptomResults = res[symptomName]['results']; // 
+    console.log('symptom results', symptomResults)
+    console.log('typof', typeof(symptomResults));
+
+  
     const calendar = new FullCalendar.Calendar(calendarEl, {
-        plugins: [ 'list'],
-        // themeSystem: 'bootstrap',
-        defaultView: 'listYear',
-        height: 500,
-        width: 300,
+      // schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
+      plugins: [ 'dayGrid', 'bootstrap' ],
+      defaultView: 'dayGridWeek',
+      height: 200,
+      // events: res['heartburn']['results'],
+      // eventColor: res['heartburn']['color'],
+      themeSystem: 'bootstrap',
     });
+
     calendar.render();
 
-    const symptom_logs = res[symptomName]['results']
-    for (const symptom_log in symptom_logs) {
-        const logEvent = {
-            id: symptom_logs[symptom_log]['id'],
-            title: symptom_logs[symptom_log]['title'],
-            start: symptom_logs[symptom_log]['start'],
+
+      // symptom = string ('heartburn')
+    for (const symptom_log of symptomResults) {
+        // symptom_log_object = object
+          const logEvent = {
+            id: symptom_log['id'],
+            title: symptom_log['title'],
+            start: symptom_log['start'],
             color: res[symptomName]['color'],
-        };
+          };
+
           calendar.addEvent(logEvent);
-    }
+      }
+    
+
+    // first initialize the calendar, and then loop through the res symptoms to 
+    // add to the color per symptom (with their respective colors!)
+
   })
 });
 // end calendar
