@@ -12,6 +12,22 @@ img {
     height: 12em;    
 }
 
+.alert-info {
+    background-color: #FFC7D5;
+}
+
+.fc-day-header {
+    font-family: 'Roboto Mono', monospace;
+}
+
+.navbar-brand {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.nav-link {
+    color: white;
+}
+
 .temporary {
     color: red;
     font-style: italic;

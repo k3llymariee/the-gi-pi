@@ -4,15 +4,28 @@
 
 {% block content %}
 <div class="container"> 
-    <h1>Add a food from your own history</h1>
-    <div id="display-db-search"></div><br>
-    <form id="db-search">
-      <div class="form-group">
-        <input type="text" class="form-control" id="db_search_term" name="db_search_term" placeholder="...or search our growing database!">
-      </div>
-      <button type="submit" class="btn btn-primary">Search</button>
-    </form>
-    <div id="display-db-search-specific"></div><br>
+    <div class="row">
+        <div class="col-7">
+            <h1>Add a food</h1>
+            <h2>Search our database by name or brand:</h2>
+            <form id="db-search">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="db_search_term" name="db_search_term" placeholder="..our database grows every day!">
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+            <div id="display-db-search-specific"></div><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h4>Or, add a food from your recent history:</h4>
+            <div id="display-db-search"></div><br>
+        </div>
+    </div>
+        
+    
+    
 
 
 <!--     <form id="db-search">

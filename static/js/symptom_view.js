@@ -54,14 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   $.get('/api/user_symptom_logs', (res) => {
 
-    console.log('OG RES:', res);
-    console.log('type of res:', typeof(res));
-
-    console.log('Symptom name', symptomName);
-
     const symptomResults = res[symptomName]['results']; // 
-    console.log('symptom results', symptomResults)
-    console.log('typof', typeof(symptomResults));
 
   
     const calendar = new FullCalendar.Calendar(calendarEl, {
