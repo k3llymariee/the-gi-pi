@@ -46,6 +46,10 @@ const insertSymptomData = (res) => {
     container.append('</ul>')
 }
 
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
 
 // begin calendar
 document.addEventListener('DOMContentLoaded', function() {

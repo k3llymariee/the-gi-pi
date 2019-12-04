@@ -3,15 +3,14 @@
 const getFoodData = () => {
     // Get the up to date food data from DB for the signed in user
 
-    $.get('/user_foods.json', insertFoodData);
+    $.get('/user_foods.json', (res) => insertFoodData(res, $('#display-db-search')));
 }
 
-const insertFoodData = (res) => {
+const insertFoodData = (res, container) => {
     // Once the data has been provided by the server,
     // insert it into the page as an HTML string.
 
     const listOfFoods = res.foods;
-    const container = $('#display-db-search');
     container.empty();
     container.append('<ul>')
 
