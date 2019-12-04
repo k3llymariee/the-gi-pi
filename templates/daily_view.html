@@ -35,7 +35,55 @@
     </ul>
     <br><br>
     <button class="btn btn-primary" onclick="window.location.href = '/add_food';">Add food!</button>
-    <button class="btn btn-primary" onclick="window.location.href = '/add_symptom';">Add symptom!</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addSymptomModal">Add symptom!</button>
+
+    <div class="modal fade" id="addSymptomModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title in-modal" id="exampleModalLabel">Add a Symptom</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <form action="/add_symptom" method="POST">
+            <div class="modal-body in-modal">
+                <div class="container">
+                    <!-- <h3>Add a symptom</h3> -->
+                        
+                            <div class="form-group">
+                                <label class="my-1 mr-2" for="symptom_to_add">Symptom Felt</label>
+                                <select class="custom-select my-1 mr-sm-2" name="symptom_to_add" id="symptom_to_add">
+                                    {% for symptom in symptoms %}
+                                        <option value="{{ symptom.id }}">{{ symptom.name.capitalize() }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="time_eaten">Time felt</label>
+                                <input type="datetime-local" class="form-control" id="symptom_time" name="symptom_time">
+                            </div>
+                            <div class="form-group">
+                                <label for="symptom_severity">Symptom Severity</label>
+                                <div class="d-flex justify-content-center my-4">
+                                    <span class="font-weight-bold">1</span>
+                                    <input type="range" class="custom-range" min="1" max="5" id="symptom_severity" name="symptom_severity"/>
+                                    <span class="font-weight-bold"> 5 </span>
+                                </div>
+                            </div>
+                            <!-- <br><button type="submit" class="btn btn-primary">Submit</button><br> -->
+                </div>
+            </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <!-- <button type="button" class="btn btn-primary">Send message</button> -->
+          </div>
+      </form>
+        </div>
+      </div>
+    </div>
 
 <br>
 
@@ -44,6 +92,7 @@
 {% endblock %}
 
 {% block js %}
+<script src='/static/js/add_symptom.js'></script>
 <script src='/static/js/moment.js'></script>
 <script src='/static/js/moment-timezone.js'></script>
 <script>

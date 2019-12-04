@@ -4,30 +4,37 @@
 
 {%block content %}
 <div class="container">
-    <h2>Add a symptom</h2>
+    <div class="row">
+        <div class="col-4">
+            <h3>Add a symptom</h3>
 
-    <form action="/add_symptom" method="POST">
-        Symptom Felt: 
-        <select name="symptom_to_add">
-            {% for symptom in symptoms %}
-            <option value="{{ symptom.id }}">{{ symptom.name.capitalize() }}</option>    
-            {% endfor %}
-        </select>
-        <br>
-        Time felt: <input type="datetime-local" id="symptom_time" name="symptom_time" class="boxy" required/><br>
-        Severity: 
-
-        <label for="symptom_severity">Symptom Severity</label>
-            <input type="range" class="custom-range" min="1" max="5" id="symptom_severity" name="symptom_severity">
-
-<!--         <select name="symptom_severity">
-            {% for i in range(1, 6) %}
-            <option value="{{ i }}">{{ i }}</option>    
-            {% endfor %} -->
-        <!-- </select> -->
-        <br><input type="submit" /><br>
-            
-    </form>
+            <form action="/add_symptom" method="POST">
+                <div class="form-group">
+                    <label class="my-1 mr-2" for="symptom_to_add">Symptom Felt</label>
+                    <select class="custom-select my-1 mr-sm-2" name="symptom_to_add" id="symptom_to_add">
+                        {% for symptom in symptoms %}
+                            <option value="{{ symptom.id }}">{{ symptom.name.capitalize() }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="time_eaten">Time felt</label>
+                    <input type="datetime-local" class="form-control" id="symptom_time" name="symptom_time">
+                </div>
+                <div class="form-group">
+                    <label for="symptom_severity">Symptom Severity</label>
+                    <div class="d-flex justify-content-center my-4">
+                        <span class="font-weight-bold">1</span>
+                        <input type="range" class="custom-range" min="1" max="5" id="symptom_severity" name="symptom_severity"/>
+                        <span class="font-weight-bold"> 5 </span>
+                    </div>
+                </div>
+                    <br><button type="submit" class="btn btn-primary">Submit</button><br>
+                </div>
+                    
+            </form>
+        </div>
+    </div>
 <div>
 {% endblock %}
 

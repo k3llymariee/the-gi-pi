@@ -30,7 +30,7 @@ textarea {
     font-family: 'Roboto Mono', monospace;
 }   
 
-h1, h3 {
+h1, h3, h5 {
     font-family: 'Montserrat', sans-serif;
     color: #FFC7D5;
 }
@@ -51,6 +51,11 @@ body {
     color:#fff;
     background-color:#1D52F2;
     border-color:#1D52F2}
+
+.btn-primary:disabled {
+    color:#fff;
+    background-color:#667084;
+    border-color:#667084}
 
 a {
     color: #F2385A;
@@ -87,5 +92,30 @@ a:hover {
     background-clip: border-box;
     border: 1px solid rgba(0,0,0,.125);
     border-radius: .25rem;
+    color: #032059;
+}
+
+.custom-range::-webkit-slider-thumb {
+  background: #E93D98;
+  border-color: #E93D98;
+}
+
+.custom-range::-webkit-slider-thumb:hover {
+  background: #FFC7D5;
+}
+
+.tickmark {
+    font-weight: normal;
+    display: block;
+    white-space: pre;
+    min-height: 1.2em;
+    padding: 0px 2px 1px;
+}
+
+#symptom_severity {
+    display: inline-block;
+}
+
+.in-modal {
     color: #032059;
 }

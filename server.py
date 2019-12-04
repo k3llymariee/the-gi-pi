@@ -130,6 +130,7 @@ def daily_view(selected_date):
 
     user = User.query.get(session['user_id'])
     meals = Meal.query.all()  # TODO: replace with meal API 
+    symptoms = Symptom.query.all()
 
     day_value = datetime.strptime(selected_date, '%Y-%m-%d')
     
@@ -160,6 +161,7 @@ def daily_view(selected_date):
                         user_foods=user_foods,
                         user_symptoms=user_symptoms,
                         meals=meals,
+                        symptoms=symptoms,
                         )
 
 
@@ -442,11 +444,6 @@ def get_user_symptom_logs():
 
     return jsonify({'symptom_experiences': symptom_experiences})
 
-@app.route('/display_new')
-def display_base():
-    """Route to test base.html"""
-
-    return render_template('new_daily_view.html')
 
 @app.route('/symptom_view/<symptom_id>')
 def symptom_detail(symptom_id):
