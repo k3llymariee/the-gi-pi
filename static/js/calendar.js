@@ -6,21 +6,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
   $.get('/api/user_symptom_logs', (res) => {
 
-    const tooltip = (info) => {
-      const tooltip = new Tooltip(info.el, {
-        title: 'hi hello',
-        html: true,
-        placement: 'top',
-        trigger: 'click',
-        container: 'body'
-      })
+    const tooltipWrapper = info => {
+      console.log(info);
+      $(info.el).tooltip({
+            title: 'asfddfgadfg',
+            container: "body"
+        });
     };
 
     const calendar = new FullCalendar.Calendar(calendarEl, {
       plugins: [ 'dayGrid', 'bootstrap' ],
       themeSystem: 'bootstrap',
       events: [],
-      // eventRender: tooltip,
+      eventRender: tooltipWrapper,
     });
 
     calendar.render();
@@ -34,7 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
             title: symptom_log['title'],
             start: symptom_log['start'],
             color: res[symptom]['color'],
-
+            // extendedProps: {
+            //   eventRender: info => {
+            //     console.log('asdfdsf', info);
+            //   }
+            // }
           };
 
           calendar.addEvent(logEvent);

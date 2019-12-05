@@ -1,15 +1,9 @@
-div.food {
-    border-radius: 3px;
-    border: 3px solid black;
-    width: 20em;
-    height: 21em;
-    margin: 2em;
-    padding: 1em;
-    display: inline-block;
-}
-
-img {
-    height: 12em;    
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 cite {
@@ -21,6 +15,10 @@ cite {
 }
 
 .fc-day-header {
+    font-family: 'Roboto Mono', monospace;
+}
+
+.fc-day-number {
     font-family: 'Roboto Mono', monospace;
 }
 
@@ -55,7 +53,7 @@ textarea {
     font-family: 'Roboto Mono', monospace;
 }   
 
-h1, h3, h5 {
+h1, h2, h3, h5 {
     font-family: 'Montserrat', sans-serif;
     color: #FFC7D5;
 }
