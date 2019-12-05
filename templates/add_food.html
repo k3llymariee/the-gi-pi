@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container"> 
     <div class="row">
-        <div class="col-7">
+        <div class="col-8">
             <h1>Add a food</h1>
             <h2>Search our database by name or brand:</h2>
             <form id="db-search">
@@ -13,7 +13,7 @@
                     <input type="text" class="form-control" id="db_search_term" name="db_search_term" placeholder="..our database grows every day!">
                 </div>
                 <button type="submit" class="btn btn-primary">Search</button>
-            </form>
+            </form><br>
             <div id="display-db-search-specific"></div><br>
         </div>
     </div>
@@ -23,30 +23,21 @@
             <div id="display-db-search"></div><br>
         </div>
     </div>
-        
+
+    <br><br>
     
-    
+    <div class="row">
+        <div class="col-8">
+            <h2>OR, add a food from an external database:</h2>
 
-
-<!--     <form id="db-search">
-        <input type="text" id="db_search_term" 
-            placeholder="...or search our growing database!" 
-            size="100" required />
-        <input type="submit" class="btn btn-dark">
-    </form> -->
-<br><br>
-    
-
-
-    <section>
-        <h3>Or, add a food from an external database</h3>
-
-        <form id="search-food">
-          <div class="form-group">
-            <input type="text" class="form-control" id="search_term" name="search_term">
-          </div>
-          <button type="submit" class="btn btn-primary">Search</button>
-        </form>
+            <form id="search-food">
+              <div class="form-group">
+                <input type="text" class="form-control" id="search_term" name="search_term" placeholder="We give you lots of options :)">
+              </div>
+              <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
 
 <!--         <form id="search-food">
             <input type="text" id="search_term" 
@@ -58,9 +49,7 @@
         <div class="container">
             <div class="row" id="manual_add"></div>
 
-                <div class="row row-cols-1 row-cols-md-2" id="display-search">
-                    <br><span class="temporary">Nutritionix search results go here</span>
-                </div>
+                <div class="row row-cols-1 row-cols-md-2" id="display-search"></div>
         </div>
 
     </section>

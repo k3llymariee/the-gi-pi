@@ -12,12 +12,21 @@ img {
     height: 12em;    
 }
 
+cite {
+    font-size: 75%;
+}
+
 .alert-info {
-    background-color: #FFC7D5;
+    background-color: #FFFFFF;
 }
 
 .fc-day-header {
     font-family: 'Roboto Mono', monospace;
+}
+
+.card-title {
+    margin-bottom: .75rem;
+    color: #032059;
 }
 
 .navbar-brand {
@@ -96,6 +105,23 @@ a:hover {
     color: #FFC7D5!important;
 }
 
+.tooltip-inner {
+    background-color: #A62690;
+}
+
+.arrow {
+    border-left-color: #A62690;
+}
+
+
+.card-img-top {
+    width: 100%;
+    border-top-left-radius: calc(2.25rem - 1px);
+    border-top-right-radius: calc(2.25rem - 1px);
+    height: 90%;
+    max-height: 200;
+}
+
 .card {
     position: relative;
     display: -ms-flexbox;
@@ -104,10 +130,10 @@ a:hover {
     flex-direction: column;
     min-width: 0;
     word-wrap: break-word;
-    background-color: #fff;
+    background-color: rgba(255,255,255,1);
     background-clip: border-box;
     border: 1px solid rgba(0,0,0,.125);
-    border-radius: .25rem;
+    border-radius: 2.25rem;
     color: #032059;
 }
 
@@ -126,6 +152,10 @@ a:hover {
     white-space: pre;
     min-height: 1.2em;
     padding: 0px 2px 1px;
+}
+
+.col-1.add-foods {
+    max-width: 3%;
 }
 
 #symptom_severity {

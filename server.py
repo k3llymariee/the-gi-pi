@@ -301,7 +301,7 @@ def search_user_foods():
 
     foods = []
     for food in user_foods:
-        foods.append({'name': food.name, 
+        foods.append({'food_name': food.name, 
                       'brand': food.brand_name, 
                       'id': food.id,
                       })
@@ -321,7 +321,7 @@ def database_search(search_term):
 
     foods = []
     for food in database_foods:
-        foods.append({'food': food.name, 
+        foods.append({'food_name': food.name, 
                       'brand': food.brand_name,
                       'id': food.id})
 

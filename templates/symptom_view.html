@@ -51,48 +51,53 @@
 
                 {% if not common_ingredients %}
                     None yet! We need to do more sleuthing 🕵🏻‍♀️
-                {% endif %}
-                <div class="row">
-                    <div class="col-2 text-right">
-                        # of times felt
-                    </div>
-                    <div class="col-3 align-self-start">
-                        ingredient
-                    </div>
-                </div>
-                {% for ingredient in common_ingredients %}
+                
+                {% else %}
                     <div class="row">
                         <div class="col-2 text-right">
-                            {% if ingredient['count'] > 3 %}
-                                <a href="/new_link" id="{{ingredient['ingredient_id']}}" data-toggle="tooltip" title="Link this as a cause of {{symptom.name}}!">
-                                    <i class="fas fa-link"></i>
-                                </a>
-                                <script>
-                                    $('#{{ingredient['ingredient_id']}}').on('click', (evt) => {
-                                        evt.preventDefault();
-
-                                        if (confirm("Confirm {{ingredient['ingredient']}} as a cause of {{symptom.name}}")) {
-
-                                            const formInputs = {
-                                                'ingredient_id': {{ingredient['ingredient_id']}},
-                                                'symptom_id': {{symptom.id}}
-                                            };
-
-                                            $.post('/new_link', formInputs, (res) => {
-                                                window.location.href = "/user_symptoms";
-                                            });
-                                        }
-                                    });
-                                </script>
-                            {% endif %}
-                            {% for i in range (ingredient['count']) %} <i class="fas fa-circle"></i> {% endfor %}
-                            
+                            # of times felt
                         </div>
                         <div class="col-3 align-self-start">
-                            {{ingredient['ingredient']}} 
+                            ingredient
                         </div>
                     </div>
-                {% endfor %}
+
+                    {% for ingredient in common_ingredients %}
+                        <div class="row">
+                            <div class="col-2 text-right">
+                                {% if ingredient['count'] > 3 %}
+                                    <a href="/new_link" id="{{ingredient['ingredient_id']}}" data-toggle="tooltip" data-placement="left" title="Link as a cause of {{symptom.name}}!">
+                                        <i class="fas fa-link"></i>
+                                    </a>
+                                    <script>
+                                        $('#{{ingredient['ingredient_id']}}').on('click', (evt) => {
+                                            evt.preventDefault();
+
+                                            $().alert()
+
+                                            if (confirm("Confirm {{ingredient['ingredient']}} as a cause of {{symptom.name}}")) {
+
+                                                const formInputs = {
+                                                    'ingredient_id': {{ingredient['ingredient_id']}},
+                                                    'symptom_id': {{symptom.id}}
+                                                };
+
+                                                $.post('/new_link', formInputs, (res) => {
+                                                    window.location.href = "/user_symptoms";
+                                                });
+                                            }
+                                        });
+                                    </script>
+                                {% endif %}
+                                {% for i in range (ingredient['count']) %} <i class="fas fa-circle"></i> {% endfor %}
+                                
+                            </div>
+                            <div class="col-3 align-self-start">
+                                {{ingredient['ingredient']}} 
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
         </div>
     </div>
 </div>
