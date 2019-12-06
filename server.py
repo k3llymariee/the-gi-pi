@@ -456,10 +456,21 @@ def symptom_detail(symptom_id):
     matched_foods = symptom.find_matched_foods(user.id)
     common_ingredients = find_common_ingredients(matched_foods)
 
+    link_query = UserSymptomIngredientLink.query.filter(
+                            UserSymptomIngredientLink.user_id == user.id,
+                            UserSymptomIngredientLink.symptom_id == symptom_id) \
+                            .all()
+
+    linked_ingredients = []
+    for link in link_query:
+        linked_ingredients.append(link.ingredient.name)
+
+
     return render_template('symptom_view.html', 
                             symptom=symptom,
                             symptoms=symptom_experiences,
                             common_ingredients=common_ingredients,
+                            linked_ingredients=linked_ingredients,
                             )
 
 @app.route('/delete_symptom_log', methods=['POST'])
@@ -557,8 +568,12 @@ def json_symptom_ingredients(symptom_name):
                                                    .all()
 
     return_list = []
-    for link in links:
-        return_list.append(link.ingredient.name)
+    
+    if links:
+        for link in links:
+            return_list.append(link.ingredient.name)
+    else:
+        return_list.append('No ingredients yet')
 
     return_string = ', '.join(return_list)
 

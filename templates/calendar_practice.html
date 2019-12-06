@@ -4,10 +4,12 @@
 
     <link href='/static/fullcalendar/packages/core/main.css' rel='stylesheet' />
     <link href='/static/fullcalendar/packages/daygrid/main.css' rel='stylesheet' />
+    <link href='/static/fullcalendar/packages/timegrid/main.css' rel='stylesheet' />
     <link href='/static/fullcalendar/packages/bootstrap/main.css' rel='stylesheet' />
 
     <script src='/static/fullcalendar/packages/core/main.js'></script>
     <script src='/static/fullcalendar/packages/daygrid/main.js'></script>
+    <script src='/static/fullcalendar/packages/timegrid/main.js'></script>
     <script src='/static/fullcalendar/packages/bootstrap/main.js'></script>
 
     <script src='/static/js/calendar.js'></script>
@@ -17,27 +19,10 @@
   {% block title %}All Symptoms{% endblock %}
   {% block content %}
 
-    <div class="container">
+    <div class="container" style="margin: 50px" style="padding: 0px">
         <div class="row">
-            <div class="col-4">
-                <h3>Flagged Ingredients:</h3>
-                {% if not user_symptoms %}
-                    None yet! We need to do more sleuthing 🕵🏻‍♀️
-                {% else %}
-                    <ul>
-                        {% for symptom in user_symptoms %}
-                            <li>Ingredients that cause {{symptom.name}}</li>
-                                <ul>
-                                    {% for intolerance in intolerances %}
-                                        {% if intolerance.symptom.name == symptom.name %}
-                                            <li>{{ intolerance.ingredient.name }}</li>
-                                        {% endif %}
-                                    {% endfor %}
-                                
-                                </ul>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
+            <div class="col-3">
+                <h4><br><br><br>Hover over a symptom to see ingredients that you've flagged as a cause!</h4>
             </div>
             <div class="col">
                 <div id='calendar'></div>

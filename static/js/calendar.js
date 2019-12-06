@@ -14,10 +14,16 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const calendar = new FullCalendar.Calendar(calendarEl, {
-      plugins: [ 'dayGrid', 'bootstrap' ],
+      plugins: [ 'dayGrid', 'bootstrap', 'timeGrid'],
       themeSystem: 'bootstrap',
+      defaultView: 'dayGridMonth',
       events: [],
       eventRender: tooltipWrapper,
+      header: {
+        left: 'dayGridMonth,timeGridWeek,timeGridDay',
+        center: 'title',
+        right:  'today prev,next'
+      }
     });
 
     calendar.render();
@@ -42,9 +48,5 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     
     }
-
-    // first initialize the calendar, and then loop through the res symptoms to 
-    // add to the color per symptom (with their respective colors!)
-
   });
 });

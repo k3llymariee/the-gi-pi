@@ -63,12 +63,17 @@ document.addEventListener('DOMContentLoaded', function() {
   
     const calendar = new FullCalendar.Calendar(calendarEl, {
       // schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
-      plugins: [ 'dayGrid', 'bootstrap' ],
+      plugins: [ 'dayGrid', 'bootstrap', 'list' ],
       defaultView: 'dayGridWeek',
-      height: 200,
+      height: 300,
       // events: res['heartburn']['results'],
       // eventColor: res['heartburn']['color'],
       themeSystem: 'bootstrap',
+      header: {
+        left: 'listWeek, dayGridWeek',
+        center: 'title',
+        right:  'today prev,next'
+      }
     });
 
     calendar.render();

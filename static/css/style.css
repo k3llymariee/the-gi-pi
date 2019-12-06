@@ -6,6 +6,10 @@
     margin-left: auto;
 }
 
+.already-linked {
+    color: #1DC77D;
+}
+
 cite {
     font-size: 75%;
 }
@@ -16,6 +20,15 @@ cite {
 
 .fc-day-header {
     font-family: 'Roboto Mono', monospace;
+}
+
+div.fc-center h2 {
+    font-family: 'Roboto Mono', monospace;
+    color: #FFFFFF;
+}
+
+.fc-view.fc-listWeek-view.fc-list-view.card.card-primary {
+    border-radius: .25rem;
 }
 
 .fc-day-number {
@@ -110,12 +123,6 @@ a:hover {
 .tooltip-inner {
     background-color: #A62690;
 }
-
-.tooltip .tooltip-arrow,
-.popper .popper__arrow {
-  border-color: #A62690;
-}
-
 
 .card-img-top {
     width: 100%;
