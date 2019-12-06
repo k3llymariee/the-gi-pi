@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
       events: [],
       eventRender: tooltipWrapper,
       header: {
-        left: 'dayGridMonth,timeGridWeek,timeGridDay',
+        left: 'dayGridMonth,timeGridWeek',
         center: 'title',
         right:  'today prev,next'
       }

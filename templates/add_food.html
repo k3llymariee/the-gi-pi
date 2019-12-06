@@ -10,7 +10,8 @@
             <h4>Search our database by name or brand:</h4>
             <form id="db-search">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="db_search_term" name="db_search_term" placeholder="..our database grows every day!">
+                    <input type="text" class="form-control" id="db_search_term" 
+                    name="db_search_term" placeholder="..our database grows every day!">
                 </div>
                 <button type="submit" class="btn btn-primary">Search</button>
             </form><br>
@@ -32,7 +33,8 @@
 
             <form id="search-food">
               <div class="form-group">
-                <input type="text" class="form-control" id="search_term" name="search_term" placeholder="..we give you lots of options :)">
+                <input type="text" class="form-control" id="search_term" 
+                name="search_term" placeholder="..we give you lots of options :)">
               </div>
               <button type="submit" class="btn btn-primary">Search</button>
             </form>
@@ -51,4 +53,5 @@
 
 {% block js %}
 <script src='/static/js/add_food.js'></script>
+<script src='/static/js/confirm_food.js'></script>
 {% endblock %}
