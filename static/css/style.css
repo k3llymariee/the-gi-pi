@@ -10,6 +10,16 @@
     color: #1DC77D;
 }
 
+.col-2.add-foods {
+    flex: 0;
+    margin: 3px;
+}
+
+button.btn.btn-primary.addFood {
+    background-color: #E93D98;
+    border-color: #E93D98;
+}
+
 cite {
     font-size: 75%;
 }

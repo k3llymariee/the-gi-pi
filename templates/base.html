@@ -30,41 +30,45 @@
 
     <title>{%block title %}title goes here{% endblock %}</title>
 
+    <link rel="shortcut icon" href="/static/img/mag-glass.png">
+
   </head>
   <body>
+    <div class="container">
 
-    <nav class="navbar navbar-expand-lg ">
-      <a class="navbar-brand" href="/"> <i class="fas fa-search"></i> The G.I. P.I.</a>
+      <nav class="navbar navbar-expand-lg ">
+        <a class="navbar-brand" href="/"> <i class="fas fa-search"></i> The G.I. P.I.</a>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          {% if session.get('user_id') %}
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            {% if session.get('user_id') %}
 
-          </ul>
-          <span class="navbar-text">
-            <a class="nav-link" href="/my_symptoms">
-                <i class="fas fa-notes-medical"></i> My Symptoms
-            </a>
-          </span>
-          <span class="navbar-text">
-            <a class="nav-link" href="/logout">
-                <i class="fas fa-lock-open"></i> Log out
+            </ul>
+            <span class="navbar-text">
+              <a class="nav-link" href="/my_symptoms">
+                  <i class="fas fa-notes-medical"></i> My Symptoms
               </a>
-          </span>
-          {% endif %}
+            </span>
+            <span class="navbar-text">
+              <a class="nav-link" href="/logout">
+                  <i class="fas fa-lock-open"></i> Log out
+                </a>
+            </span>
+            {% endif %}
+        </div>
+      </nav>
+            <!-- Show flashed messages -->
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+            {% endfor %}
+        {% endwith %}
       </div>
-    </nav>
-          <!-- Show flashed messages -->
-      {% with messages = get_flashed_messages() %}
-          {% for message in messages %}
-              <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-          {% endfor %}
-      {% endwith %}
 
       <!-- This is where the main content goes. -->
       {% block content %}

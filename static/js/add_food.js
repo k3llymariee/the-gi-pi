@@ -25,7 +25,7 @@ const insertFoodData = (res, container) => {
             container.append(`
             <div class="row">
                 <div class="col-2 add-foods">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addFoodModal" data-name="${currentFood.food_name}" data-id="${currentFood.id}"><i class="fas fa-plus"></i></button>
+                    <button type="button" class="btn btn-primary addFood" data-toggle="modal" data-target="#addFoodModal" data-name="${currentFood.food_name}" data-id="${currentFood.id}"><i class="fas fa-plus"></i></button>
                     <div class="modal fade" id="addFoodModal" tabindex="-1" role="dialog" aria-labelledby="addFoodModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                         <form action="/add_food" method="POST">
@@ -63,7 +63,7 @@ const insertFoodData = (res, container) => {
                       </div>
                     </div>
                 </div>
-                <div class="col-7 align-self-start">
+                <div class="col-7 justify-content-center align-self-center">
                     ${currentFood.food_name} (${currentFood.brand}) 
                 </div>
             </div>`
