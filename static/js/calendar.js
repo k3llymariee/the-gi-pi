@@ -1,15 +1,14 @@
 "use strict";
 
-
 document.addEventListener('DOMContentLoaded', function() {
   const calendarEl = document.getElementById('calendar');
 
   $.get('/api/user_symptom_logs', (res) => {
 
     const tooltipWrapper = info => {
-      console.log(info);
+      // console.log(info);
       $(info.el).tooltip({
-            title: 'asfddfgadfg',
+            title: info.event.extendedProps.description,
             container: "body"
         });
     };
@@ -32,11 +31,13 @@ document.addEventListener('DOMContentLoaded', function() {
             title: symptom_log['title'],
             start: symptom_log['start'],
             color: res[symptom]['color'],
-            // extendedProps: {
-            //   eventRender: info => {
-            //     console.log('asdfdsf', info);
-            //   }
-            // }
+            description: 
+              $.get(`/api/linked_ingredients/${symptom}`, (res) => {
+                console.log('RESRES:', res)
+                // ;debugger
+                console.log('typof', typeof(res))
+                return(res)
+              }) ;debugger
           };
 
           calendar.addEvent(logEvent);

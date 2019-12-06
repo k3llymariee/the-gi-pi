@@ -54,11 +54,11 @@
                 
                 {% else %}
                     <div class="row">
-                        <div class="col-2 text-right">
-                            # of times felt
+                        <div class="col-2 text-right" style="font-family: 'Roboto Mono', monospace;">
+                            <b><u># of times felt</u></b>
                         </div>
-                        <div class="col-3 align-self-start">
-                            ingredient
+                        <div class="col-3 align-self-start" style="font-family: 'Roboto Mono', monospace;">
+                            <b><u>ingredient</u></b>
                         </div>
                     </div>
 
@@ -83,7 +83,7 @@
                                                 };
 
                                                 $.post('/new_link', formInputs, (res) => {
-                                                    window.location.href = "/user_symptoms";
+                                                    window.location.href = "/my_symptoms";
                                                 });
                                             }
                                         });

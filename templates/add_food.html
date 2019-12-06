@@ -5,9 +5,9 @@
 {% block content %}
 <div class="container"> 
     <div class="row">
-        <div class="col-8">
+        <div class="col-9">
             <h1>Add a food</h1>
-            <h2>Search our database by name or brand:</h2>
+            <h4>Search our database by name or brand:</h4>
             <form id="db-search">
                 <div class="form-group">
                     <input type="text" class="form-control" id="db_search_term" name="db_search_term" placeholder="..our database grows every day!">
@@ -19,33 +19,25 @@
     </div>
     <div class="row">
         <div class="col">
-            <h4>Or, add a food from your recent history:</h4>
+            <h4>Add a food from your recent history:</h4>
             <div id="display-db-search"></div><br>
         </div>
     </div>
 
-    <br><br>
+    <br>
     
     <div class="row">
-        <div class="col-8">
-            <h2>OR, add a food from an external database:</h2>
+        <div class="col-9">
+            <h4>OR, add a food from an external database:</h4>
 
             <form id="search-food">
               <div class="form-group">
-                <input type="text" class="form-control" id="search_term" name="search_term" placeholder="We give you lots of options :)">
+                <input type="text" class="form-control" id="search_term" name="search_term" placeholder="..we give you lots of options :)">
               </div>
               <button type="submit" class="btn btn-primary">Search</button>
             </form>
         </div>
     </div>
-
-<!--         <form id="search-food">
-            <input type="text" id="search_term" 
-                placeholder="Search external database" size="100" required />
-            <input type="submit" class="btn btn-dark"/>
-        </form> -->
-
-
         <div class="container">
             <div class="row" id="manual_add"></div>
 

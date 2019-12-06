@@ -481,13 +481,21 @@ def link_ingredient_to_symptom():
     ingredient = Ingredient.query.get(request.form.get('ingredient_id'))
     symptom = Symptom.query.get(request.form.get('symptom_id'))
 
-    new_link = UserSymptomIngredientLink(symptom_id=symptom.id,
+    existing_link = UserSymptomIngredientLink.query.filter(
+                        UserSymptomIngredientLink.user_id == session['user_id'],
+                        UserSymptomIngredientLink.symptom_id == symptom.id,
+                        UserSymptomIngredientLink.ingredient_id == ingredient.id) \
+                    .first()
+
+    if not existing_link:
+
+        new_link = UserSymptomIngredientLink(symptom_id=symptom.id,
                                          user_id=session['user_id'],
                                          ingredient_id=ingredient.id,
                                          )
 
-    db.session.add(new_link)
-    db.session.commit()
+        db.session.add(new_link)
+        db.session.commit()
 
     return redirect('/user_symptoms')
 
@@ -517,44 +525,46 @@ def display_calendar():
 def json_user_symptom_logs():
 
     user = User.query.get(session['user_id'])
-    
     working_list = user.return_all_symptom_logs()
-
-    # loop through each symptom returned by function
-    # check to see if the symptom name already exists in the dict
-    # if it DOES exist, append new log event to the list at the key
-    # if it doesn't, create a new list at the symptom name key and then append
-
-    # heartburn: [{}]
-    # heartburn: {
-    #     color: 'blue',
-    #     results: [{}]
-    # }
-    colors = ['#00B667', '#021E5C', '#AF2796', '#FD741D', '#6BD5C8']
-    colors_copy = colors[:]
 
     user_symptom_logs = {}
     for symptom_log in working_list:
         if not user_symptom_logs.get(symptom_log.symptom.name):
             user_symptom_logs[symptom_log.symptom.name] = {}
-            color_choice = choice(colors_copy)
-            colors_copy.remove(color_choice)
             user_symptom_logs[symptom_log.symptom.name]['color'] = symptom_log.symptom.display_color
             user_symptom_logs[symptom_log.symptom.name]['results'] = [{
                 'id': symptom_log.id, 
                 'title': symptom_log.symptom.name, 
                 'start': symptom_log.ts.isoformat(),
-                'stop': symptom_log.ts.isoformat()
+                'stop': symptom_log.ts.isoformat(),
                 }]
         else:
             user_symptom_logs[symptom_log.symptom.name]['results'].append(
                      {'id': symptom_log.id, 
                       'title': symptom_log.symptom.name, 
                       'start': symptom_log.ts.isoformat(),
-                      'stop': symptom_log.ts.isoformat()
+                      'stop': symptom_log.ts.isoformat(),
                       })    
 
     return jsonify(user_symptom_logs)
+
+@app.route('/api/linked_ingredients/<symptom_name>')
+def json_symptom_ingredients(symptom_name):
+
+    symptom = Symptom.query.filter(Symptom.name == symptom_name).first()
+    links = UserSymptomIngredientLink.query.filter(UserSymptomIngredientLink.symptom_id == symptom.id,
+                                                   UserSymptomIngredientLink.user_id == session['user_id']) \
+                                                   .all()
+
+    return_list = []
+    for link in links:
+        return_list.append(link.ingredient.name)
+
+    return_string = ', '.join(return_list)
+
+    return return_string
+
+
 
 
 if __name__ == '__main__':

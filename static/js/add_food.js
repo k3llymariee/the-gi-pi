@@ -14,7 +14,8 @@ const insertFoodData = (res, container) => {
     container.empty();
 
     if (listOfFoods.length === 0) {
-        container.append('<br><i>No foods found</i>');
+        container.append(`<br><i>No foods found</i> 😢  
+                                <a href='/manual_add'>add it manually</a>`);
     }
 
     else {
@@ -28,7 +29,7 @@ const insertFoodData = (res, container) => {
                         <i class="fas fa-plus"></i>
                     </a>
                 </div>
-                <div class="col-5 align-self-start">
+                <div class="col-8 align-self-start">
                     ${currentFood.food_name} (${currentFood.brand}) 
                 </div>
             </div>`
@@ -82,8 +83,8 @@ $('#search-food').on('submit', (evt) => {
             for (const food of foods) {
 
                 container.append(`
-                    <div class="col mb-4">
-                        <div class="card" style="width: 18rem;">
+                    <div class="col-3 mb-4">
+                        <div class="card">
                             <img src="${food.photo.thumb}" class="card-img-top" alt="...">
                             <div class="card-body">
                                 <h5 class="card-title">${food.brand_name_item_name}</h5>
@@ -105,7 +106,7 @@ $('#search-food').on('submit', (evt) => {
                   });
                 });   
             };
-            container.append('Powered by &nbsp;<a href="http://www.nutritionix.com/api" target="_blank">Nutritionix API</a>')
+            // container.append('Powered by &nbsp;<a href="http://www.nutritionix.com/api" target="_blank">Nutritionix API</a>')
         }
     });
   });

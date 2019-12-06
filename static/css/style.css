@@ -51,7 +51,11 @@ textarea {
 
 #daily_date {
     font-family: 'Roboto Mono', monospace;
-}   
+}  
+
+h4 {
+    font-family: 'Roboto Mono', monospace;
+} 
 
 h1, h2, h3, h5 {
     font-family: 'Montserrat', sans-serif;
@@ -107,8 +111,9 @@ a:hover {
     background-color: #A62690;
 }
 
-.arrow {
-    border-left-color: #A62690;
+.tooltip .tooltip-arrow,
+.popper .popper__arrow {
+  border-color: #A62690;
 }
 
 
