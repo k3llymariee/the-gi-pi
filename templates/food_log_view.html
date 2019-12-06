@@ -2,10 +2,10 @@
 {% block title %}{{food_log.food.name}}{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container my-4">
 <h1>{{food_log.food.name}}</h1>
-<h2>Eaten at: {{food_log.ts}}</h2>
-<a href="/food_log_view/{{food_log.id}}" id="delete-link">Delete me</a>
+<h4>Consumed at: {{food_log.ts}} <a href="/food_log_view/{{food_log.id}}" id="delete-link" data-toggle="tooltip" data-placement="right" title="Delete this log"><i class="fas fa-trash-alt"></i></a></h2>
+
 
 <ul>
     {% for ingredient in food_log.food.ingredients %}

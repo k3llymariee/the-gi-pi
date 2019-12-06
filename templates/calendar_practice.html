@@ -15,14 +15,19 @@
     <script src='/static/js/calendar.js'></script>
     
   {% endblock %}
+  {% block lowerHead %}
+
+  <link rel="stylesheet" type="text/css" href="/static/css/tooltip.css">
+
+  {% endblock %}
 
   {% block title %}All Symptoms{% endblock %}
   {% block content %}
 
-    <div class="container-fluid" style="padding: 30px">
+    <div class="container-fluid d-flex" style="padding: 30px">
         <div class="row">
             <div class="col-3">
-                <h4><br><br><br>Hover over a symptom to see ingredients that you've flagged as a cause!</h4>
+                <h4><br><br><br><i class="fas fa-mouse-pointer"></i> Hover over a symptom to see ingredients that you've flagged as a cause!</h4>
             </div>
             <div class="col">
                 <div id='calendar'></div>

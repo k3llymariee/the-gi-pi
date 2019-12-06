@@ -24,7 +24,6 @@
 
     <!-- Overriding CSS -->
     <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/tooltip.css">
 
     <!-- Google fonts -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:900|Roboto+Mono:400,700|Roboto:400,400i,900&display=swap" rel="stylesheet">
@@ -33,11 +32,9 @@
 
     <link rel="shortcut icon" href="/static/img/female-detective.png">
 
-    {%block lowerHead %}{% endblock %}
-
   </head>
   <body>
-    <div class="container">
+    <div class="container-fluid">
 
       <nav class="navbar navbar-expand-lg ">
         <a class="navbar-brand" href="/" style="font-size: 45px"> <i class="fas fa-search"></i> The G.I. P.I.</a>
@@ -47,11 +44,6 @@
             {% if session.get('user_id') %}
 
             </ul>
-            <span class="navbar-text">
-              <a class="nav-link" href="/my_symptoms">
-                  <i class="fas fa-notes-medical"></i> My Symptoms
-              </a>
-            </span>
             <span class="navbar-text">
               <a class="nav-link" href="/logout">
                   <i class="fas fa-lock-open"></i> Log out

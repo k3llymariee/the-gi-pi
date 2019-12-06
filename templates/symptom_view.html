@@ -21,7 +21,7 @@
 {% block title %}Symptom Detail{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container my-4">
     <div class="row">
         <div class="col">
             <h1><span id="symptom_header" name={{symptom.name}}>
@@ -54,7 +54,7 @@
                         <div class="row">
                             <div class="col-2 text-right">
                                 {% if ingredient['count'] > 3 and ingredient['ingredient'] not in linked_ingredients %}
-                                    <a href="/new_link" id="{{ingredient['ingredient_id']}}" data-toggle="tooltip" data-placement="left" title="Link as a cause of {{symptom.name}}!">
+                                    <a href="/new_link" id="{{ingredient['ingredient_id']}}" class="addFood" data-toggle="tooltip" data-placement="left" title="Link as a cause of {{symptom.name}}!">
                                         <i class="fas fa-link"></i>
                                     </a>
                                     <script>
@@ -77,7 +77,7 @@
                                         });
                                     </script>
                                 {% elif ingredient['count'] > 3 and ingredient['ingredient'] in linked_ingredients %}
-                                    <span class="already-linked" data-toggle="tooltip" data-placement="left" title="Already been linked!">
+                                    <span class="already-linked" data-toggle="tooltip" data-placement="left" title="Already linked!">
                                         <i class="fas fa-link"></i>
                                     </span>
                                 {% endif %}
