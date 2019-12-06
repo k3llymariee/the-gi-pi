@@ -562,7 +562,7 @@ def json_symptom_ingredients(symptom_name):
 
     return_string = ', '.join(return_list)
 
-    return return_string
+    return jsonify(return_string)
 
 
 
