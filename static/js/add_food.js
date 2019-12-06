@@ -14,7 +14,7 @@ const insertFoodData = (res, container) => {
     container.empty();
 
     if (listOfFoods.length === 0) {
-        container.append(`<br><i>No foods found</i> 😢  
+        container.append(`<i>No foods found</i> 😢  
                                 <a href='/manual_add'>add it manually</a>`);
     }
 
@@ -138,10 +138,6 @@ const insertFoodData = (res, container) => {
     }
 }
 
-
-
-
-
 $('#search-food').on('submit', (evt) => {
     evt.preventDefault();
 
@@ -156,14 +152,14 @@ $('#search-food').on('submit', (evt) => {
         container.empty()
 
         if (foods.length === 0) {
-            manualAdd.append(`<br><br><p>
-                                No results found 😢  
+            manualAdd.append(`<p>
+                                <br>No results found 😢  
                                 <a href='/manual_add'>add it manually</a>
                             </p>`)
         }
 
         else {
-            manualAdd.append(`<div><br><p>
+            manualAdd.append(`<div><p>
                                 Still can't find what you're looking for? 
                                 <a href='/manual_add'>Add it manually</a>
                             </p>
@@ -175,18 +171,19 @@ $('#search-food').on('submit', (evt) => {
                                 </cite>
                             </p></div>`)
         
-
             for (const food of foods) {
 
                 container.append(`
                     <div class="col-3 mb-4">
                         <div class="card">
+                            <div class="card-body">
+                                <a href="nutrionix_check/${food.nix_item_id}"
+                                    id="${food.nix_item_id}" class="btn btn-primary addFood"><i class="fas fa-plus"></i></a>
+                            </div>
                             <img src="${food.photo.thumb}" class="card-img-top" alt="...">
                             <div class="card-body">
                                 <h5 class="card-title">${food.brand_name_item_name}</h5>
                                 <p class="card-text">(${food.brand_name})</p>
-                                <a href="nutrionix_check/${food.nix_item_id}"
-                                    id="${food.nix_item_id}" class="btn btn-primary">Add food</a>
                             </div>
                         </div>
                     </div>
@@ -202,7 +199,6 @@ $('#search-food').on('submit', (evt) => {
                   });
                 });   
             };
-            // container.append('Powered by &nbsp;<a href="http://www.nutritionix.com/api" target="_blank">Nutritionix API</a>')
         }
     });
   });
