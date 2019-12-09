@@ -10,7 +10,7 @@ def find_common_ingredients(ingredient_lists_list):
             all_ingredients[ingredient] = all_ingredients.get(ingredient, 0) + 1
 
     for ingredient, count in all_ingredients.items():
-        if count > 2:
+        if count > 2 and ingredient.name != 'water':
             common_ingredients.append({'ingredient_id': ingredient.id,
                                        'ingredient': ingredient.name, 
                                        'count': count})

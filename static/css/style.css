@@ -10,6 +10,10 @@
     color: #1DC77D;
 }
 
+a.addLink {
+    color: #E93D98;
+}
+
 .col-2.add-foods {
     flex: 0;
     margin: 3px;
