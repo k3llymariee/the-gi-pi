@@ -15,8 +15,8 @@ Users have the ability to find and create new foods to add to their diaries base
 ## <a name="technologies"></a>Technologies
 Backend: Python, Flask, PostgreSQL, SQLAlchemy<br/>
 Frontend: JavaScript, jQuery, AJAX, Jinja2, Bootstrap, HTML5, CSS3<br/>
-APIs: Nutritionix API<br/>
-Libraries: FullCalendar.io
+APIs: [Nutritionix API](https://www.nutritionix.com/business/api)<br/>
+Libraries: [FullCalendar.io](https://fullcalendar.io/)
 
 ## <a name="features"></a>Features
 
