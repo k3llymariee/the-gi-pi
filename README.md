@@ -36,8 +36,10 @@ The main actions a user can take are on this page - adding a food and adding a s
 This takes the user to a separate page that allows users to add a food to their log in one of four ways (the fourth is hidden!).
 
 1. Search Our database is an AJAX get request to the database for all foods that have been added by all users of the application.
+![Add food from DB](static/img/_readme-img/add_food_from_db.gif)
 
 2.  Add a food from your history is an AJAX request to the database for the foods that have been added by this specific user, in order of what had been recently added.
+![Add food from DB](static/img/_readme-img/add_food_from_history.gif)
 
 * Within this modal, when the time of the meal is entered the app will guess which meal it is based on that time, though of course you can change this if decide that 12pm cookie was only a snack!  
 
@@ -51,6 +53,7 @@ This takes the user to a separate page that allows users to add a food to their 
 This presents the user with a Bootstrap modal the enter in the symptom they’ve experienced, the time at which they felt it, and a ranking of its severity. The value for the time they experienced is defaulted to the current time using a javascript function, though the user can adjust as needed. The severity was a data point that I added after my MVP, as eventually I would like to have some kind of a data visualization of the relationships I’ve created in my database. 
 
 ### Viewing a Symptom
+![Add food from DB](static/img/_readme-img/symptom_view.gif)
 By viewing a symptom, users are presented with the history of their symptom experiences, as well as the ingredients that the system has identified as common occurrences. This is accomplished through a DB query that uses a window of time as a lookback period to first find the foods that were consumed within that window, and then their ingredients to find the number of times those ingredients appeared. 
 
 ### Flagged Ingredients
