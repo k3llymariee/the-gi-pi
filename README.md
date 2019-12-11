@@ -22,13 +22,15 @@ The G.I. P.I. is built on a Flask server with a PostgreSQL database, utilizing S
 
 ## <a name="features"></a>Features
 
+### Loggin In
 Only logged in users have access to the feature in the site - attempting to go to the homepage will redirect to the register/log in page with a flash warning. 
 
 Once a user is logged in, they will see a daily view of their food and symptom logs. This is done through a combination of Jinja and AJAX requests to my PostgreSQL database. 
 
 The main actions a user can take are on this page - adding a food and adding a symptom. 
 
-Clicking “Add Food!” takes the user to a separate page that allows users to add a food to their log in one of four ways (the fourth is hidden!).
+### Clicking “Add Food!” 
+This takes the user to a separate page that allows users to add a food to their log in one of four ways (the fourth is hidden!).
 
 1. Search Our database is an AJAX get request to the database for all foods that have been added by all users of the application.
 
@@ -39,13 +41,15 @@ Within this modal, when the time of the meal is entered the app will guess which
 3. Add a food from an external database, which is an AJAX request to a third party API called Nutritionix that provides information about branded food items.
 
 4. If all else fails, a food can also be entered in manually. 
-a. This form accepts a comma separated list of ingredients, which will be cleaned up and parsed into individual ingredients (with a server-side check to ensure that no duplicate ingredients are added).  
-b. Each method of adding a new food adds a food log event to by database through SQLalchemy. 
+⋅⋅* This form accepts a comma separated list of ingredients, which will be cleaned up and parsed into individual ingredients (with a server-side check to ensure that no duplicate ingredients are added).  
+⋅⋅* Each method of adding a new food adds a food log event to by database through SQLalchemy. 
 
-Clicking “Add Symptom!” presents the user with a Bootstrap modal the enter in the symptom they’ve experienced, the time at which they felt it, and a ranking of its severity. The value for the time they experienced is defaulted to the current time using a javascript function, though the user can adjust as needed. The severity was a data point that I added after my MVP, as eventually I would like to have some kind of a data visualization of the relationships I’ve created in my database. 
+### Clicking “Add Symptom!” 
+This presents the user with a Bootstrap modal the enter in the symptom they’ve experienced, the time at which they felt it, and a ranking of its severity. The value for the time they experienced is defaulted to the current time using a javascript function, though the user can adjust as needed. The severity was a data point that I added after my MVP, as eventually I would like to have some kind of a data visualization of the relationships I’ve created in my database. 
 
 By viewing a symptom, users are presented with the history of their symptom experiences, as well as the ingredients that the system has identified as common occurrences. This is accomplished through a DB query that uses a window of time as a lookback period to first find the foods that were consumed within that window, and then their ingredients to find the number of times those ingredients appeared. 
 
+### Flagged Ingredients
 Currently, users need to manually flag ingredients as a cause of the symptoms when the trends are shown to them. Doing so will take them to a holistic view of all their symptom occurrences. Hovering over each symptom displays a javascript tooltip that shows the symptoms they’ve flagged. 
 
 ## <a name="install"></a>Installation
