@@ -24,7 +24,7 @@ The G.I. P.I. is built on a Flask server with a PostgreSQL database, utilizing S
 
 ### Logging In
 
-![Login Redirect](/the-gi-pi/static/img/_readme-img/new_user.gif)
+![Login Redirect](static/img/_readme-img/new_user.gif)
 
 Only logged in users have access to the feature in the site - attempting to go to the homepage will redirect to the register/log in page with a flash warning. 
 
