@@ -31,25 +31,25 @@ class User(db.Model):
     password = db.Column(db.String(50), nullable=False)
     timezone = db.Column(db.String(50), default="America/Los_Angeles", nullable=False)
 
-    foods = db.relationship('Food', 
-                             secondary='food_logs',
-                             backref='users')
+    foods = db.relationship('Food',
+                            secondary='food_logs',
+                            backref='users')
 
-    symptoms = db.relationship('Symptom', 
-                             secondary='symptom_logs',
-                             backref='users')
-    
+    symptoms = db.relationship('Symptom',
+                               secondary='symptom_logs',
+                               backref='users')
+
     # TODO: add ingredients relationship
     def get_daily_food_logs(self, selected_date):
         """Return food logs for a specific date"""
         day_value = datetime.strptime(selected_date, '%Y-%m-%d')
 
         daily_food_logs = FoodLog.query \
-                          .filter(extract('year', FoodLog.ts) == day_value.year,
-                                  extract('month', FoodLog.ts) == day_value.month,
-                                  extract('day', FoodLog.ts) == day_value.day,
-                                  FoodLog.user_id == self.id) \
-                          .all()
+            .filter(extract('year', FoodLog.ts) == day_value.year,
+                    extract('month', FoodLog.ts) == day_value.month,
+                    extract('day', FoodLog.ts) == day_value.day,
+                    FoodLog.user_id == self.id) \
+            .all()
 
         return daily_food_logs
 
@@ -57,66 +57,63 @@ class User(db.Model):
         """Return all food logs for a user"""
 
         daily_food_logs = FoodLog.query \
-                          .filter(FoodLog.user_id == self.id) \
-                          .all()
+            .filter(FoodLog.user_id == self.id) \
+            .all()
 
         return daily_food_logs
 
     def return_foods(self):
         """For a given user, return distinct food items they've eaten in order
-        of most recently eaten"""
+        of most recently eaten."""
 
         user_foods = db.session.query(Food).distinct() \
-                     .join(FoodLog) \
-                     .filter(FoodLog.user_id == self.id) \
-                     .order_by(FoodLog.ts.desc()) \
-                     .limit(10).all()
+            .join(FoodLog) \
+            .filter(FoodLog.user_id == self.id) \
+            .order_by(FoodLog.ts.desc()) \
+            .limit(10).all()
 
         return user_foods
 
     def return_symptoms(self):
-        """For a given user, return all the symptoms they've experienced"""
+        """For a given user, return all the symptoms they've experienced."""
 
         distinct_symptoms = db.session.query(Symptom).distinct() \
-                            .join(UserSymptomIngredientLink) \
-                            .filter(UserSymptomIngredientLink.user_id == self.id) \
-                            .all() # TODO: consider setting limits on all .all()'s
-        
+            .join(UserSymptomIngredientLink) \
+            .filter(UserSymptomIngredientLink.user_id == self.id) \
+            .all()  # TODO: consider setting limits on all .all()'s
+
         return distinct_symptoms
-        
 
     def return_symptom_logs(self, symptom_id):
-        """For a user and a specific symptom, return 15 most recent instances of 
-        that user experiencing the symptom"""
+        """For a user and a specific symptom, return 15 most recent instances
+        of that user experiencing the symptom."""
 
-        symptom_experiences = SymptomLog.query.filter \
-                         (SymptomLog.user_id == self.id, 
-                          SymptomLog.symptom_id == symptom_id) \
-                         .order_by(SymptomLog.ts.desc()) \
-                         .limit(15).all()
+        symptom_experiences = SymptomLog.query.filter(
+                                    SymptomLog.user_id == self.id,
+                                    SymptomLog.symptom_id == symptom_id) \
+            .order_by(SymptomLog.ts.desc()) \
+            .limit(15).all()
 
         return symptom_experiences
 
     def return_all_symptom_logs(self):
-        """For a user and a specific symptom, return 15 most recent instances of 
-        that user experiencing the symptom"""
+        """For a user and a specific symptom, return 15 most recent instances
+        of that user experiencing the symptom"""
 
-        symptom_experiences = SymptomLog.query.filter \
-                         (SymptomLog.user_id == self.id) \
-                         .order_by(SymptomLog.ts.desc()) \
-                         .all()
+        symptom_experiences = SymptomLog.query.filter(
+                         SymptomLog.user_id == self.id) \
+            .order_by(SymptomLog.ts.desc()) \
+            .all()
 
         return symptom_experiences
-
 
     def return_intolerances(self):
         """For a given user, return all the symptom ingredient links"""
 
         intolerances = UserSymptomIngredientLink.query \
-                       .filter(UserSymptomIngredientLink.user_id == self.id)
+            .filter(UserSymptomIngredientLink.user_id == self.id)
 
         return intolerances
-
 
     def __repr__(self):
 
@@ -132,9 +129,9 @@ class Food(db.Model):
     name = db.Column(db.String(100), nullable=False)
     brand_name = db.Column(db.String(200), nullable=True)
 
-    ingredients = db.relationship('Ingredient', 
-                                   secondary='food_ingredients',
-                                   backref='foods')
+    ingredients = db.relationship('Ingredient',
+                                  secondary='food_ingredients',
+                                  backref='foods')
 
     @classmethod
     def add_or_return_food(cls, food_name, brand_name=None):
@@ -144,8 +141,8 @@ class Food(db.Model):
         # TODO: it's weird that you're returning two different things :thinking_face:
         existing_food = Food.query.filter(Food.name == food_name,
                                           Food.brand_name == brand_name) \
-                                          .first()
-        
+            .first()
+
         if existing_food:  # TODO: consider breaking this true/false as a separate function
             return False
 
@@ -156,12 +153,12 @@ class Food(db.Model):
             return new_food
 
     def add_ingredients_and_links(self, ingredient_str):
-        """Given a string 'list' of ingredients (separated by commas), 
+        """Given a string 'list' of ingredients (separated by commas),
         create new ingredient objects and link to food_ingredients table
 
         Ingredients will always be added at the same time a food is added
         """
-        
+
         ingredient_list = return_ingredient_list(ingredient_str)
 
         for ingredient in ingredient_list:
@@ -169,16 +166,15 @@ class Food(db.Model):
                                     .filter(Ingredient.name == ingredient) \
                                     .first()
 
-            if existing_ingredient: 
+            if existing_ingredient:
                 self.ingredients.append(existing_ingredient)
-            else: 
+            else:
                 self.ingredients.append(Ingredient(name=ingredient))
 
         db.session.commit()
 
         return None
 
-    
     def __repr__(self):
         """Human readable representation of a Food object"""
 
@@ -193,7 +189,6 @@ class Ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
 
-
     def __repr__(self):
 
         return f"<Ingredient id={self.id} name={self.name}>"
@@ -206,10 +201,9 @@ class FoodIngredient(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     food_id = db.Column(db.Integer, db.ForeignKey('foods.id'), nullable=False)
-    ingredient_id = db.Column(db.Integer, 
-                              db.ForeignKey('ingredients.id'), 
+    ingredient_id = db.Column(db.Integer,
+                              db.ForeignKey('ingredients.id'),
                               nullable=False)
-
 
     def __repr__(self):
 
@@ -241,13 +235,12 @@ class Symptom(db.Model):
         for symptom_log in symptom_logs:
             food_logs.extend(symptom_log.match_foods(self.window_minutes))  #match foods for symptom LOG
 
-        # create a list of ingredient lists for comparison 
+        # create a list of ingredient lists for comparison
         ingredient_lists_list = [] 
         for food_log in food_logs:
             ingredient_lists_list.append(food_log.food.ingredients)
 
         return ingredient_lists_list  # finds foods for all food logs for one SYMPTOM
-
 
     def __repr__(self):
         """Human readable representation of a Symptom object"""
@@ -270,10 +263,10 @@ class FoodLog(db.Model):
     user = db.relationship('User', backref='food_logs')
     meal = db.relationship('Meal')
 
-
     def __repr__(self):
 
         return f"<FoodLog id={self.id} date={self.ts} meal={self.meal_id}>"
+
 
 class Meal(db.Model):
 
@@ -303,12 +296,11 @@ class SymptomLog(db.Model):
         window_begin = self.ts - timedelta(minutes=window_minutes)
 
         matched_food_logs = FoodLog.query \
-                            .filter(FoodLog.user == self.user,
-                            FoodLog.ts.between(window_begin, self.ts)) \
-                            .all()
+            .filter(FoodLog.user == self.user,
+                    FoodLog.ts.between(window_begin, self.ts)) \
+            .all()
 
         return matched_food_logs
-
 
     def __repr(self):
 
@@ -330,10 +322,10 @@ class UserSymptomIngredientLink(db.Model):
     user = db.relationship('User', backref='user_symptom_food_links')
     ingredient = db.relationship('Ingredient', backref='user_symptom_food_links')
 
-
     def __repr__(self):
 
         return f"<SymptomFood id={self.id}>"
+
 
 def init_app():
     from flask import Flask
@@ -341,6 +333,7 @@ def init_app():
 
     connect_to_db(app)
     print("Connected to DB")
+
 
 def example_data():
     """Create sample data for testing"""
@@ -383,9 +376,9 @@ def example_data():
     ingrd_6 = Ingredient(id=6, name='pea protein powder')
     ingrd_7 = Ingredient(id=7, name='orange zest')
 
-    db.session.add_all([user_1, symp_1, symp_2, symp_3, symp_4, symp_5, meal_1, 
-                        meal_2, meal_3, meal_4, food_1, ingrd_1, ingrd_2, 
-                        ingrd_3, ingrd_4, ingrd_5, ingrd_6, ingrd_7, 
+    db.session.add_all([user_1, symp_1, symp_2, symp_3, symp_4, symp_5, meal_1,
+                        meal_2, meal_3, meal_4, food_1, ingrd_1, ingrd_2,
+                        ingrd_3, ingrd_4, ingrd_5, ingrd_6, ingrd_7,
                         ])
     db.session.commit()
 
@@ -405,15 +398,17 @@ def example_data():
     symptom_log_1 = SymptomLog(id=1, ts=datetime(2019, 11, 27, 8, 0, 0), symptom_id=2, severity=3)
 
     # Add a user symptom ingredient link
-    user_symptom_ingredient_link_1 = UserSymptomIngredientLink(id=1, user_id=1,
-                                    symptom_id=2, ingredient_id=7)
-    
-    db.session.add_all([symptom_log_1, food_ingrd_1, food_ingrd_2, food_ingrd_3, 
-                        food_ingrd_4, food_ingrd_5, food_ingrd_6, food_ingrd_7, 
+    user_symptom_ingredient_link_1 = \
+        UserSymptomIngredientLink(id=1, user_id=1,
+                                  symptom_id=2, ingredient_id=7)
+
+    db.session.add_all([symptom_log_1, food_ingrd_1, food_ingrd_2, food_ingrd_3,
+                        food_ingrd_4, food_ingrd_5, food_ingrd_6, food_ingrd_7,
                         food_log_1, user_symptom_ingredient_link_1,
                         ])
 
     db.session.commit()
+
 
 if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave
