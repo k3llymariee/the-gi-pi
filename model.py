@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from magic import return_ingredient_list
-import flask_restless
 from sqlalchemy import extract
 
 # This is the connection to the PostgreSQL database; we're getting this through

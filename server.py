@@ -3,14 +3,12 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect, session, jsonify
 # from flask_debugtoolbar import DebugToolbarExtension
 from datetime import datetime, date, timedelta
-import json
 
 from model import (db, connect_to_db, User, Food, Ingredient, Symptom,
                    SymptomLog, FoodLog, UserSymptomIngredientLink, Meal)
 from nutritionix import search, search_branded_item
 from magic import find_common_ingredients, return_ingredient_list
 from sqlalchemy import extract
-import flask_restless
 
 app = Flask(__name__)
 
@@ -594,17 +592,6 @@ if __name__ == '__main__':
     app.debug = True
 
     connect_to_db(app)
-
-    manager = flask_restless.APIManager(app, flask_sqlalchemy_db=db)
-
-    # Create API endpoints, which will be available at /api/<tablename> by
-    # default. Allowed HTTP methods can be specified as well.
-    manager.create_api(Food, methods=['GET', 'POST'])
-    manager.create_api(Symptom, methods=['GET', 'POST'])
-    manager.create_api(FoodLog, methods=['GET', 'POST', 'DELETE'])
-    manager.create_api(SymptomLog, methods=['GET', 'POST', 'DELETE'])
-    manager.create_api(Ingredient, methods=['GET', 'POST', 'DELETE'])
-    manager.create_api(User, methods=['GET', 'POST'])
 
     # Use the DebugToolbar
     # DebugToolbarExtension(app)
